@@ -1,9 +1,5 @@
-import { ReactElement } from 'react'
+import PageTemplate, { generateMetadata } from './[slug]/page'
 
-export default function Page(): ReactElement {
-  return (
-    <div className="text-4xl">
-      Tere
-    </div>
-  )
-}
+export default PageTemplate
+
+export { generateMetadata }

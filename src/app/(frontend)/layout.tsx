@@ -1,15 +1,29 @@
-import React, { ReactElement, ReactNode } from 'react'
+import React from 'react'
 import "./styles.css"
+import { cn } from '@/utilities/ui'
+import { GeistMono } from 'geist/font/mono'
+import { GeistSans } from 'geist/font/sans'
+import { AdminBar } from '@/components/AdminBar'
+import { Header } from '@/Header/Component'
+import { Footer } from '@/Footer/Component'
+import { draftMode } from 'next/headers'
 
-interface LayoutProps {
-  children?: ReactNode
-}
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const { isEnabled } = await draftMode()
 
-export default function Layout({ children }: LayoutProps): ReactElement {
   return (
-    <html>
+    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+    <head></head>
     <body>
-    <main>{children}</main>
+    <AdminBar
+      adminBarProps={{
+        preview: isEnabled,
+      }}
+    />
+
+    <Header />
+    {children}
+    <Footer />
     </body>
     </html>
   )
