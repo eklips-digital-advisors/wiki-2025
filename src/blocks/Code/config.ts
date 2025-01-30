@@ -21,6 +21,14 @@ export const Code: Block = {
           label: 'CSS',
           value: 'css',
         },
+        {
+          label: 'Docker',
+          value: 'docker',
+        },
+        {
+          label: 'PHP',
+          value: 'php',
+        },
       ],
     },
     {

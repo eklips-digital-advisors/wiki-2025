@@ -48,12 +48,12 @@ export const AdminBar: React.FC<{
 
   return (
     <div
-      className={cn(baseClass, 'py-2 bg-black text-white', {
+      className={cn(baseClass, 'py-2 bg-black text-white fixed w-full start-0 end-0', {
         block: show,
         hidden: !show,
       })}
     >
-      <div className="container">
+      <div className="container mx-auto">
         <PayloadAdminBar
           {...adminBarProps}
           className="py-2 text-white"

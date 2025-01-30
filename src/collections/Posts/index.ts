@@ -96,7 +96,7 @@ export const Posts: CollectionConfig<'posts'> = {
               admin: {
                 position: 'sidebar',
               },
-              hasMany: true,
+              hasMany: false,
               relationTo: 'categories',
             },
           ],

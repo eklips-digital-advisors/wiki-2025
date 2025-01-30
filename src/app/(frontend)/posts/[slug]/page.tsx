@@ -1,21 +1,17 @@
 import type { Metadata } from 'next'
-
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
-
-import type { Page as PageType } from '@/payload-types'
-
-import { RenderBlocks } from '@/blocks/RenderBlocks'
+import RichText from '@/components/RichText'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { notFound } from 'next/navigation'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
-  const pages = await payload.find({
-    collection: 'pages',
+  const posts = await payload.find({
+    collection: 'posts',
     draft: false,
     limit: 1000,
     overrideAccess: false,
@@ -25,13 +21,9 @@ export async function generateStaticParams() {
     },
   })
 
-  const params = pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'home'
-    })
-    .map(({ slug }) => {
-      return { slug }
-    })
+  const params = posts.docs.map(({ slug }) => {
+    return { slug }
+  })
 
   return params
 }
@@ -42,53 +34,49 @@ type Args = {
   }>
 }
 
-export default async function Page({ params: paramsPromise }: Args) {
+export default async function Post({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
-  const { slug = 'home' } = await paramsPromise
-  const url = '/' + slug
+  const { slug = '' } = await paramsPromise
+  const url = '/posts/' + slug
+  const post = await queryPostBySlug({ slug })
 
-  let page: PageType | null
-
-  page = await queryPageBySlug({
-    slug,
-  })
-
-  if (!page) {
-    notFound()
-  }
-
-  const { layout } = page
+  if (!post) notFound()
 
   return (
-    <article className="pt-16 pb-24">
+    <article className="pt-16 pb-16">
 
       {draft && <LivePreviewListener />}
 
-      <RenderBlocks blocks={layout} />
+      <div className="flex flex-col items-center gap-4">
+        <div className="container max-w-[68rem] mx-auto">
+          <div className="prose mb-6">
+            <h1 className="">{post.title}</h1>
+          </div>
+          <RichText className="max-w-[68rem] mx-auto" data={post.content} enableGutter={false} />
+        </div>
+      </div>
     </article>
   )
 }
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { slug = 'home' } = await paramsPromise
-  const page = await queryPageBySlug({
-    slug,
-  })
+  const { slug = '' } = await paramsPromise
+  const post = await queryPostBySlug({ slug })
 
-  return generateMeta({ doc: page })
+  return generateMeta({ doc: post })
 }
 
-const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
-    collection: 'pages',
+    collection: 'posts',
     draft,
     limit: 1,
-    pagination: false,
     overrideAccess: draft,
+    pagination: false,
     where: {
       slug: {
         equals: slug,
