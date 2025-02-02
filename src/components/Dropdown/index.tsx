@@ -16,13 +16,15 @@ export const Dropdown: React.FC<{
   const { value, setValue } = useField<string>({ path })
 
   return (
-    <SelectInput
-      path={path}
-      name={path}
-      options={options}
-      label={label}
-      value={fetchedOptions.find((option) => option.value == value)?.label || ''}
-      onChange={(e: any) => setValue(e ? e.value : null)}
-    />
+    <>
+      <SelectInput
+        path={path}
+        name={path}
+        label={label}
+        options={options}
+        value={fetchedOptions.find((option) => option.value == value)?.label || ''}
+        onChange={(e: any) => setValue(e ? e.value : null)}
+      />
+    </>
   )
 }

@@ -4,10 +4,14 @@ import type { Page } from '@/payload-types'
 
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { SitesBlock } from '@/blocks/SitesBlock/Component'
+import { ContentBlock } from '@/blocks/Content/Component'
 
 const blockComponents = {
   cta: CallToActionBlock,
   mediaBlock: MediaBlock,
+  sites: SitesBlock,
+  content: ContentBlock,
 }
 
 export const RenderBlocks: React.FC<{
@@ -28,7 +32,7 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="my-16" key={index}>
+                <div className="mb-10" key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
                 </div>

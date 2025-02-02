@@ -35,7 +35,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ sidebarData }) => {
             <div className="relative mt-3 pl-2">
               <ul role="list" className="border-l border-transparent">
                 {single?.posts.map((post) => {
-                  console.log('posts slug', post.slug)
                   return (
                     <li className="relative" key={post?.id}>
                       <Link

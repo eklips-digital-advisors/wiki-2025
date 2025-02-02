@@ -35,7 +35,6 @@ export async function Header() {
     });
 
     posts.forEach((post: Post) => {
-      console.log('post', post)
       const categoryId = post?.categories?.id ?? '';
       if (categoryMap.has(categoryId)) {
         categoryMap.get(categoryId).posts.push({

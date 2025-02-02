@@ -32,7 +32,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       suppressHydrationWarning
     >
       <head></head>
-      <body className="flex min-h-full bg-white antialiased dark:bg-zinc-900">
+      <body className="flex min-h-full bg-white antialiased">
         {/*<AdminBar*/}
         {/*  adminBarProps={{*/}
         {/*    preview: isEnabled,*/}

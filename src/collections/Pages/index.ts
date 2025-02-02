@@ -3,11 +3,13 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { CallToAction } from '../../blocks/CallToAction/config'
+import { Sites } from '../../blocks/SitesBlock/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
+import { Content } from '@/blocks/Content/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -59,10 +61,10 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, MediaBlock],
-              required: true,
+              blocks: [CallToAction, MediaBlock, Sites, Content],
+              required: false,
               admin: {
-                initCollapsed: true,
+                initCollapsed: false,
               },
             },
           ],

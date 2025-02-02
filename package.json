@@ -15,7 +15,6 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.0",
     "@payloadcms/db-mongodb": "latest",
     "@payloadcms/live-preview-react": "^3.19.0",
     "@payloadcms/next": "latest",
@@ -24,6 +23,7 @@
     "@payloadcms/plugin-search": "^3.19.0",
     "@payloadcms/richtext-lexical": "latest",
     "@radix-ui/react-label": "^2.1.1",
+    "@radix-ui/react-select": "^2.1.5",
     "@radix-ui/react-slot": "^1.1.1",
     "@tailwindcss/postcss": "^4.0.0",
     "@tailwindcss/typography": "^0.5.16",

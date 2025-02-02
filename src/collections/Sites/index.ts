@@ -24,23 +24,6 @@ export const Sites: CollectionConfig<'sites'> = {
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    livePreview: {
-      url: ({ data, req }) => {
-        const path = generatePreviewPath({
-          slug: typeof data?.slug === 'string' ? data.slug : '',
-          collection: 'sites',
-          req,
-        })
-
-        return path
-      },
-    },
-    preview: (data, { req }) =>
-      generatePreviewPath({
-        slug: typeof data?.slug === 'string' ? data.slug : '',
-        collection: 'sites',
-        req,
-      }),
     useAsTitle: 'title',
   },
   fields: [
@@ -50,22 +33,105 @@ export const Sites: CollectionConfig<'sites'> = {
       required: true,
     },
     {
-      name: 'repository',
-      type: 'text',
-      admin: {
-        components: {
-          Field: '@/components/GetRepos/index#Index',
-        }
-      }
+      type: 'group',
+      name: 'integrations',
+      fields: [
+        {
+          name: 'repository',
+          type: 'text',
+          admin: {
+            components: {
+              Field: '@/utilities/GetRepos/getRepos#GetRepos',
+            },
+          },
+        },
+        {
+          name: 'pingdom',
+          type: 'text',
+          admin: {
+            components: {
+              Field: '@/utilities/GetPingdomChecks/getPingdomChecks#GetPingdomChecks',
+            },
+          },
+        },
+        {
+          name: 'cloudflare',
+          type: 'text',
+          admin: {
+            components: {
+              Field: '@/utilities/GetCloudflareItems/getAllCloudflareItems#GetAllCloudflareItems',
+            },
+          },
+        },
+      ],
     },
     {
-      name: 'pingdom',
-      type: 'text',
-      admin: {
-        components: {
-          Field: '@/components/GetPingdomChecks/index#Index',
-        }
-      }
+      name: 'site/service',
+      type: 'select',
+      defaultValue: 'corporate',
+      options: [
+        {
+          label: 'Corporate',
+          value: 'corporate',
+        },
+      ],
+    },
+    {
+      type: 'checkbox',
+      name: 'ipRestriction',
+      label: 'IP Restriction',
+    },
+    {
+      type: 'checkbox',
+      name: 'csp',
+      label: 'CSP',
+    },
+    {
+      type: 'row',
+      fields: [
+        {
+          type: 'date',
+          name: 'wcagUpdated',
+        },
+        {
+          name: 'wcagLevel',
+          type: 'select',
+          options: [
+            {
+              label: '2.2 AA',
+              value: 'aa',
+            },
+            {
+              label: '2.2 AAA',
+              value: 'aaa',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'date',
+      name: 'bsScan',
+      label: 'BS Scan',
+    },
+    {
+      name: 'phpVersion',
+      type: 'select',
+      label: 'PHP Version',
+      options: [
+        {
+          label: '7.4',
+          value: '7.4',
+        },
+        {
+          label: '8.2',
+          value: '8.2',
+        },
+        {
+          label: '8.3',
+          value: '8.3',
+        },
+      ],
     },
     {
       name: 'publishedAt',
@@ -80,14 +146,5 @@ export const Sites: CollectionConfig<'sites'> = {
     afterChange: [revalidateSite],
     beforeChange: [populatePublishedAt],
     afterDelete: [revalidateDelete],
-  },
-  versions: {
-    drafts: {
-      autosave: {
-        interval: 100, // We set this interval for optimal live preview
-      },
-      schedulePublish: true,
-    },
-    maxPerDoc: 50,
   },
 }

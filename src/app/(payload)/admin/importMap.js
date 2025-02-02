@@ -1,5 +1,6 @@
-import { Index as Index_dd6a48ef745f6ea8caa6d54a1af87545 } from '@/components/GetRepos/index'
-import { Index as Index_d43a0f11acc3edc0a47b26481a0ac986 } from '@/components/GetPingdomChecks/index'
+import { GetRepos as GetRepos_19fbb84822e8a908b1530774dfb55d6a } from '@/utilities/GetRepos/getRepos'
+import { GetPingdomChecks as GetPingdomChecks_2caa047f01159a10eb04220c0ae3a3ee } from '@/utilities/GetPingdomChecks/getPingdomChecks'
+import { GetAllCloudflareItems as GetAllCloudflareItems_f67c5c847205e0eb9557d5bdadc66f5f } from '@/utilities/GetCloudflareItems/getAllCloudflareItems'
 import { SlugComponent as SlugComponent_92cc057d0a2abb4f6cf0307edf59f986 } from '@/fields/slug/SlugComponent'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -24,15 +25,17 @@ import { RelationshipFeatureClient as RelationshipFeatureClient_e70f5e05f09f93e0
 import { BlockquoteFeatureClient as BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { UploadFeatureClient as UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { AdminLabel as AdminLabel_65870e975164d8f9606e9c0570c4baed } from '@/blocks/SitesBlock/AdminLabel'
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/RowLabel'
-import { RowLabel as RowLabel_1f6ff6ff633e3695d348f4f3c58f1466 } from '@/Footer/RowLabel'
+import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
 
 export const importMap = {
-  "@/components/GetRepos/index#Index": Index_dd6a48ef745f6ea8caa6d54a1af87545,
-  "@/components/GetPingdomChecks/index#Index": Index_d43a0f11acc3edc0a47b26481a0ac986,
+  "@/utilities/GetRepos/getRepos#GetRepos": GetRepos_19fbb84822e8a908b1530774dfb55d6a,
+  "@/utilities/GetPingdomChecks/getPingdomChecks#GetPingdomChecks": GetPingdomChecks_2caa047f01159a10eb04220c0ae3a3ee,
+  "@/utilities/GetCloudflareItems/getAllCloudflareItems#GetAllCloudflareItems": GetAllCloudflareItems_f67c5c847205e0eb9557d5bdadc66f5f,
   "@/fields/slug/SlugComponent#SlugComponent": SlugComponent_92cc057d0a2abb4f6cf0307edf59f986,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -57,9 +60,10 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BlockquoteFeatureClient": BlockquoteFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#UploadFeatureClient": UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "@/blocks/SitesBlock/AdminLabel#AdminLabel": AdminLabel_65870e975164d8f9606e9c0570c4baed,
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/Header/RowLabel#RowLabel": RowLabel_ec255a65fa6fa8d1faeb09cf35284224,
-  "@/Footer/RowLabel#RowLabel": RowLabel_1f6ff6ff633e3695d348f4f3c58f1466
+  "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6
 }
