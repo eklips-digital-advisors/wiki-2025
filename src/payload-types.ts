@@ -92,12 +92,20 @@ export interface Site {
     cloudflare?: string | null;
   };
   'site/service'?: 'corporate' | null;
+  hosting?: 'adminor' | null;
+  server?:
+    | ('06-188-v1' | '06-188-v9' | '06-188-v18' | '06-188-v19' | '06-188-v20' | '06-188-v21' | '06-188-v22')
+    | null;
   ipRestriction?: boolean | null;
   csp?: boolean | null;
   wcagUpdated?: string | null;
   wcagLevel?: ('aa' | 'aaa') | null;
   bsScan?: string | null;
-  phpVersion?: ('7.4' | '8.2' | '8.3') | null;
+  phpVersion?: ('7.4' | '8.2' | '8.3' | '8.4') | null;
+  framework?: ('cwaas' | 'eklips_v1' | 'eklips_v2') | null;
+  newsFeeds?: string | null;
+  dataBlocks?: string | null;
+  speedTestScan?: string | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -557,12 +565,18 @@ export interface SitesSelect<T extends boolean = true> {
         cloudflare?: T;
       };
   'site/service'?: T;
+  hosting?: T;
+  server?: T;
   ipRestriction?: T;
   csp?: T;
   wcagUpdated?: T;
   wcagLevel?: T;
   bsScan?: T;
   phpVersion?: T;
+  framework?: T;
+  newsFeeds?: T;
+  dataBlocks?: T;
+  speedTestScan?: T;
   publishedAt?: T;
   slug?: T;
   slugLock?: T;

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Check, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
+import { ArrowUpDown, Check, ChevronDown, ChevronUp, ExternalLink, RefreshCwOff } from 'lucide-react'
 import Link from 'next/link'
 import Th from '@/components/Table/Th'
 import { getWpVersionBackground } from '@/utilities/GetDynamicBackgrounds/getWpVersionBackground'
@@ -9,37 +9,11 @@ import CloudFlare from '@/components/Icons/cloudFlare'
 import { SiteItem, SitesBlockProps } from '@/blocks/SitesBlock/sites-types'
 import './index.scss'
 import Pill from '@/components/Button/pill'
+import { columns } from '@/blocks/SitesBlock/Columns'
+import { getPhpBackground } from '@/utilities/GetDynamicBackgrounds/getPhpBackground'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
-  const { latestWp, wpVersionLatestPercentage } = extraInfo
-
-  const columns = [
-    { key: 'index', label: '', defaultVisible: true, sortable: false },
-    { key: 'title', label: 'Client', defaultVisible: true, sortable: true },
-    { key: 'createdAt', label: 'Date of creation', defaultVisible: false, sortable: true },
-    { key: 'lastCommitAt', label: 'Last commit', defaultVisible: false, sortable: true },
-    { key: 'siteService', label: 'Site/Service', defaultVisible: true, sortable: true },
-    { key: 'productionDate', label: 'Production date', defaultVisible: false, sortable: true },
-    { key: 'production', label: 'Production', defaultVisible: true, sortable: false },
-    { key: 'staging', label: 'Staging', defaultVisible: true, sortable: false },
-    { key: 'wpVersion', label: 'WP Version', defaultVisible: true, sortable: true },
-    { key: 'cloudflare', label: 'Cloudflare', defaultVisible: false, sortable: false },
-    { key: 'cloudflarePlan', label: 'Cloudflare plan', defaultVisible: false, sortable: false },
-    {
-      key: 'cloudflareStats',
-      label: 'Cloudflare past 24hrs bandwidth/requests',
-      defaultVisible: false,
-      sortable: false,
-    },
-    { key: 'ssl', label: 'SSL', defaultVisible: false, sortable: false },
-    { key: 'twoFa', label: '2FA', defaultVisible: false, sortable: false },
-    { key: 'hiddenLogin', label: 'Hidden login', defaultVisible: false, sortable: false },
-    { key: 'ipRestriction', label: 'IP Restriction', defaultVisible: false, sortable: false },
-    { key: 'csp', label: 'CSP', defaultVisible: false, sortable: false },
-    { key: 'wcag', label: 'WCAG', defaultVisible: false, sortable: false },
-    { key: 'bsScan', label: 'BS Scan', defaultVisible: false, sortable: false },
-    { key: 'phpVersion', label: 'PHP version', defaultVisible: false, sortable: false },
-  ]
+  const { latestWp, wpVersionLatestPercentage, phpApiData } = extraInfo
 
   const [selectedColumns, setSelectedColumns] = useState(
     columns.filter((col) => col.defaultVisible).map((col) => col.key),
@@ -76,7 +50,6 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     const isDateFormat = dateRegex.test(aValue) && dateRegex.test(bValue)
 
     if (isDateFormat) {
-      console.log('is date')
       const dateA = new Date(aValue)
       const dateB = new Date(bValue)
 
@@ -90,6 +63,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     return 0
   })
 
+  // console.log('sites', sites)
+
   return (
     <div>
       <div className="relative mb-4 flex gap-2 flex-wrap">
@@ -100,6 +75,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
               key={col.key}
               active={selectedColumns.includes(col.key)}
               onClick={() => toggleColumn(col.key)}
+              type={col.type}
             >
               <span>{col.label}</span>
             </Pill>
@@ -121,15 +97,17 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     >
                       <div className="flex items-center">
                         {col.label}
+                        {col.sortable && sortConfig.key !== col.key && <ArrowUpDown className="ml-1 w-4 h-4" />}
                         {col.sortable && sortConfig.key === col.key && (
                           <span className="ml-1">
                             {sortConfig.direction === 'asc' ? (
-                              <ChevronUp className="w-4 h-4" />
-                            ) : (
                               <ChevronDown className="w-4 h-4" />
+                            ) : (
+                              <ChevronUp className="w-4 h-4" />
                             )}
                           </span>
                         )}
+                        {!col.auto && <RefreshCwOff className="ml-2 w-3" />}
                       </div>
 
                       {col.key === 'wpVersion' && (
@@ -158,26 +136,6 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     {site.title}
                   </td>
                 )}
-                {selectedColumns.includes('createdAt') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.createdAt && site?.createdAt.split(' ')[0]}
-                  </td>
-                )}
-                {selectedColumns.includes('lastCommitAt') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.lastCommitAt && site?.lastCommitAt.split(' ')[0]}
-                  </td>
-                )}
-                {selectedColumns.includes('siteService') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site['site/service']}
-                  </td>
-                )}
-                {selectedColumns.includes('productionDate') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {new Date(site['productionDate'] * 1000).toLocaleDateString()}
-                  </td>
-                )}
                 {selectedColumns.includes('production') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     <Link target="_blank" href={`https://${site?.hostname}`}>
@@ -195,6 +153,36 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                         <ExternalLink className="w-4" />
                       </Link>
                     )}
+                  </td>
+                )}
+                {selectedColumns.includes('createdAt') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                    {site?.createdAt && site?.createdAt.split(' ')[0]}
+                  </td>
+                )}
+                {selectedColumns.includes('lastCommitAt') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                    {site?.lastCommitAt && site?.lastCommitAt.split(' ')[0]}
+                  </td>
+                )}
+                {selectedColumns.includes('productionDate') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                    {new Date(site['productionDate'] * 1000).toLocaleDateString()}
+                  </td>
+                )}
+                {selectedColumns.includes('siteService') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                    {site['site/service']}
+                  </td>
+                )}
+                {selectedColumns.includes('hosting') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                    {site?.hosting}
+                  </td>
+                )}
+                {selectedColumns.includes('server') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                    {site?.server}
                   </td>
                 )}
                 {selectedColumns.includes('wpVersion') && (
@@ -223,7 +211,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   </td>
                 )}
                 {selectedColumns.includes('cloudflareStats') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm ${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}>
                     {site?.cloudflareBandwidth &&
                       site?.cloudflareRequests &&
                       `${site?.cloudflareBandwidth}MB/${site?.cloudflareRequests}`}
@@ -265,8 +253,60 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   </td>
                 )}
                 {selectedColumns.includes('phpVersion') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.phpVersion}
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    <span
+                      className={`${getPhpBackground(phpApiData, site?.phpVersion)} px-1 py-[0.5] text-xs inline-block`}
+                    >
+                      {site?.phpVersion}
+                    </span>
+                  </td>
+                )}
+                {selectedColumns.includes('framework') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    {site?.framework}
+                  </td>
+                )}
+                {selectedColumns.includes('pressReleases') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    <span className="flex gap-1 flex-wrap">
+                      {site?.pressReleases.cision && <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">Cision</span>}
+                      {site?.pressReleases.mfn && <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">MFN</span>}
+                    </span>
+                  </td>
+                )}
+                {selectedColumns.includes('newsFeeds') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    {site?.newsFeeds}
+                  </td>
+                )}
+                {selectedColumns.includes('dataBlocks') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    {site?.dataBlocks}
+                  </td>
+                )}
+                {selectedColumns.includes('hasGoogleAnalytics') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    {site?.hasGoogleAnalytics && <Check className="w-4" />}
+                  </td>
+                )}
+                {selectedColumns.includes('hasCookiebot') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    {site?.hasCookiebot && <Check className="w-4" />}
+                  </td>
+                )}
+                {selectedColumns.includes('speedTestScan') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    {site?.speedTestScan}
+                  </td>
+                )}
+                {selectedColumns.includes('hasSolr') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    {site?.hasSolr && <Check className="w-4" />}
+                  </td>
+                )}
+                {selectedColumns.includes('lastResponsetime') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm ${site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'}`}>
+                    {site?.lastResponsetime}
                   </td>
                 )}
               </tr>

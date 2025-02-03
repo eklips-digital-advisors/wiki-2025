@@ -77,6 +77,50 @@ export const Sites: CollectionConfig<'sites'> = {
       ],
     },
     {
+      name: 'hosting',
+      type: 'select',
+      options: [
+        {
+          label: 'Adminor',
+          value: 'adminor',
+        },
+      ],
+    },
+    {
+      name: 'server',
+      type: 'select',
+      options: [
+        {
+          label: '06-188-v1',
+          value: '06-188-v1',
+        },
+        {
+          label: '06-188-v9',
+          value: '06-188-v9',
+        },
+        {
+          label: '06-188-v18',
+          value: '06-188-v18',
+        },
+        {
+          label: '06-188-v19',
+          value: '06-188-v19',
+        },
+        {
+          label: '06-188-v20',
+          value: '06-188-v20',
+        },
+        {
+          label: '06-188-v21',
+          value: '06-188-v21',
+        },
+        {
+          label: '06-188-v22',
+          value: '06-188-v22',
+        },
+      ],
+    },
+    {
       type: 'checkbox',
       name: 'ipRestriction',
       label: 'IP Restriction',
@@ -131,7 +175,43 @@ export const Sites: CollectionConfig<'sites'> = {
           label: '8.3',
           value: '8.3',
         },
+        {
+          label: '8.4',
+          value: '8.4',
+        },
       ],
+    },
+    {
+      name: 'framework',
+      type: 'select',
+      label: 'Framework (will override auto value)',
+      options: [
+        {
+          label: 'CWAAS',
+          value: 'cwaas',
+        },
+        {
+          label: 'Eklips v1',
+          value: 'eklips_v1',
+        },
+        {
+          label: 'Eklips v2',
+          value: 'eklips_v2',
+        },
+      ],
+    },
+    {
+      type: 'text',
+      name: 'newsFeeds'
+    },
+    {
+      type: 'text',
+      name: 'dataBlocks',
+      label: 'Datablocks'
+    },
+    {
+      type: 'text',
+      name: 'speedTestScan'
     },
     {
       name: 'publishedAt',
