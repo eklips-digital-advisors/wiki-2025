@@ -6,8 +6,7 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
-  ExternalLink,
-  RefreshCwOff,
+  ExternalLink
 } from 'lucide-react'
 import Link from 'next/link'
 import Th from '@/components/Table/Th'

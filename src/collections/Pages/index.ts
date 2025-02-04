@@ -64,7 +64,7 @@ export const Pages: CollectionConfig<'pages'> = {
               name: 'layout',
               type: 'blocks',
               blocks: [CallToAction, MediaBlock, Sites, Content, PasswordGeneratorBlock, Archive],
-              required: false,
+              required: true,
               admin: {
                 initCollapsed: false,
               },

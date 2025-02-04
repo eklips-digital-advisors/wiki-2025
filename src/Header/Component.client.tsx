@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import { motion } from 'framer-motion'
 
-import type { Header, Post, Category } from '@/payload-types'
+import type { Header } from '@/payload-types'
 
 import { HeaderTop } from '@/Header/Nav'
 import { Sidebar } from '@/Sidebar'
@@ -13,7 +13,7 @@ interface SidebarCategory {
   id: string
   slug: string
   title: string
-  posts: { id: string; slug: string; title: string }[]
+  posts: { id: string; slug: string; title: string, sections: { sectionName: string }[] }[]
 }
 
 interface HeaderClientProps {

@@ -19,7 +19,7 @@ export const Card: React.FC<{
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
-  const { slug, categories, title, content } = doc || {}
+  const { slug, categories, title } = doc || {}
 
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
@@ -69,7 +69,6 @@ export const Card: React.FC<{
                 </Link>
               </h3>
             </div>
-            {content && <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{content?.root?.children[0]?.children[0]?.text}</div>}
             <Link
               className="mt-4 inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition text-emerald-500 hover:text-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-500"
               href={href} ref={link.ref}>

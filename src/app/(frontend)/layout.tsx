@@ -8,22 +8,10 @@ import { AdminBar } from '@/components/AdminBar'
 import { Header } from '@/Header/Component'
 import { Footer } from '@/Footer/Component'
 import { draftMode } from 'next/headers'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import { HeroPattern } from '@/components/Patterns/HeroPattern'
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
-
-  const payload = await getPayload({ config: configPromise })
-
-  const categories = await payload.find({
-    collection: 'categories',
-  })
-
-  const pages = await payload.find({
-    collection: 'pages',
-  })
 
   return (
     <html
@@ -36,11 +24,11 @@ export default async function Layout({ children }: { children: React.ReactNode }
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
       </head>
       <body className="flex min-h-full bg-white antialiased">
-        {/*<AdminBar*/}
-        {/*  adminBarProps={{*/}
-        {/*    preview: isEnabled,*/}
-        {/*  }}*/}
-        {/*/>*/}
+        <AdminBar
+          adminBarProps={{
+            preview: isEnabled,
+          }}
+        />
 
         <div className="w-full">
           <HeroPattern />
