@@ -21,7 +21,7 @@ export const HeaderTop: React.FC<{ data: HeaderType }> = ({ data }) => {
             return <CMSLink key={i} {...link} appearance="link" />
           })}
         </nav>
-        <Button><Link href="/admin">Sign in</Link></Button>
+        <Button><Link href="/admin" target="_blank">Sign in</Link></Button>
       </div>
     </div>
   )

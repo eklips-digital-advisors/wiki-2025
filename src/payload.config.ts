@@ -27,6 +27,9 @@ export default buildConfig({
     },
     components: {
       actions: ['@/components/BeforeDashboard'],
+      graphics: {
+        Logo: '@/components/Logo'
+      }
     }
   },
   collections: [Sites, Pages, Posts, Categories, Media, Users],

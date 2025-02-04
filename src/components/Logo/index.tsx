@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Logo = () => {
+const Index = () => {
   return (
     <svg
       width="155"
@@ -41,3 +41,5 @@ export const Logo = () => {
     </svg>
   )
 }
+
+export default Index

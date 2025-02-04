@@ -5,9 +5,9 @@ import { motion } from 'framer-motion'
 
 import type { Header, Post, Category } from '@/payload-types'
 
-import { Logo } from '@/components/Logo/Logo'
 import { HeaderTop } from '@/Header/Nav'
 import { Sidebar } from '@/Sidebar'
+import Logo from '@/components/Logo'
 
 interface SidebarCategory {
   id: string
