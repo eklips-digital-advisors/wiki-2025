@@ -227,4 +227,10 @@ export const Sites: CollectionConfig<'sites'> = {
     beforeChange: [populatePublishedAt],
     afterDelete: [revalidateDelete],
   },
+  versions: {
+    drafts: {
+      schedulePublish: false,
+    },
+    maxPerDoc: 50,
+  },
 }

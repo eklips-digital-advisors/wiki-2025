@@ -34,7 +34,7 @@ export function middleware(NextRequest) {
         }
     }
 
-    url.pathname = '/api/auth'
+    url.pathname = '/next/auth'
 
     return NextResponse.rewrite(url)
 
