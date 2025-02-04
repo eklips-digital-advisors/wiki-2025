@@ -41,6 +41,7 @@ export async function Header() {
           id: post.id,
           title: post.title,
           slug: `posts/${post.slug}`,
+          sections: post.sections,
         });
       }
     });

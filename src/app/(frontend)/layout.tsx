@@ -27,11 +27,14 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   return (
     <html
-      className={`${cn(GeistSans.variable, GeistMono.variable)} h-full`}
+      className={`${cn(GeistSans.variable, GeistMono.variable)} h-full scroll-pt-40`}
       lang="en"
       suppressHydrationWarning
     >
-      <head></head>
+      <head>
+        <title>Eklips Wiki</title>
+        <link href="/favicon.ico" rel="icon" sizes="32x32" />
+      </head>
       <body className="flex min-h-full bg-white antialiased">
         {/*<AdminBar*/}
         {/*  adminBarProps={{*/}

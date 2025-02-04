@@ -12,11 +12,11 @@ export const CollectionArchive: React.FC<Props> = (props) => {
 
   return (
     <div className={cn('container')}>
-      <div>
+      <div className="grid grid-cols-1 gap-8 border-t mt-6 border-zinc-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-4 dark:border-white/5">
         {posts?.map((result, index) => {
           if (typeof result === 'object' && result !== null) {
             return (
-              <div className="mb-4 max-w-[50rem] mx-auto" key={index}>
+              <div className="aa" key={index}>
                 <Card className="h-full" doc={result} relationTo="posts" showCategories />
               </div>
             )

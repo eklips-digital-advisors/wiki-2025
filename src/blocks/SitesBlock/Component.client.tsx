@@ -107,7 +107,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                             )}
                           </span>
                         )}
-                        {!col.auto && <RefreshCwOff className="ml-2 w-3" />}
+                        {!col.auto && <span className="text-[10px] ml-1">M</span>}
                       </div>
 
                       {col.key === 'wpVersion' && (

@@ -6,9 +6,7 @@ import React, { Fragment } from 'react'
 
 import type { Post } from '@/payload-types'
 
-import { Media } from '@/components/Media'
-
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'title'>
+export type CardPostData = Pick<Post, 'slug' | 'categories' | 'title' | 'content'>
 
 export const Card: React.FC<{
   alignItems?: 'center'
@@ -21,7 +19,7 @@ export const Card: React.FC<{
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
-  const { slug, categories, title } = doc || {}
+  const { slug, categories, title, content } = doc || {}
 
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
@@ -63,13 +61,25 @@ export const Card: React.FC<{
           </div>
         )}
         {titleToUse && (
-          <div className="prose">
-            <h3>
-              <Link className="not-prose" href={href} ref={link.ref}>
-                {titleToUse}
-              </Link>
-            </h3>
-          </div>
+          <>
+            <div className="prose">
+              <h3>
+                <Link className="not-prose" href={href} ref={link.ref}>
+                  {titleToUse}
+                </Link>
+              </h3>
+            </div>
+            {content && <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{content?.root?.children[0]?.children[0]?.text}</div>}
+            <Link
+              className="mt-4 inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition text-emerald-500 hover:text-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-500"
+              href={href} ref={link.ref}>
+              Read more
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="mt-0.5 h-5 w-5 relative top-px -mr-1">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                      d="m11.5 6.5 3 3.5m0 0-3 3.5m3-3.5h-9"></path>
+              </svg>
+            </Link>
+          </>
         )}
       </div>
     </article>

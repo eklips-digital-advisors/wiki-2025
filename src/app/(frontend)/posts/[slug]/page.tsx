@@ -44,7 +44,6 @@ export default async function Post({ params: paramsPromise }: Args) {
 
   return (
     <article className="pt-16 pb-16">
-
       {draft && <LivePreviewListener />}
 
       <div className="flex flex-col items-center gap-4">
@@ -52,7 +51,23 @@ export default async function Post({ params: paramsPromise }: Args) {
           <div className="prose mb-6">
             <h1 className="">{post.title}</h1>
           </div>
-          <RichText className="max-w-[68rem] mx-auto" data={post.content} enableGutter={false} />
+          {post.content && (
+            <RichText className="max-w-[68rem] mx-auto" data={post.content} enableGutter={false} />
+          )}
+          {post?.sections &&
+            post.sections.length > 0 &&
+            post.sections.map((section, index) => (
+              <div key={index} id={section?.sectionName.toLowerCase() + '-' + index} className="post-section mb-14">
+                <div className="prose mb-2">
+                  <b className="text-xl">#{section?.sectionName}</b>
+                </div>
+                <RichText
+                  className="max-w-[68rem] mx-auto"
+                  data={section.content}
+                  enableGutter={false}
+                />
+              </div>
+            ))}
         </div>
       </div>
     </article>

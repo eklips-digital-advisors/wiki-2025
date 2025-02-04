@@ -119,7 +119,9 @@ export interface Site {
 export interface Page {
   id: string;
   title: string;
-  layout?: (CallToActionBlock | MediaBlock | SitesBlock | ContentBlock)[] | null;
+  layout?:
+    | (CallToActionBlock | MediaBlock | SitesBlock | ContentBlock | PasswordGeneratorBlock | ArchiveBlock)[]
+    | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -182,7 +184,28 @@ export interface CallToActionBlock {
 export interface Post {
   id: string;
   title: string;
-  content: {
+  sections?:
+    | {
+        sectionName: string;
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  content?: {
     root: {
       type: string;
       children: {
@@ -196,7 +219,7 @@ export interface Post {
       version: number;
     };
     [k: string]: unknown;
-  };
+  } | null;
   categories?: (string | null) | Category;
   publishedAt?: string | null;
   authors?: (string | User)[] | null;
@@ -347,6 +370,50 @@ export interface ContentBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PasswordGeneratorBlock".
+ */
+export interface PasswordGeneratorBlock {
+  title?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'passwordGeneratorBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArchiveBlock".
+ */
+export interface ArchiveBlock {
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  populateBy?: ('collection' | 'selection') | null;
+  relationTo?: 'posts' | null;
+  categories?: (string | Category)[] | null;
+  limit?: number | null;
+  selectedDocs?:
+    | {
+        relationTo: 'posts';
+        value: string | Post;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'archive';
 }
 /**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
@@ -596,6 +663,8 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         sites?: T | SitesBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
+        passwordGeneratorBlock?: T | PasswordGeneratorBlockSelect<T>;
+        archive?: T | ArchiveBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -674,10 +743,40 @@ export interface ContentBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PasswordGeneratorBlock_select".
+ */
+export interface PasswordGeneratorBlockSelect<T extends boolean = true> {
+  title?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArchiveBlock_select".
+ */
+export interface ArchiveBlockSelect<T extends boolean = true> {
+  introContent?: T;
+  populateBy?: T;
+  relationTo?: T;
+  categories?: T;
+  limit?: T;
+  selectedDocs?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
+  sections?:
+    | T
+    | {
+        sectionName?: T;
+        content?: T;
+        id?: T;
+      };
   content?: T;
   categories?: T;
   publishedAt?: T;

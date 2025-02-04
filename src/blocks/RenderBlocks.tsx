@@ -6,12 +6,16 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { SitesBlock } from '@/blocks/SitesBlock/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
+import { PasswordGeneratorBlock } from '@/blocks/PasswordGeneratorBlock/Component'
+import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 
 const blockComponents = {
+  archive: ArchiveBlock,
   cta: CallToActionBlock,
   mediaBlock: MediaBlock,
   sites: SitesBlock,
   content: ContentBlock,
+  passwordGeneratorBlock: PasswordGeneratorBlock,
 }
 
 export const RenderBlocks: React.FC<{
@@ -32,7 +36,7 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="mb-10" key={index}>
+                <div className="mb-20" key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
                 </div>

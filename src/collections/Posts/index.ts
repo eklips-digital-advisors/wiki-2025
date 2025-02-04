@@ -66,6 +66,40 @@ export const Posts: CollectionConfig<'posts'> = {
       type: 'tabs',
       tabs: [
         {
+          label: 'Sections',
+          fields: [
+            {
+              type: 'array',
+              name: 'sections',
+              fields: [
+                {
+                  name: 'sectionName',
+                  type: 'text',
+                  required: true
+                },
+                {
+                  name: 'content',
+                  type: 'richText',
+                  editor: lexicalEditor({
+                    features: ({ rootFeatures }) => {
+                      return [
+                        ...rootFeatures,
+                        HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+                        BlocksFeature({ blocks: [Code, MediaBlock] }),
+                        FixedToolbarFeature(),
+                        InlineToolbarFeature(),
+                        HorizontalRuleFeature(),
+                      ]
+                    },
+                  }),
+                  label: false,
+                  required: true,
+                },
+              ]
+            }
+          ]
+        },
+        {
           fields: [
             {
               name: 'content',
@@ -83,7 +117,7 @@ export const Posts: CollectionConfig<'posts'> = {
                 },
               }),
               label: false,
-              required: true,
+              required: false,
             },
           ],
           label: 'Content',

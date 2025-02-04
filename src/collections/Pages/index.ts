@@ -2,9 +2,11 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
+import { Archive } from '../../blocks/ArchiveBlock/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { Sites } from '../../blocks/SitesBlock/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { PasswordGeneratorBlock } from '../../blocks/PasswordGeneratorBlock/config'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
@@ -61,7 +63,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, MediaBlock, Sites, Content],
+              blocks: [CallToAction, MediaBlock, Sites, Content, PasswordGeneratorBlock, Archive],
               required: false,
               admin: {
                 initCollapsed: false,
