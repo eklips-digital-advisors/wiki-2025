@@ -1,7 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ArrowUpDown, Check, ChevronDown, ChevronUp, ExternalLink, RefreshCwOff } from 'lucide-react'
+import {
+  ArrowUpDown,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  RefreshCwOff,
+} from 'lucide-react'
 import Link from 'next/link'
 import Th from '@/components/Table/Th'
 import { getWpVersionBackground } from '@/utilities/GetDynamicBackgrounds/getWpVersionBackground'
@@ -97,7 +104,9 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     >
                       <div className="flex items-center">
                         {col.label}
-                        {col.sortable && sortConfig.key !== col.key && <ArrowUpDown className="ml-1 w-4 h-4" />}
+                        {col.sortable && sortConfig.key !== col.key && (
+                          <ArrowUpDown className="ml-1 w-4 h-4" />
+                        )}
                         {col.sortable && sortConfig.key === col.key && (
                           <span className="ml-1">
                             {sortConfig.direction === 'asc' ? (
@@ -138,9 +147,11 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('production') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    <Link target="_blank" href={`https://${site?.hostname}`}>
-                      <ExternalLink className="w-4" />
-                    </Link>
+                    {site?.hostname && (
+                      <Link target="_blank" href={`https://${site?.hostname}`}>
+                        <ExternalLink className="w-4" />
+                      </Link>
+                    )}
                   </td>
                 )}
                 {selectedColumns.includes('staging') && (
@@ -167,7 +178,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('productionDate') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {new Date(site['productionDate'] * 1000).toLocaleDateString()}
+                    {site?.productionDate && new Date(site?.productionDate * 1000).toLocaleDateString()}
                   </td>
                 )}
                 {selectedColumns.includes('siteService') && (
@@ -211,16 +222,16 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   </td>
                 )}
                 {selectedColumns.includes('cloudflareStats') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm ${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}>
+                  <td
+                    className={`whitespace-nowrap px-3 py-3 text-sm ${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}
+                  >
                     {site?.cloudflareBandwidth &&
                       site?.cloudflareRequests &&
                       `${site?.cloudflareBandwidth}MB/${site?.cloudflareRequests}`}
                   </td>
                 )}
                 {selectedColumns.includes('ssl') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.ssl}
-                  </td>
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">{site?.ssl}</td>
                 )}
                 {selectedColumns.includes('twoFa') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
@@ -244,12 +255,13 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('wcag') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
-                    {site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split("T")[0]} {site?.wcagLevel}
+                    {site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}
+                    {site?.wcagLevel}
                   </td>
                 )}
                 {selectedColumns.includes('bsScan') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.bsScan && new Date(site?.bsScan).toISOString().split("T")[0]}
+                    {site?.bsScan && new Date(site?.bsScan).toISOString().split('T')[0]}
                   </td>
                 )}
                 {selectedColumns.includes('phpVersion') && (
@@ -269,8 +281,14 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 {selectedColumns.includes('pressReleases') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     <span className="flex gap-1 flex-wrap">
-                      {site?.pressReleases.cision && <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">Cision</span>}
-                      {site?.pressReleases.mfn && <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">MFN</span>}
+                      {site?.pressReleases.cision && (
+                        <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">
+                          Cision
+                        </span>
+                      )}
+                      {site?.pressReleases.mfn && (
+                        <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">MFN</span>
+                      )}
                     </span>
                   </td>
                 )}
@@ -305,7 +323,9 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   </td>
                 )}
                 {selectedColumns.includes('lastResponsetime') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm ${site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'}`}>
+                  <td
+                    className={`whitespace-nowrap px-3 py-3 text-sm ${site?.lastResponsetime && site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'}`}
+                  >
                     {site?.lastResponsetime}
                   </td>
                 )}

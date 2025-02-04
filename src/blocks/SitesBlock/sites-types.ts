@@ -4,6 +4,7 @@ export interface SiteItem {
   'site/service': string
   wpVersion: string
   productionDate: number
+  integrations: {repository: string, cloudflare: string, pingdom: string}
   cloudflare: string
   repositoryName: string
   hostname: string

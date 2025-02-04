@@ -20,9 +20,8 @@ export const SitesBlock: React.FC = async () => {
     const payload = await getPayload({ config: configPromise })
 
     // Fetch all sites from the 'sites' collection
-    const [sitesResponse, totalSites] = await Promise.all([
-      payload.find({ collection: "sites" }),
-      payload.count({ collection: "sites" })
+    const [sitesResponse] = await Promise.all([
+      payload.find({ collection: "sites", limit: 150 }),
     ])
 
     const sites: SiteItem[] = sitesResponse.docs as SiteItem[]
@@ -40,23 +39,24 @@ export const SitesBlock: React.FC = async () => {
     // Fetch data for each site in parallel
     const enrichedSites = await Promise.all(
       sites.map(async (site) => {
-        // console.log('site', site)
         
         try {
-          const singleClodflare = site?.cloudflare ? await getSingleCloudflareItem(site.cloudflare) : null
-          const singleClodflareSsl = site?.cloudflare ? await getSingleCloudflareItemSsl(site.cloudflare) : null
-          const singleClodflareAnalytics = site?.cloudflare ? await getSingleCloudflareItemStats(site.cloudflare) : null
+          const siteIntegrationsCloudflare= site?.integrations?.cloudflare
+          const singleClodflare = siteIntegrationsCloudflare ? await getSingleCloudflareItem(siteIntegrationsCloudflare) : null
+          const singleClodflareSsl = siteIntegrationsCloudflare ? await getSingleCloudflareItemSsl(siteIntegrationsCloudflare) : null
+          const singleClodflareAnalytics = siteIntegrationsCloudflare ? await getSingleCloudflareItemStats(siteIntegrationsCloudflare) : null
           
-          const singlePingdom = site?.pingdom ? await getSinglePingdom(site.pingdom) : null
+          const singlePingdom = site?.integrations?.pingdom ? await getSinglePingdom(site?.integrations?.pingdom) : null
           const prodHostname = singlePingdom?.hostname ?? ""
-          const siteUrl = `https://${prodHostname}${singlePingdom?.type?.http?.url}`;
-          const prodFetch = await getHeaders(siteUrl)
-          const hasGoogleAnalytics = await checkGoogleAnalytics(siteUrl);
-          const hasCookiebot = await getCookiebot(siteUrl);
-          const hasMfnScript = await getMfnScript(siteUrl);
-          const hasCisionScript = await getCisionScript(siteUrl);
+          const siteUrl = prodHostname ? `https://${prodHostname}${singlePingdom?.type?.http?.url ?? ""}` : null;
+          const prodFetch = siteUrl ? await getHeaders(siteUrl) : null;
+          const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : false;
+          const hasCookiebot = siteUrl ? await getCookiebot(siteUrl) : false;
+          const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : false;
+          const hasCisionScript = siteUrl ? await getCisionScript(siteUrl) : false;
+          const siteIntgrationRepository= site?.integrations?.repository
 
-          const repoPath = site?.repository ? `repositories/${site.repository}.json` : null
+          const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null
           const singleRepo = repoPath ? await getSingleRepo(repoPath) : null
 
           let singleRepoWpVersionParsed = null
@@ -65,21 +65,21 @@ export const SitesBlock: React.FC = async () => {
           let isCwaas = null
           let hasSolr = false
 
-          if (site?.repository) {
-            const twoFaPath = `repositories/${site.repository}/node.json?path=wp-content/plugins/eklips-2fa`
+          if (siteIntgrationRepository) {
+            const twoFaPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/eklips-2fa`
             twoFaExists = await getSingleRepo(twoFaPath)
 
-            const hiddenLoginPath = `repositories/${site.repository}/node.json?path=wp-content/plugins/wps-hide-login`
+            const hiddenLoginPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/wps-hide-login`
             hiddenLoginExists = await getSingleRepo(hiddenLoginPath)
 
-            const cwaasPath = `repositories/${site.repository}/node.json?path=wp-content/themes/cwaas`
+            const cwaasPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas`
             isCwaas = await getSingleRepo(cwaasPath) ? 'CWAAS' : null
 
-            const loadPhpPath = `repositories/${site.repository}/node.json?path=wp-content/themes/cwaas/framework/load.php&contents=true`
+            const loadPhpPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas/framework/load.php&contents=true`
             const loadPhp = await getSingleRepo(loadPhpPath)
             if (loadPhp && loadPhp?.contents.includes('box-solr/solr.php')) hasSolr = true
 
-            const versionPath = `repositories/${site.repository}/node.json?path=wp-includes/version.php&contents=true`
+            const versionPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-includes/version.php&contents=true`
             const singleRepoWpVersion = await getSingleRepo(versionPath)
 
             singleRepoWpVersionParsed = singleRepoWpVersion?.contents?.match(/\$wp_version\s*=\s*'([^']+)'/)?.[1] ?? null
@@ -100,10 +100,10 @@ export const SitesBlock: React.FC = async () => {
             bsScan: site?.bsScan,
             phpVersion: site?.phpVersion,
             "site/service": site["site/service"] ?? '',
-            hostname: singlePingdom?.hostname + singlePingdom?.type?.http?.url,
-            wpVersion: singleRepoWpVersionParsed || `Non WP (${prodFetch.get("x-powered-by") ?? ''})`,
-            productionDate: singlePingdom?.created || '',
-            cloudflare: prodFetch.get('server')?.toLowerCase(),
+            hostname: singlePingdom?.hostname ? singlePingdom?.hostname + singlePingdom?.type?.http?.url : '',
+            wpVersion: singleRepoWpVersionParsed || (prodFetch ? `Non WP (${prodFetch.get("x-powered-by") ?? ''})` : 'Unknown'),
+            productionDate: singlePingdom?.hostname ? singlePingdom?.created : '',
+            cloudflare: prodFetch ? prodFetch?.get('server')?.toLowerCase() : '',
             cloudflarePlan: singleClodflare?.result?.plan?.name,
             cloudflareRequests: singleClodflareAnalytics?.requests ? singleClodflareAnalytics?.requests : null,
             cloudflareBandwidth: singleClodflareAnalytics?.bandwidth ? Number(singleClodflareAnalytics?.bandwidth.toFixed(2)) : null,
@@ -118,7 +118,7 @@ export const SitesBlock: React.FC = async () => {
             newsFeeds: site?.newsFeeds,
             dataBlocks: site?.dataBlocks,
             speedTestScan: site?.speedTestScan,
-            lastResponsetime: Number(singlePingdom?.lastresponsetime),
+            lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : '',
             hasSolr,
             hasGoogleAnalytics,
             hasCookiebot,
