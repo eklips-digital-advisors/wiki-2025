@@ -4,7 +4,6 @@ import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
-import { revalidateDelete, revalidateSite } from './hooks/revalidateSite'
 
 export const Sites: CollectionConfig<'sites'> = {
   slug: 'sites',
@@ -222,14 +221,6 @@ export const Sites: CollectionConfig<'sites'> = {
     ...slugField(),
   ],
   hooks: {
-    afterChange: [revalidateSite],
     beforeChange: [populatePublishedAt],
-    afterDelete: [revalidateDelete],
-  },
-  versions: {
-    drafts: {
-      schedulePublish: false,
-    },
-    maxPerDoc: 50,
   },
 }

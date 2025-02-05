@@ -24,7 +24,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ sidebarData }) => {
   }
 
   return (
-    <div className="mt-10">
+    <div className="px-4 lg:px-0 mt-32 lg:mt-10">
       {sidebarData.map((single, i) => {
         return (
           <div key={i} className="relative mt-6">

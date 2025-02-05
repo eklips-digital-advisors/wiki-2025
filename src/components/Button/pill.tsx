@@ -9,24 +9,22 @@ interface PillProps {
 }
 
 const getClassNames = (type?: string) => {
-  return 'border-zinc-300'
-
   if (type === 'server') {
-    return 'border-blue-300'
+    return 'border-b-blue-300'
   }
   if (type === 'date') {
-    return 'border-yellow-300'
+    return 'border-b-yellow-300'
   }
   if (type === 'feature') {
-    return 'border-rose-300'
+    return 'border-b-rose-300'
   }
   if (type === 'test') {
-    return 'border-green-300'
+    return 'border-b-green-300'
   }
   if (type === 'external') {
-    return 'border-yellow-900'
+    return 'border-b-yellow-900'
   } else {
-    return 'border-zinc-300'
+    return 'border-b-zinc-300'
   }
 }
 
@@ -36,7 +34,7 @@ const Pill: React.FC<PillProps> = ({ active = false, type, children, onClick }) 
       role={'button'}
       aria-label={'Toggle columns'}
       onClick={onClick}
-      className={`border rounded-sm text-sm flex gap-1 items-center px-1 py-[2px] cursor-pointer hover:bg-zinc-200/60 ${active ? 'bg-zinc-200/80' : 'bg-white'} ${getClassNames(type)}`}
+      className={`border border-l-zinc-300 border-r-zinc-300 border-t-zinc-300 rounded-sm text-sm flex gap-1 items-center px-1 py-[2px] cursor-pointer hover:bg-zinc-200/60 ${active ? 'bg-zinc-200/80' : 'bg-white'} ${getClassNames(type)}`}
     >
       {active ? <X className="w-4" /> : <Plus className="w-4" />}
       {children}

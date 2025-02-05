@@ -53,3 +53,10 @@
     @apply min-h-[100vh] flex flex-col;
   }
 }
+
+body:has(.admin-bar:not(.hidden)) {
+  .header-top,
+  header.contents {
+    top: 36px;
+  }
+}

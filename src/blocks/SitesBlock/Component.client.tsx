@@ -17,8 +17,22 @@ import './index.scss'
 import Pill from '@/components/Button/pill'
 import { columns } from '@/blocks/SitesBlock/Columns'
 import { getPhpBackground } from '@/utilities/GetDynamicBackgrounds/getPhpBackground'
+import { Button } from '@/components/ui/button'
+import { useRouter } from "next/navigation";
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
+  const router = useRouter();
+  const [updateText, setUpdateText] = useState('')
+  const revalidate = async () => {
+    setUpdateText('. Updating, please wait...')
+    await fetch("/next/revalidate", { method: "POST" });
+    router.refresh()
+
+    setTimeout(() => {
+      setUpdateText('');
+    }, 1000);
+  };
+
   const { latestWp, wpVersionLatestPercentage, phpApiData } = extraInfo
 
   const [selectedColumns, setSelectedColumns] = useState(
@@ -73,7 +87,13 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
 
   return (
     <div>
-      <div className="relative mb-4 flex gap-2 flex-wrap">
+      <div className="mb-10 text-sm flex flex-wrap items-center gap-4">
+        <div className="">Latest WP <span className="bg-emerald-100 px-1 py-[2px] leading-[1]">{latestWp}</span> (<Link
+          href="https://api.wordpress.org/core/version-check/1.7/" target="_blank">source</Link>)
+        </div>
+        <Button variant="link" size="sm" className="cursor-pointer underline" onClick={revalidate}>{`Pull new data${updateText}`}</Button>
+      </div>
+      <div className="relative mb-4 flex gap-1 flex-wrap">
         {columns
           .filter((col) => col.key !== 'index')
           .map((col) => (
@@ -220,27 +240,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     {site.cloudflarePlan}
                   </td>
                 )}
-                {selectedColumns.includes('cloudflareStats') && (
-                  <td
-                    className={`whitespace-nowrap px-3 py-3 text-sm ${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}
-                  >
-                    {site?.cloudflareBandwidth &&
-                      site?.cloudflareRequests &&
-                      `${site?.cloudflareBandwidth}MB/${site?.cloudflareRequests}`}
-                  </td>
-                )}
                 {selectedColumns.includes('ssl') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">{site?.ssl}</td>
-                )}
-                {selectedColumns.includes('twoFa') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.twoFa && <Check className="w-4" />}
-                  </td>
-                )}
-                {selectedColumns.includes('hiddenLogin') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.hiddenLogin && <Check className="w-4" />}
-                  </td>
                 )}
                 {selectedColumns.includes('ipRestriction') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
@@ -250,17 +251,6 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 {selectedColumns.includes('csp') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.csp && <Check className="w-4" />}
-                  </td>
-                )}
-                {selectedColumns.includes('wcag') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
-                    {site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}
-                    {site?.wcagLevel}
-                  </td>
-                )}
-                {selectedColumns.includes('bsScan') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.bsScan && new Date(site?.bsScan).toISOString().split('T')[0]}
                   </td>
                 )}
                 {selectedColumns.includes('phpVersion') && (
@@ -275,6 +265,21 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 {selectedColumns.includes('framework') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     {site?.framework}
+                  </td>
+                )}
+                {selectedColumns.includes('twoFa') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                    {site?.twoFa && <Check className="w-4" />}
+                  </td>
+                )}
+                {selectedColumns.includes('hiddenLogin') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                    {site?.hiddenLogin && <Check className="w-4" />}
+                  </td>
+                )}
+                {selectedColumns.includes('hasSolr') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    {site?.hasSolr && <Check className="w-4" />}
                   </td>
                 )}
                 {selectedColumns.includes('pressReleases') && (
@@ -311,14 +316,20 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     {site?.hasCookiebot && <Check className="w-4" />}
                   </td>
                 )}
+                {selectedColumns.includes('wcag') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
+                    {site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}
+                    {site?.wcagLevel}
+                  </td>
+                )}
+                {selectedColumns.includes('bsScan') && (
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+                    {site?.bsScan && new Date(site?.bsScan).toISOString().split('T')[0]}
+                  </td>
+                )}
                 {selectedColumns.includes('speedTestScan') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     {site?.speedTestScan}
-                  </td>
-                )}
-                {selectedColumns.includes('hasSolr') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.hasSolr && <Check className="w-4" />}
                   </td>
                 )}
                 {selectedColumns.includes('lastResponsetime') && (
@@ -326,6 +337,15 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     className={`whitespace-nowrap px-3 py-3 text-sm ${site?.lastResponsetime && site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'}`}
                   >
                     {site?.lastResponsetime}
+                  </td>
+                )}
+                {selectedColumns.includes('cloudflareStats') && (
+                  <td
+                    className={`whitespace-nowrap px-3 py-3 text-sm ${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}
+                  >
+                    {site?.cloudflareBandwidth &&
+                      site?.cloudflareRequests &&
+                      `${site?.cloudflareBandwidth}MB/${site?.cloudflareRequests}`}
                   </td>
                 )}
               </tr>
