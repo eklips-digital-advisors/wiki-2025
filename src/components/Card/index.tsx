@@ -6,9 +6,7 @@ import React, { Fragment } from 'react'
 
 import type { Post } from '@/payload-types'
 
-export type CardPostData = Pick<Post, 'slug' | 'title' | 'content'> & {
-  categories?: { relationTo?: string | null; id?: string | null; title?: string | null }[] | null;
-};
+export type CardPostData = Pick<Post, 'slug' | 'categories' | 'title' | 'content'>
 
 export const Card: React.FC<{
   alignItems?: 'center'
