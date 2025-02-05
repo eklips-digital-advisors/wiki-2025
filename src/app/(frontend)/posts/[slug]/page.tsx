@@ -56,9 +56,9 @@ export default async function Post({ params: paramsPromise }: Args) {
           {post?.sections &&
             post.sections.length > 0 &&
             post.sections.map((section, index) => (
-              <div key={index} id={'section-' + index} className="post-section mb-14">
-                <div className="prose mb-2">
-                  <b className="text-xl">#{section?.sectionName}</b>
+              <div key={index} id={'section-' + index} className="post-section mb-16">
+                <div className="prose mb-6 border-b border-b-zinc-200 pb-4 text-xl">
+                  <span className="text-emerald-500">#</span> {section?.sectionName}
                 </div>
                 <RichText
                   className="max-w-[68rem] mx-auto"
