@@ -51,12 +51,12 @@ export default async function Post({ params: paramsPromise }: Args) {
             <h1 className="">{post.title}</h1>
           </div>
           {post.content && (
-            <RichText className="max-w-[68rem] mx-auto" data={post.content} enableGutter={false} />
+            <RichText className="max-w-[68rem] mx-auto mb-14" data={post.content} enableGutter={false} />
           )}
           {post?.sections &&
             post.sections.length > 0 &&
             post.sections.map((section, index) => (
-              <div key={index} id={section?.sectionName.toLowerCase() + '-' + index} className="post-section mb-14">
+              <div key={index} id={'section-' + index} className="post-section mb-14">
                 <div className="prose mb-2">
                   <b className="text-xl">#{section?.sectionName}</b>
                 </div>
