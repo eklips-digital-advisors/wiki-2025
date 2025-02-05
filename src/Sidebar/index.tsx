@@ -22,22 +22,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ posts }) => {
   const groupedByCategories = posts.reduce((acc: any, post: any) => {
       const category = post?.categories;
 
-      const categoryKey = category.id;
+    if (!category?.id) return acc;
+
+      const categoryKey = category?.id;
 
       if (!acc[categoryKey]) {
           acc[categoryKey] = {
-              id: category.id,
-              title: category.title,
-              slug: category.slug,
+              id: category?.id,
+              title: category?.title,
+              slug: category?.slug,
               posts: []
           };
       }
 
       acc[categoryKey].posts.push({
-          id: post.id,
-          title: post.title,
+          id: post?.id,
+          title: post?.title,
           slug: `posts/${post.slug}`,
-          sections: post.sections,
+          sections: post?.sections,
       });
 
       return acc;
