@@ -218,7 +218,7 @@ export interface Post {
     };
     [k: string]: unknown;
   } | null;
-  categories: string | Category;
+  categories?: (string | null) | Category;
   publishedAt?: string | null;
   authors?: (string | User)[] | null;
   populatedAuthors?:
