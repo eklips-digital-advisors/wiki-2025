@@ -39,6 +39,7 @@ export interface SiteItem {
   hasSolr: boolean
   hasGoogleAnalytics: boolean
   hasCookiebot: boolean
+  pingdomLink: string | null
 }
 
 interface ExtraInfo {

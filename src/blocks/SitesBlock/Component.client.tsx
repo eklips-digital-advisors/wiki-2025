@@ -5,8 +5,8 @@ import {
   ArrowUpDown,
   Check,
   ChevronDown,
-  ChevronUp,
-  ExternalLink
+  ChevronUp, Clock,
+  ExternalLink, ExternalLinkIcon,
 } from 'lucide-react'
 import Link from 'next/link'
 import Th from '@/components/Table/Th'
@@ -334,9 +334,9 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('lastResponsetime') && (
                   <td
-                    className={`whitespace-nowrap px-3 py-3 text-sm ${site?.lastResponsetime && site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'}`}
+                    className={`whitespace-nowrap flex items-center gap-4 px-3 py-3 text-sm ${site?.lastResponsetime && site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'}`}
                   >
-                    {site?.lastResponsetime}
+                    <span className="flex flex-col items-center"><Clock className="w-4 h-4"/>{site?.lastResponsetime}</span>{site?.pingdomLink && <Link target="_blank" href={site?.pingdomLink}><ExternalLinkIcon className="w-5 h-5"/></Link>}
                   </td>
                 )}
                 {selectedColumns.includes('cloudflareStats') && (

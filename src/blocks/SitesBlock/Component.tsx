@@ -119,6 +119,7 @@ export const SitesBlock: React.FC = async () => {
             dataBlocks: site?.dataBlocks,
             speedTestScan: site?.speedTestScan,
             lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : '',
+            pingdomLink: singlePingdom?.hostname ? `https://my.pingdom.com/app/reports/uptime#check=${singlePingdom.id}` : null,
             hasSolr,
             hasGoogleAnalytics,
             hasCookiebot,
