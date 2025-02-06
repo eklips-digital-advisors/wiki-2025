@@ -7,27 +7,11 @@ export const Code: Block = {
     {
       name: 'language',
       type: 'select',
-      defaultValue: 'typescript',
+      defaultValue: 'javascript',
       options: [
-        {
-          label: 'Typescript',
-          value: 'typescript',
-        },
         {
           label: 'Javascript',
           value: 'javascript',
-        },
-        {
-          label: 'CSS',
-          value: 'css',
-        },
-        {
-          label: 'Docker',
-          value: 'docker',
-        },
-        {
-          label: 'PHP',
-          value: 'php',
         },
       ],
     },

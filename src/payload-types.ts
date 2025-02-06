@@ -1045,7 +1045,7 @@ export interface TaskSchedulePublish {
  * via the `definition` "CodeBlock".
  */
 export interface CodeBlock {
-  language?: ('typescript' | 'javascript' | 'css' | 'docker' | 'php') | null;
+  language?: 'javascript' | null;
   code: string;
   id?: string | null;
   blockName?: string | null;
