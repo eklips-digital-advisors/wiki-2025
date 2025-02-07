@@ -5,8 +5,10 @@ import {
   ArrowUpDown,
   Check,
   ChevronDown,
-  ChevronUp, Clock,
-  ExternalLink, ExternalLinkIcon,
+  ChevronUp,
+  Clock,
+  ExternalLink,
+  ExternalLinkIcon,
 } from 'lucide-react'
 import Link from 'next/link'
 import Th from '@/components/Table/Th'
@@ -18,20 +20,21 @@ import Pill from '@/components/Button/pill'
 import { columns } from '@/blocks/SitesBlock/Columns'
 import { getPhpBackground } from '@/utilities/GetDynamicBackgrounds/getPhpBackground'
 import { Button } from '@/components/ui/button'
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation'
+import { getBsScanBackground } from '@/utilities/GetDynamicBackgrounds/getBsScanBackground'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
-  const router = useRouter();
+  const router = useRouter()
   const [updateText, setUpdateText] = useState('')
   const revalidate = async () => {
     setUpdateText('. Updating, please wait...')
-    await fetch("/next/revalidate", { method: "POST" });
+    await fetch('/next/revalidate', { method: 'POST' })
     router.refresh()
 
     setTimeout(() => {
-      setUpdateText('');
-    }, 1000);
-  };
+      setUpdateText('')
+    }, 1000)
+  }
 
   const { latestWp, wpVersionLatestPercentage, phpApiData } = extraInfo
 
@@ -88,10 +91,19 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
   return (
     <div>
       <div className="mb-10 text-sm flex flex-wrap items-center gap-4">
-        <div className="">Latest WP <span className="bg-emerald-100 px-1 py-[2px] leading-[1]">{latestWp}</span> (<Link
-          href="https://api.wordpress.org/core/version-check/1.7/" target="_blank">source</Link>)
+        <div className="">
+          Latest WP <span className="bg-emerald-100 px-1 py-[2px] leading-[1]">{latestWp}</span> (
+          <Link href="https://api.wordpress.org/core/version-check/1.7/" target="_blank">
+            source
+          </Link>
+          )
         </div>
-        <Button variant="link" size="sm" className="cursor-pointer underline" onClick={revalidate}>{`Pull new data${updateText}`}</Button>
+        <Button
+          variant="link"
+          size="sm"
+          className="cursor-pointer underline"
+          onClick={revalidate}
+        >{`Pull new data${updateText}`}</Button>
       </div>
       <div className="relative mb-4 flex gap-1 flex-wrap">
         {columns
@@ -197,7 +209,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('productionDate') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.productionDate && new Date(site?.productionDate * 1000).toLocaleDateString()}
+                    {site?.productionDate &&
+                      new Date(site?.productionDate * 1000).toLocaleDateString()}
                   </td>
                 )}
                 {selectedColumns.includes('siteService') && (
@@ -324,7 +337,13 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('bsScan') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.bsScan && new Date(site?.bsScan).toISOString().split('T')[0]}
+                    {site?.bsScan && (
+                      <span
+                        className={`${getBsScanBackground(site?.bsScan)} px-1 py-[0.5] text-xs inline-block`}
+                      >
+                        {new Date(site?.bsScan).toISOString().split('T')[0]}
+                      </span>
+                    )}
                   </td>
                 )}
                 {selectedColumns.includes('speedTestScan') && (
@@ -336,7 +355,17 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   <td
                     className={`whitespace-nowrap flex items-center gap-4 px-3 py-3 text-sm ${site?.lastResponsetime && site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'}`}
                   >
-                    <span className="flex flex-col items-center"><Clock className="w-4 h-4"/>{site?.lastResponsetime}</span>{site?.pingdomLink && <Link target="_blank" href={site?.pingdomLink}><ExternalLinkIcon className="w-5 h-5"/></Link>}
+                    {site?.lastResponsetime && (
+                      <span className="flex flex-col items-center">
+                        <Clock className="w-4 h-4" />
+                        {site?.lastResponsetime}
+                      </span>
+                    )}
+                    {site?.pingdomLink && (
+                      <Link target="_blank" href={site?.pingdomLink}>
+                        <ExternalLinkIcon className="w-5 h-5" />
+                      </Link>
+                    )}
                   </td>
                 )}
                 {selectedColumns.includes('cloudflareStats') && (
@@ -345,7 +374,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   >
                     {site?.cloudflareBandwidth &&
                       site?.cloudflareRequests &&
-                      `${site?.cloudflareBandwidth}MB/${site?.cloudflareRequests}`}
+                      `${site?.cloudflareBandwidth}GB/${site?.cloudflareRequests}`}
                   </td>
                 )}
               </tr>

@@ -11,9 +11,12 @@ export async function getSingleCloudflareItemStats(id: string | number) {
       'Content-Type': 'application/json',
     };
 
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const formattedDate = yesterday.toISOString().split('T')[0];
+    const past24Hours = new Date();
+    const now = new Date();
+    past24Hours.setHours(past24Hours.getHours() - 24);
+
+    const formattedStartTime = past24Hours.toISOString();
+    const formattedEndTime = now.toISOString();
 
     // Define GraphQL Query
     const graphqlQuery = {
@@ -21,7 +24,7 @@ export async function getSingleCloudflareItemStats(id: string | number) {
         {
           viewer {
             zones(filter: {zoneTag: "${id}"}) {
-              httpRequests1dGroups(limit: 1, filter: { date_geq: "${formattedDate}" }) {
+              httpRequests1hGroups(limit: 100, filter: {datetime_geq: "${formattedStartTime}", datetime_lt: "${formattedEndTime}"}) {
                 sum {
                   requests
                   bytes
@@ -46,9 +49,12 @@ export async function getSingleCloudflareItemStats(id: string | number) {
       console.error(`Cloudflare GraphQL API Error: ${JSON.stringify(data, null, 2)}`);
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    
+    console.log('data', data.data.viewer.zones[0])
 
     // Extract analytics data
-    const result = data?.data?.viewer?.zones?.[0]?.httpRequests1dGroups?.[0]?.sum;
+    const result = data?.data?.viewer?.zones?.[0]?.httpRequests1hGroups?.[0]?.sum;
+    console.log('result', result)
 
     return {
       requests: result?.requests || 0,

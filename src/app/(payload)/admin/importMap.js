@@ -31,6 +31,7 @@ import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/RowLabel'
+import { default as default_cf95cccfe8c80dcd732ba77db2ae871a } from '@/components/Favicon'
 import { default as default_2b7e2e151f989fb419ce3009e56b903e } from '@/components/Logo'
 import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
 
@@ -68,6 +69,7 @@ export const importMap = {
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/Header/RowLabel#RowLabel": RowLabel_ec255a65fa6fa8d1faeb09cf35284224,
+  "@/components/Favicon#default": default_cf95cccfe8c80dcd732ba77db2ae871a,
   "@/components/Logo#default": default_2b7e2e151f989fb419ce3009e56b903e,
   "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6
 }

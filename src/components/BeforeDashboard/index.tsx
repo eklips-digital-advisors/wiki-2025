@@ -7,8 +7,8 @@ import { ExternalLinkIcon } from 'lucide-react'
 const BeforeDashboard: React.FC = () => {
   return (
     <>
-      <Link href="/" target="_blank">
-        <ExternalLinkIcon />
+      <Link href="/">
+        Visit site
       </Link>
     </>
   )

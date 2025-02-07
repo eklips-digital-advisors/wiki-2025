@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import { motion } from 'framer-motion'
 
-import type { Header, Post } from '@/payload-types'
+import type { Header, Post, User } from '@/payload-types'
 
 import { HeaderTop } from '@/Header/Nav'
 import Logo from '@/components/Logo'
@@ -12,9 +12,10 @@ import { Sidebar } from '@/Sidebar'
 interface HeaderClientProps {
   pages: Header,
   posts: Post[],
+  user: User | null
 }
 
-export const HeaderClient: React.FC<HeaderClientProps> = ({ pages, posts }) => {
+export const HeaderClient: React.FC<HeaderClientProps> = ({ pages, posts, user }) => {
   return (
     <motion.header
       layoutScroll
@@ -27,7 +28,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ pages, posts }) => {
           </Link>
         </div>
         <Sidebar posts={posts} />
-        <HeaderTop data={pages} />
+        <HeaderTop data={pages} user={user} />
       </div>
     </motion.header>
   )
