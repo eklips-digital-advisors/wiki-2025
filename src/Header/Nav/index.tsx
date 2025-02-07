@@ -2,10 +2,10 @@ import Link from 'next/link'
 import { SearchIcon } from 'lucide-react'
 import React from 'react'
 import { CMSLink } from '@/components/Link'
-import type { Header as HeaderType, User } from '@/payload-types'
+import type { Header as HeaderType } from '@/payload-types'
 import { Button } from '@/components/ui/button'
 
-export const HeaderTop: React.FC<{ data: HeaderType, user: User | null }> = ({ data, user }) => {
+export const HeaderTop: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
 
   return (
@@ -21,7 +21,7 @@ export const HeaderTop: React.FC<{ data: HeaderType, user: User | null }> = ({ d
             return <CMSLink key={i} {...link} appearance="link" />
           })}
         </nav>
-        {!user && <Button><Link href="/admin">Sign in</Link></Button>}
+        <Button><Link href="/admin">Sign in</Link></Button>
       </div>
     </div>
   )

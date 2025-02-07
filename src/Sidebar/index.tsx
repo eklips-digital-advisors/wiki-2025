@@ -15,7 +15,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ posts }) => {
 
   const getCurrentClass = (slug: string) => {
     return slug.split('/').pop() === pathname.split('/').pop()
-      ? 'border-emerald-500 underline'
+      ? 'border-emerald-500 font-medium'
       : 'border-zinc-900/10'
   }
 

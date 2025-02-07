@@ -49,12 +49,9 @@ export async function getSingleCloudflareItemStats(id: string | number) {
       console.error(`Cloudflare GraphQL API Error: ${JSON.stringify(data, null, 2)}`);
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    
-    console.log('data', data.data.viewer.zones[0])
 
     // Extract analytics data
     const result = data?.data?.viewer?.zones?.[0]?.httpRequests1hGroups?.[0]?.sum;
-    console.log('result', result)
 
     return {
       requests: result?.requests || 0,
