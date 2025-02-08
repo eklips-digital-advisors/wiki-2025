@@ -105,7 +105,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
           onClick={revalidate}
         >{`Pull new data${updateText}`}</Button>
       </div>
-      <div className="relative mb-4 flex gap-1 flex-wrap">
+      <div className="relative mb-8 flex gap-1 flex-wrap">
         {columns
           .filter((col) => col.key !== 'index')
           .map((col) => (
@@ -121,7 +121,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto pb-24">
         <table className="min-w-full divide-y divide-zinc-300">
           <thead>
             <tr>
@@ -375,7 +375,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     <span className="flex gap-2 items-center">
                       {site?.cloudflareBandwidth &&
                         site?.cloudflareRequests &&
-                        `${site?.cloudflareBandwidth}GB/${site?.cloudflareRequests}`}
+                        `${site?.cloudflareBandwidth} / ${site?.cloudflareRequests}`}
 
                       {site.singleClodflareAnalyticsMultipleDays ? (
                         <Chart siteChartData={site.singleClodflareAnalyticsMultipleDays} />

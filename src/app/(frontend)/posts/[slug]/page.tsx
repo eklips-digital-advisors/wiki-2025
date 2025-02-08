@@ -7,7 +7,6 @@ import RichText from '@/components/RichText'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { notFound } from 'next/navigation'
-import { UserCircle2Icon } from 'lucide-react'
 import { formatDateTime } from '@/utilities/formatDateTime'
 
 export async function generateStaticParams() {

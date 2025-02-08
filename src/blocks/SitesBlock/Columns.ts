@@ -31,7 +31,7 @@ export const columns = [
   { key: 'lastResponsetime', label: 'Responce time', defaultVisible: false, sortable: true, auto: true, type: 'test' },
   {
     key: 'cloudflareStats',
-    label: 'Cloudflare past 24hrs bandwidth/requests',
+    label: 'Cloudflare 24hrs bandwidth (GB) / requests',
     defaultVisible: false,
     sortable: false,
     auto: true,

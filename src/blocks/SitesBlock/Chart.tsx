@@ -34,7 +34,7 @@ export const Chart = ({ siteChartData }: { siteChartData: SiteChartData }) => {
     <span className="group relative">
       <LineChart className="w-5 h-5 text-gray-500 cursor-pointer hover:text-gray-700" />
 
-      <span className="absolute left-0 bottom-full mt-2 w-80 h-52 transform -translate-x-1/2 bg-white border border-gray-300 shadow-lg rounded-lg p-2 z-50 opacity-0 invisible group-hover:visible group-hover:opacity-100 group-hover:scale-100 transition-opacity transition-transform duration-300">
+      <span className="absolute right-[20px] top-1/2 mt-2 w-80 h-52 transform -translate-y-1/2 bg-white border border-gray-300 shadow-lg rounded-lg p-2 z-50 opacity-0 invisible group-hover:visible group-hover:opacity-100 group-hover:scale-100 transition-opacity transition-transform duration-300">
         <Line
           data={{
             labels: siteChartData?.groupedData.map((entry) => entry.dateTime),
@@ -47,7 +47,7 @@ export const Chart = ({ siteChartData }: { siteChartData: SiteChartData }) => {
                 yAxisID: 'y',
               },
               {
-                label: `Total bandwidth: ${siteChartData?.totalBandwidth.toFixed(2)}(GB)`,
+                label: `Total bandwidth: ${siteChartData?.totalBandwidth.toFixed(2)} (GB)`,
                 data: siteChartData?.groupedData.map((entry) => entry.bandwidth),
                 borderColor: 'rgba(255, 99, 132, 1)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
