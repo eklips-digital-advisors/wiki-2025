@@ -7,7 +7,7 @@ import React, { Fragment } from 'react'
 import type { Post } from '@/payload-types'
 import { BookText } from 'lucide-react'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'title' | 'content' | 'authors'>
+export type CardPostData = Pick<Post, 'slug' | 'categories' | 'title' | 'content' | 'authors' | '_status'>
 
 export const Card: React.FC<{
   alignItems?: 'center'
