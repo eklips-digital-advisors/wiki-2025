@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, PayloadRequest } from 'payload'
 
 import {
   BlocksFeature,
@@ -166,6 +166,13 @@ export const Posts: CollectionConfig<'posts'> = {
       },
       hasMany: true,
       relationTo: 'users',
+      defaultValue: async ({user}: PayloadRequest) => {
+        if (user) {
+          return [user?.id]
+        }
+
+        return false
+      }
     },
     // This field is only used to populate the user data via the `populateAuthors` hook
     // This is because the `user` collection has access control locked to protect user privacy

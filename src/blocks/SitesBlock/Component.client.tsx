@@ -22,6 +22,8 @@ import { getPhpBackground } from '@/utilities/GetDynamicBackgrounds/getPhpBackgr
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { getBsScanBackground } from '@/utilities/GetDynamicBackgrounds/getBsScanBackground'
+import Chart from '@/blocks/SitesBlock/Chart'
+import { formatDateTime } from '@/utilities/formatDateTime'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -85,8 +87,6 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
     return 0
   })
-
-  // console.log('sites', sites)
 
   return (
     <div>
@@ -199,18 +199,18 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('createdAt') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.createdAt && site?.createdAt.split(' ')[0]}
+                    {site?.createdAt && formatDateTime(site?.createdAt)}
                   </td>
                 )}
                 {selectedColumns.includes('lastCommitAt') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.lastCommitAt && site?.lastCommitAt.split(' ')[0]}
+                    {site?.lastCommitAt && formatDateTime(site?.lastCommitAt)}
                   </td>
                 )}
                 {selectedColumns.includes('productionDate') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.productionDate &&
-                      new Date(site?.productionDate * 1000).toLocaleDateString()}
+                      new Date(site?.productionDate * 1000).toLocaleDateString("et-ET", {month: '2-digit', year: 'numeric', day: '2-digit'})}
                   </td>
                 )}
                 {selectedColumns.includes('siteService') && (
@@ -372,11 +372,20 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   <td
                     className={`whitespace-nowrap px-3 py-3 text-sm ${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}
                   >
-                    {site?.cloudflareBandwidth &&
-                      site?.cloudflareRequests &&
-                      `${site?.cloudflareBandwidth}GB/${site?.cloudflareRequests}`}
+                    <span className="flex gap-2 items-center">
+                      {site?.cloudflareBandwidth &&
+                        site?.cloudflareRequests &&
+                        `${site?.cloudflareBandwidth}GB/${site?.cloudflareRequests}`}
+
+                      {site.singleClodflareAnalyticsMultipleDays ? (
+                        <Chart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                      ) : (
+                        <span className="text-zinc-500">No data</span>
+                      )}
+                    </span>
                   </td>
                 )}
+                {/*Display graphs here*/}
               </tr>
             ))}
           </tbody>

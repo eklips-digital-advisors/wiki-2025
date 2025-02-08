@@ -15,7 +15,7 @@ export const HeaderTop: React.FC<{ data: HeaderType }> = ({ data }) => {
         <span className="sr-only">Search</span>
         <SearchIcon className="w-5 text-zinc-400" />
       </Link>
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4 md:gap-8">
         <nav className="flex gap-3 items-center">
           {navItems.map(({ link }, i) => {
             return <CMSLink key={i} {...link} appearance="link" />

@@ -7,6 +7,8 @@ import RichText from '@/components/RichText'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { notFound } from 'next/navigation'
+import { UserCircle2Icon } from 'lucide-react'
+import { formatDateTime } from '@/utilities/formatDateTime'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -47,8 +49,14 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <div className="flex flex-col items-center gap-4">
         <div className="container max-w-[68rem] mx-auto">
-          <div className="prose mb-6">
-            <h1 className="">{post.title}</h1>
+          <div className="flex flex-col gap-1 mb-6">
+            <div className="prose mb-4">
+              <h1 className="">{post.title}</h1>
+            </div>
+            {post?.populatedAuthors && post?.populatedAuthors.length > 0 && post?.populatedAuthors.map(author => (
+              <div className="text-zinc-500 text-xs flex gap-1 items-center" key={author.id}>Author: {author?.name}</div>
+            )) }
+            {post?.publishedAt && <div className="text-zinc-500 text-xs">Published: {formatDateTime(post.publishedAt)}</div>}
           </div>
           {post.content && (
             <RichText className="max-w-[68rem] mx-auto mb-14" data={post.content} enableGutter={false} />

@@ -14,6 +14,9 @@ import { checkGoogleAnalytics } from '@/utilities/getGoogleAnalytics'
 import { getCookiebot } from '@/utilities/getCookiebot'
 import { getMfnScript } from '@/utilities/getMfnScript'
 import { getCisionScript } from '@/utilities/getCisionScript'
+import {
+  getSingleCloudflareItemStatsMultipleDays
+} from '@/utilities/GetCloudflareItems/getSingleCloudflareItemStatsMultipleDays'
 
 export const SitesBlock: React.FC = async () => {
   try {
@@ -45,7 +48,8 @@ export const SitesBlock: React.FC = async () => {
           const singleClodflare = siteIntegrationsCloudflare ? await getSingleCloudflareItem(siteIntegrationsCloudflare) : null
           const singleClodflareSsl = siteIntegrationsCloudflare ? await getSingleCloudflareItemSsl(siteIntegrationsCloudflare) : null
           const singleClodflareAnalytics = siteIntegrationsCloudflare ? await getSingleCloudflareItemStats(siteIntegrationsCloudflare) : null
-          
+          const singleClodflareAnalyticsMultipleDays = siteIntegrationsCloudflare ? await getSingleCloudflareItemStatsMultipleDays(siteIntegrationsCloudflare) : null
+
           const singlePingdom = site?.integrations?.pingdom ? await getSinglePingdom(site?.integrations?.pingdom) : null
           const prodHostname = singlePingdom?.hostname ?? ""
           const siteUrl = prodHostname ? `https://${prodHostname}${singlePingdom?.type?.http?.url ?? ""}` : null;
@@ -123,6 +127,7 @@ export const SitesBlock: React.FC = async () => {
             hasSolr,
             hasGoogleAnalytics,
             hasCookiebot,
+            singleClodflareAnalyticsMultipleDays
           }
         } catch (error) {
           console.error(`Error processing site ${site.id}:`, error)

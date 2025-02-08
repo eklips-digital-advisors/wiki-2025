@@ -40,6 +40,11 @@ export interface SiteItem {
   hasGoogleAnalytics: boolean
   hasCookiebot: boolean
   pingdomLink: string | null
+  singleClodflareAnalyticsMultipleDays: {
+    groupedData: {date: string, requests: string, bandwidth: string, dateTime: string}[]
+    totalBandwidth: number
+    totalRequests: number
+  }
 }
 
 interface ExtraInfo {

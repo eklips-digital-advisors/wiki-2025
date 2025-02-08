@@ -5,8 +5,9 @@ import Link from 'next/link'
 import React, { Fragment } from 'react'
 
 import type { Post } from '@/payload-types'
+import { BookText } from 'lucide-react'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'title' | 'content'>
+export type CardPostData = Pick<Post, 'slug' | 'categories' | 'title' | 'content' | 'authors'>
 
 export const Card: React.FC<{
   alignItems?: 'center'
@@ -20,8 +21,8 @@ export const Card: React.FC<{
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
   const { slug, categories, title } = doc || {}
+  const category = Array.isArray(categories) ? categories[0] : null
 
-  const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
   const href = `/${relationTo}/${slug}`
 
@@ -33,35 +34,12 @@ export const Card: React.FC<{
       )}
       ref={card.ref}
     >
-      <div className="">
-        {showCategories && hasCategories && (
-          <div className="uppercase text-sm mb-4">
-            {showCategories && hasCategories && (
-              <div>
-                {categories?.map((category, index) => {
-                  if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
-
-                    const categoryTitle = titleFromCategory || 'Untitled category'
-
-                    const isLast = index === categories.length - 1
-
-                    return (
-                      <Fragment key={index}>
-                        {categoryTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
-                    )
-                  }
-
-                  return null
-                })}
-              </div>
-            )}
-          </div>
-        )}
+      <div className="rounded-2xl flex flex-col justify-end items-start px-4 py-4 min-h-[200px] border border-zinc-200 bg-zinc-50/20 hover:border-zinc-300">
         {titleToUse && (
           <>
+            <span className="rounded-full border border-zinc-200 p-1 bg-zinc-50/50 inline-block mb-auto">
+              <BookText className="w-4 h-4 stroke-zinc-500 stroke-1" />
+            </span>
             <div className="prose">
               <h3>
                 <Link className="not-prose" href={href} ref={link.ref}>
@@ -69,6 +47,13 @@ export const Card: React.FC<{
                 </Link>
               </h3>
             </div>
+            {showCategories && categories && (
+              <div className="text-xs text-zinc-400 mb-4">
+                {showCategories && category && (
+                  <div>{category?.title}</div>
+                )}
+              </div>
+            )}
             <Link
               className="mt-4 inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition text-emerald-500 hover:text-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-500"
               href={href} ref={link.ref}>
