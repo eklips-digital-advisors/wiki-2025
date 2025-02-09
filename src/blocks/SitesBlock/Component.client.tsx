@@ -24,6 +24,7 @@ import { useRouter } from 'next/navigation'
 import { getBsScanBackground } from '@/utilities/GetDynamicBackgrounds/getBsScanBackground'
 import Chart from '@/blocks/SitesBlock/Chart'
 import { formatDateTime } from '@/utilities/formatDateTime'
+import PathTable from '@/blocks/SitesBlock/PathTable'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -378,7 +379,10 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                         `${site?.cloudflareBandwidth} / ${site?.cloudflareRequests}`}
 
                       {site.singleClodflareAnalyticsMultipleDays ? (
-                        <Chart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                        <>
+                          <Chart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                          <PathTable siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                        </>
                       ) : (
                         <span className="text-zinc-500">No data</span>
                       )}

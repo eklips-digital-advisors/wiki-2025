@@ -28,6 +28,7 @@ ChartJS.register(
 type SiteChartData = SiteItem['singleClodflareAnalyticsMultipleDays']
 
 export const Chart = ({ siteChartData }: { siteChartData: SiteChartData }) => {
+  console.log('siteChartData', siteChartData)
   return (
     <span className="group relative">
       <LineChart className="w-5 h-5 text-gray-500 cursor-pointer hover:text-gray-700" />
@@ -35,7 +36,7 @@ export const Chart = ({ siteChartData }: { siteChartData: SiteChartData }) => {
       <span className="absolute right-[20px] top-1/2 mt-2 w-80 h-52 transform -translate-y-1/2 bg-white border border-gray-300 shadow-lg rounded-lg p-2 z-50 opacity-0 invisible group-hover:visible group-hover:opacity-100 group-hover:scale-100 transition-opacity transition-transform duration-300">
         <Line
           data={{
-            labels: siteChartData?.groupedData.map((entry) => entry.dateTime),
+            labels: siteChartData?.groupedData.map((entry) => new Date(entry.dateTime).toLocaleString()),
             datasets: [
               {
                 label: `Total requests: ${siteChartData?.totalRequests}`,

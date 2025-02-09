@@ -44,6 +44,7 @@ export interface SiteItem {
     groupedData: {date: string, requests: string, bandwidth: string, dateTime: string}[]
     totalBandwidth: number
     totalRequests: number
+    pathData: {sum: {edgeResponseBytes: number}, dimensions: {clientRequestPath: string}}[]
   }
 }
 

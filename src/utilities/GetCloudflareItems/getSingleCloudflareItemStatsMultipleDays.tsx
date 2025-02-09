@@ -38,6 +38,18 @@ export async function getSingleCloudflareItemStatsMultipleDays(id: string | numb
                   bytes
                 }
               }
+              httpRequestsAdaptiveGroups(
+                  limit: 5
+                  filter: { datetime_geq: "${formattedStartDate}", datetime_lt: "${formattedEndDate}" }
+                  orderBy: [sum_edgeResponseBytes_DESC]
+              ) {
+                  dimensions {
+                      clientRequestPath
+                  }
+                  sum {
+                      edgeResponseBytes
+                  }
+              }
             }
           }
         }
@@ -60,6 +72,7 @@ export async function getSingleCloudflareItemStatsMultipleDays(id: string | numb
 
     // Extract analytics data
     const results = data?.data?.viewer?.zones?.[0]?.httpRequests1hGroups || []
+    const pathData = data?.data?.viewer?.zones?.[0]?.httpRequestsAdaptiveGroups ||[]
 
     // Initialize total requests and bandwidth
     let totalRequests = 0
@@ -91,6 +104,7 @@ export async function getSingleCloudflareItemStatsMultipleDays(id: string | numb
       groupedData,
       totalRequests,
       totalBandwidth,
+      pathData
     }
   } catch (error) {
     console.error(`Error fetching Cloudflare GraphQL stats for zone ${id}:`, error)
