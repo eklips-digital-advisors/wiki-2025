@@ -51,6 +51,7 @@ export const SitesBlock: React.FC = async () => {
           const singleClodflareSsl = siteIntegrationsCloudflare ? await getSingleCloudflareItemSsl(siteIntegrationsCloudflare) : null
           const singleClodflareAnalytics = siteIntegrationsCloudflare ? await getSingleCloudflareItemStats(siteIntegrationsCloudflare) : null
           const singleClodflareAnalyticsMultipleDays = siteIntegrationsCloudflare ? await getSingleCloudflareItemStatsMultipleDays(siteIntegrationsCloudflare) : null
+          const singleClodflareUrl = singleClodflare?.result?.name && singleClodflare?.result?.owner?.id ? `https://dash.cloudflare.com/${singleClodflare?.result?.owner?.id}/${singleClodflare?.result?.name}` : null
 
           const singlePingdom = site?.integrations?.pingdom ? await getSinglePingdom(site?.integrations?.pingdom) : null
           const prodHostname = singlePingdom?.hostname ?? ""
@@ -130,6 +131,7 @@ export const SitesBlock: React.FC = async () => {
             hasGoogleAnalytics,
             hasCookiebot,
             singleClodflareAnalyticsMultipleDays,
+            singleClodflareUrl
           }
         } catch (error) {
           console.error(`Error processing site ${site.id}:`, error)

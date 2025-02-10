@@ -379,12 +379,14 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('cloudflareBandwidth') && (
                   <td
-                    className={`whitespace-nowrap px-3 py-3 text-sm ${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}
+                    className={`whitespace-nowrap px-3 py-3 text-sm`}
                   >
                     <span className="flex gap-2 items-center">
-                      {site?.cloudflareBandwidth &&
-                        site?.cloudflareRequests &&
-                        `${site?.cloudflareBandwidth} / ${site?.cloudflareRequests}`}
+                      <span className={`${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}>
+                        {site?.cloudflareBandwidth &&
+                          site?.cloudflareRequests &&
+                          `${site?.cloudflareBandwidth} / ${site?.cloudflareRequests}`}
+                      </span>
 
                       {site.singleClodflareAnalyticsMultipleDays ? (
                         <>
@@ -394,6 +396,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                       ) : (
                         <span className="text-zinc-500">No data</span>
                       )}
+                      {site?.singleClodflareUrl && <Link target="_blank" href={site?.singleClodflareUrl}><ExternalLink className="w-5 h-5 text-gray-500 hover:text-gray-700" /></Link>}
                     </span>
                   </td>
                 )}
