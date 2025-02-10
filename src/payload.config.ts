@@ -26,6 +26,7 @@ export default buildConfig({
     },
     components: {
       actions: ['@/components/BeforeDashboard'],
+      afterLogin: ['@/components/BeforeDashboard'],
       graphics: {
         Logo: '@/components/Logo',
         Icon: '@/components/Favicon'
