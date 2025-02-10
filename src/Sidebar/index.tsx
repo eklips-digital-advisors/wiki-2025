@@ -54,7 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ posts }) => {
           <div key={i} className="relative mt-6">
             <motion.h2
               layout="position"
-              className="text-xs font-semibold text-zinc-900 dark:text-white"
+              className="text-xs font-semibold text-zinc-900"
             >
               {cat.title}
             </motion.h2>
@@ -64,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ posts }) => {
                   return (
                     <li className="relative" key={post?.id}>
                       <Link
-                        className={`${getCurrentClass(post?.slug)} flex justify-between gap-2 py-1 pr-3 text-sm transition pl-4 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white border-l hover:border-emerald-500`}
+                        className={`${getCurrentClass(post?.slug)} flex justify-between gap-2 py-1 pr-3 text-sm transition pl-4 text-zinc-600 hover:text-zinc-900 border-l hover:border-emerald-500`}
                         href={`/${post.slug}`}
                       >
                         <span className="truncate">{post.title}</span>
@@ -75,7 +75,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ posts }) => {
                         post?.sections.map((section: any, index: number) => (
                           <Link
                             key={index}
-                            className={`${getCurrentClass(post?.slug)} flex justify-between gap-2 pl-6 py-1 pr-3 text-[12px] transition text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white border-l hover:border-emerald-500`}
+                            className={`${getCurrentClass(post?.slug)} flex justify-between gap-2 pl-6 py-1 pr-3 text-[12px] transition text-zinc-600 hover:text-zinc-900 border-l hover:border-emerald-500`}
                             href={`/${post.slug}#section-${index}`}
                           >
                             <span className="truncate"><span className="text-emerald-500">#</span> {section?.sectionName}</span>
