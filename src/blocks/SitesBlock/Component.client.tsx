@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ArrowUpDown,
   Check,
@@ -8,7 +8,7 @@ import {
   ChevronUp,
   Clock,
   ExternalLink,
-  ExternalLinkIcon,
+  ExternalLinkIcon, LoaderCircle,
 } from 'lucide-react'
 import Link from 'next/link'
 import Th from '@/components/Table/Th'
@@ -28,18 +28,18 @@ import PathTable from '@/blocks/SitesBlock/PathTable'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
-  const [updateText, setUpdateText] = useState('')
+  const [loading, setLoading] = useState(false)
+  const { latestWp, wpVersionLatestPercentage, phpApiData, buildTime } = extraInfo
+
   const revalidate = async () => {
-    setUpdateText('. Updating, please wait...')
+    setLoading(true)
     await fetch('/next/revalidate', { method: 'POST' })
     router.refresh()
-
-    setTimeout(() => {
-      setUpdateText('')
-    }, 1000)
   }
 
-  const { latestWp, wpVersionLatestPercentage, phpApiData } = extraInfo
+  useEffect(() => {
+    setLoading(false)
+  }, [buildTime])
 
   const [selectedColumns, setSelectedColumns] = useState(
     columns.filter((col) => col.defaultVisible).map((col) => col.key),
@@ -102,9 +102,13 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         <Button
           variant="link"
           size="sm"
-          className="cursor-pointer underline"
+          className="cursor-pointer underline inline-flex gap-1 items-center"
           onClick={revalidate}
-        >{`Pull new data${updateText}`}</Button>
+        >
+          {loading && <LoaderCircle className="w-4 h-4 animate-spin" />}
+          {`Pull new data`}
+        </Button>
+        {buildTime && <p className="text-zinc-500">Last update: {buildTime.toLocaleString('et-ET')}</p>}
       </div>
       <div className="relative mb-8 flex gap-1 flex-wrap">
         {columns
@@ -211,7 +215,11 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 {selectedColumns.includes('productionDate') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.productionDate &&
-                      new Date(site?.productionDate * 1000).toLocaleDateString("et-ET", {month: '2-digit', year: 'numeric', day: '2-digit'})}
+                      new Date(site?.productionDate * 1000).toLocaleDateString('et-ET', {
+                        month: '2-digit',
+                        year: 'numeric',
+                        day: '2-digit',
+                      })}
                   </td>
                 )}
                 {selectedColumns.includes('siteService') && (
@@ -369,7 +377,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     )}
                   </td>
                 )}
-                {selectedColumns.includes('cloudflareStats') && (
+                {selectedColumns.includes('cloudflareBandwidth') && (
                   <td
                     className={`whitespace-nowrap px-3 py-3 text-sm ${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}
                   >

@@ -52,6 +52,7 @@ interface ExtraInfo {
   latestWp: string
   phpApiData: {[key: string]: { name: string }}
   wpVersionLatestPercentage: number
+  buildTime: Date
 }
 
 export interface SitesBlockProps {

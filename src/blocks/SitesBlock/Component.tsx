@@ -19,6 +19,8 @@ import {
 } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemStatsMultipleDays'
 
 export const SitesBlock: React.FC = async () => {
+  const buildTime: Date = new Date()
+  
   try {
     const payload = await getPayload({ config: configPromise })
 
@@ -127,7 +129,7 @@ export const SitesBlock: React.FC = async () => {
             hasSolr,
             hasGoogleAnalytics,
             hasCookiebot,
-            singleClodflareAnalyticsMultipleDays
+            singleClodflareAnalyticsMultipleDays,
           }
         } catch (error) {
           console.error(`Error processing site ${site.id}:`, error)
@@ -143,6 +145,7 @@ export const SitesBlock: React.FC = async () => {
       latestWp,
       phpApiData: phpApiData?.data,
       wpVersionLatestPercentage: Number(((wpSitesWithLatestSoftware / totalWpsites) * 100).toFixed(1)),
+      buildTime
     }
 
     return <SitesBlockClient sites={validSites} extraInfo={extraInfo} />

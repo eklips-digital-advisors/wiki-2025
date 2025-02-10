@@ -30,10 +30,10 @@ export const columns = [
   { key: 'speedTestScan', label: 'Speed test scan', defaultVisible: false, sortable: false, auto: false, type: 'test' },
   { key: 'lastResponsetime', label: 'Responce time', defaultVisible: false, sortable: true, auto: true, type: 'test' },
   {
-    key: 'cloudflareStats',
+    key: 'cloudflareBandwidth',
     label: 'Cloudflare 24hrs bandwidth (GB) / requests',
     defaultVisible: false,
-    sortable: false,
+    sortable: true,
     auto: true,
     type: 'test'
   },
