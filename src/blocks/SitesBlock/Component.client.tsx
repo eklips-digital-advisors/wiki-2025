@@ -29,16 +29,19 @@ import PathTable from '@/blocks/SitesBlock/PathTable'
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [pullText, setPullText] = useState('Pull new data')
   const { latestWp, wpVersionLatestPercentage, phpApiData, buildTime } = extraInfo
 
   const revalidate = async () => {
     setLoading(true)
+    setPullText('Pulling, please wait...')
     await fetch('/next/revalidate', { method: 'POST' })
     router.refresh()
   }
 
   useEffect(() => {
     setLoading(false)
+    setPullText('Pull new data')
   }, [buildTime])
 
   const [selectedColumns, setSelectedColumns] = useState(
@@ -106,7 +109,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
           onClick={revalidate}
         >
           {loading && <LoaderCircle className="w-4 h-4 animate-spin" />}
-          {`Pull new data`}
+          {pullText}
         </Button>
         {buildTime && <p className="text-zinc-500">Last update: {buildTime.toLocaleString('et-ET')}</p>}
       </div>

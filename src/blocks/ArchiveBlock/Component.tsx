@@ -30,6 +30,11 @@ export const ArchiveBlock: React.FC<
       collection: 'posts',
       depth: 1,
       limit,
+      where: {
+        _status: {
+          equals: 'published',
+        },
+      },
       ...(flattenedCategories && flattenedCategories.length > 0
         ? {
             where: {

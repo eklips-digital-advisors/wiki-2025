@@ -8,8 +8,8 @@ export const generateMeta = async (args: {
   const { doc } = args
 
   const title = doc?.title
-    ? doc?.title + ' | Payload Website Template'
-    : 'Payload Website Template'
+    ? doc?.title + ' | Eklips Wiki'
+    : 'Eklips Wiki'
 
   return {
     description: 'Eklips Wiki 2.0',
