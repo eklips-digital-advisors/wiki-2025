@@ -9,11 +9,7 @@ export async function checkGoogleAnalytics(url: string) {
 
     // Check for Google Analytics tracking codes
     return (
-      html.includes('www.googletagmanager.com/gtag/js') || // GA4
-      html.includes('www.google-analytics.com/analytics.js') || // Universal Analytics
-      html.includes('window.dataLayer') || // Google Tag Manager
-      html.includes('gtag(') ||
-      html.includes('_gaq.push')
+      html.includes('https://www.googletagmanager.com/gtm.js?id=')
     )
   } catch (error) {
     console.error(`Error checking Google Analytics on ${url}:`, error)
