@@ -14,10 +14,10 @@ export const SidebarClient: React.FC<{ sidebarPosts: SidebarType }> = ({ sidebar
       ? 'border-emerald-500 font-medium'
       : 'border-zinc-900/10'
   }
-
+  
   return (
     <div className="px-4 lg:px-0 mt-32 lg:mt-10">
-      {sidebarPosts?.items?.map((cat: any, i) => {
+      {sidebarPosts?.items && sidebarPosts?.items?.map((cat: any, i) => {
         return (
           <div key={i} className="relative mt-6">
             <motion.h2
@@ -28,7 +28,8 @@ export const SidebarClient: React.FC<{ sidebarPosts: SidebarType }> = ({ sidebar
             </motion.h2>
             <div className="relative mt-3 pl-2">
               <ul role="list" className="border-l border-transparent">
-                {cat?.postsOrder.map((post: any) => {
+                {cat?.postsOrder && cat?.postsOrder.map((post: any) => {
+                  if (!post?.id) return null
                   return (
                     <li className="relative" key={post?.id}>
                       <Link
