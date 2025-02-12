@@ -26,8 +26,6 @@ export const HeaderTop: React.FC<{ data: HeaderType }> = ({ data }) => {
         if (error instanceof Error) {
           console.error("Fetch error:", error.message);
         }
-      } finally {
-        console.log('done')
       }
     };
 
