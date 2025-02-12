@@ -14,7 +14,7 @@ export const columns = [
   { key: 'cloudflarePlan', label: 'Cloudflare plan', defaultVisible: false, sortable: false, auto: true, type: 'server' },
   { key: 'ssl', label: 'SSL', defaultVisible: false, sortable: false, auto: true, type: 'server' },
   { key: 'ipRestriction', label: 'IP Restriction', defaultVisible: false, sortable: false, auto: false, type: 'server' },
-  { key: 'csp', label: 'CSP', defaultVisible: false, sortable: false, auto: false, type: 'server' },
+  { key: 'csp', label: 'CSP', defaultVisible: false, sortable: false, auto: true, type: 'server' },
   { key: 'phpVersion', label: 'PHP version', defaultVisible: false, sortable: false, auto: false, type: 'server' },
   { key: 'framework', label: 'Framework', defaultVisible: false, sortable: false, auto: true, type: 'server' },
   { key: 'twoFa', label: '2FA', defaultVisible: false, sortable: false, auto: true, type: 'feature' },

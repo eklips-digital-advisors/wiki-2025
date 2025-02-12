@@ -17,7 +17,7 @@ export interface SiteItem {
   twoFa: boolean
   hiddenLogin: boolean
   ipRestriction: boolean
-  csp: boolean
+  csp: string
   framework: string
   wcagUpdated: string
   wcagLevel: string

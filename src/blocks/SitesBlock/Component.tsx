@@ -57,6 +57,9 @@ export const SitesBlock: React.FC = async () => {
           const prodHostname = singlePingdom?.hostname ?? ""
           const siteUrl = prodHostname ? `https://${prodHostname}${singlePingdom?.type?.http?.url ?? ""}` : null;
           const prodFetch = siteUrl ? await getHeaders(siteUrl) : null;
+
+          const csp = prodFetch ? prodFetch?.get('content-security-policy') : '';
+
           const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : false;
           const hasCookiebot = siteUrl ? await getCookiebot(siteUrl) : false;
           const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : false;
@@ -101,7 +104,7 @@ export const SitesBlock: React.FC = async () => {
             ipRestriction: site?.ipRestriction,
             hosting: site?.hosting,
             server: site?.server,
-            csp: site?.csp,
+            csp: csp ? csp : '',
             wcagUpdated: site?.wcagUpdated,
             wcagLevel: site?.wcagLevel,
             bsScan: site?.bsScan,

@@ -42,9 +42,11 @@ export interface Config {
   };
   globals: {
     header: Header;
+    sidebar: Sidebar;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
+    sidebar: SidebarSelect<false> | SidebarSelect<true>;
   };
   locale: null;
   user: User & {
@@ -97,7 +99,6 @@ export interface Site {
     | ('06-188-v1' | '06-188-v9' | '06-188-v18' | '06-188-v19' | '06-188-v20' | '06-188-v21' | '06-188-v22')
     | null;
   ipRestriction?: boolean | null;
-  csp?: boolean | null;
   wcagUpdated?: string | null;
   wcagLevel?: ('aa' | 'aaa') | null;
   bsScan?: string | null;
@@ -649,7 +650,6 @@ export interface SitesSelect<T extends boolean = true> {
   hosting?: T;
   server?: T;
   ipRestriction?: T;
-  csp?: T;
   wcagUpdated?: T;
   wcagLevel?: T;
   bsScan?: T;
@@ -997,6 +997,22 @@ export interface Header {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sidebar".
+ */
+export interface Sidebar {
+  id: string;
+  items?:
+    | {
+        categoriesOrder: string | Category;
+        postsOrder: (string | Post)[];
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1012,6 +1028,22 @@ export interface HeaderSelect<T extends boolean = true> {
               url?: T;
               label?: T;
             };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sidebar_select".
+ */
+export interface SidebarSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        categoriesOrder?: T;
+        postsOrder?: T;
         id?: T;
       };
   updatedAt?: T;

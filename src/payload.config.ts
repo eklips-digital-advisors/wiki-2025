@@ -14,6 +14,7 @@ import { Pages } from '@/collections/Pages'
 import { Sites } from '@/collections/Sites'
 import { Header } from './Header/config'
 import { plugins } from '@/plugins'
+import { Sidebar } from '@/Sidebar/config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -34,7 +35,7 @@ export default buildConfig({
     }
   },
   collections: [Sites, Pages, Posts, Categories, Media, Users],
-  globals: [Header],
+  globals: [Header, Sidebar],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

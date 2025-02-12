@@ -16,7 +16,6 @@ export const revalidatePost: CollectionAfterChangeHook<Post> = ({
       payload.logger.info(`Revalidating post at path: ${path}`)
 
       revalidatePath(path)
-      revalidateTag('global_header')
       revalidateTag('posts-sitemap')
     }
 
@@ -27,7 +26,6 @@ export const revalidatePost: CollectionAfterChangeHook<Post> = ({
       payload.logger.info(`Revalidating old post at path: ${oldPath}`)
 
       revalidatePath(oldPath)
-      revalidateTag('global_header')
       revalidateTag('posts-sitemap')
     }
   }
@@ -39,7 +37,6 @@ export const revalidateDelete: CollectionAfterDeleteHook<Post> = ({ doc, req: { 
     const path = `/posts/${doc?.slug}`
 
     revalidatePath(path)
-    revalidateTag('global_header')
     revalidateTag('posts-sitemap')
   }
 

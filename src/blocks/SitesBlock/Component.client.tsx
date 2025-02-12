@@ -25,6 +25,7 @@ import { getBsScanBackground } from '@/utilities/GetDynamicBackgrounds/getBsScan
 import Chart from '@/blocks/SitesBlock/Chart'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import PathTable from '@/blocks/SitesBlock/PathTable'
+import CspTable from '@/blocks/SitesBlock/CspTable'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -275,7 +276,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('csp') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.csp && <Check className="w-4" />}
+                    {site?.csp && <CspTable cspData={site?.csp}/>}
                   </td>
                 )}
                 {selectedColumns.includes('phpVersion') && (

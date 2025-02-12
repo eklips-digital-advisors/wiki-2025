@@ -124,11 +124,6 @@ export const Sites: CollectionConfig<'sites'> = {
       label: 'IP Restriction',
     },
     {
-      type: 'checkbox',
-      name: 'csp',
-      label: 'CSP',
-    },
-    {
       type: 'row',
       fields: [
         {
