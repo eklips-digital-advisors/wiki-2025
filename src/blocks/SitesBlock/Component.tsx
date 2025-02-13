@@ -117,6 +117,7 @@ export const SitesBlock: React.FC = async () => {
             cloudflarePlan: singleClodflare?.result?.plan?.name,
             cloudflareRequests: singleClodflareAnalytics?.requests ? singleClodflareAnalytics?.requests : null,
             cloudflareBandwidth: singleClodflareAnalytics?.bandwidth ? Number(singleClodflareAnalytics?.bandwidth.toFixed(2)) : null,
+            cloudflarePercentage: singleClodflareAnalytics?.percentageBandWidth ? Number(singleClodflareAnalytics?.percentageBandWidth.toFixed(1)) : null,
             createdAt: singleRepo?.repository?.created_at || '',
             lastCommitAt: singleRepo?.repository?.last_commit_at || '',
             repositoryName: singleRepo?.repository?.name || '',

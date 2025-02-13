@@ -386,10 +386,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     className={`whitespace-nowrap px-3 py-3 text-sm`}
                   >
                     <span className="flex gap-2 items-center">
-                      <span className={`${site?.cloudflareBandwidth > 5 ? 'text-yellow-500' : 'text-zinc-500'}`}>
-                        {site?.cloudflareBandwidth &&
-                          site?.cloudflareRequests &&
-                          `${site?.cloudflareBandwidth} / ${site?.cloudflareRequests}`}
+                      <span className={`${site?.cloudflarePercentage > 25 ? 'text-rose-400' : 'text-zinc-500'}`}>
+                        {site?.cloudflareBandwidth && site?.cloudflareRequests && site?.cloudflarePercentage && `${site?.cloudflareBandwidth} (${site?.cloudflarePercentage}%) / ${site?.cloudflareRequests}`}
                       </span>
 
                       {site.singleClodflareAnalyticsMultipleDays ? (

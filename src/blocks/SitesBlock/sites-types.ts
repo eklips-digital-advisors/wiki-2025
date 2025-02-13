@@ -13,6 +13,7 @@ export interface SiteItem {
   cloudflarePlan: string
   cloudflareRequests: string
   cloudflareBandwidth: number
+  cloudflarePercentage: number
   ssl: string
   twoFa: boolean
   hiddenLogin: boolean

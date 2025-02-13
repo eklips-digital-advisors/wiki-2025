@@ -55,7 +55,7 @@ export default async function Post({ params: paramsPromise }: Args) {
             {post?.populatedAuthors && post?.populatedAuthors.length > 0 && post?.populatedAuthors.map(author => (
               <div className="text-zinc-500 text-xs flex gap-1 items-center" key={author.id}>Author: {author?.name}</div>
             )) }
-            {post?.publishedAt && <div className="text-zinc-500 text-xs">Published: {formatDateTime(post.publishedAt)}</div>}
+            {post?.publishedAt && false && <div className="text-zinc-500 text-xs">Published: {formatDateTime(post.publishedAt || '')}</div>}
           </div>
           {post.content && (
             <RichText className="max-w-[68rem] mx-auto mb-14" data={post.content} enableGutter={false} />

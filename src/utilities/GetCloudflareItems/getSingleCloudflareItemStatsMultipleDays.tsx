@@ -38,7 +38,7 @@ export async function getSingleCloudflareItemStatsMultipleDays(id: string | numb
                   bytes
                 }
               }
-              httpRequestsAdaptiveGroups(
+              pathRequests: httpRequestsAdaptiveGroups(
                   limit: 5
                   filter: { datetime_geq: "${formattedStartDate}", datetime_lt: "${formattedEndDate}" }
                   orderBy: [sum_edgeResponseBytes_DESC]
@@ -72,7 +72,7 @@ export async function getSingleCloudflareItemStatsMultipleDays(id: string | numb
 
     // Extract analytics data
     const results = data?.data?.viewer?.zones?.[0]?.httpRequests1hGroups || []
-    const pathData = data?.data?.viewer?.zones?.[0]?.httpRequestsAdaptiveGroups ||[]
+    const pathData = data?.data?.viewer?.zones?.[0]?.pathRequests || []
 
     // Initialize total requests and bandwidth
     let totalRequests = 0
