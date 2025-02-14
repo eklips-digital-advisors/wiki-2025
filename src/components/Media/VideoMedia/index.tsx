@@ -4,6 +4,7 @@ import { cn } from '@/utilities/ui'
 import React, { useEffect, useRef } from 'react'
 
 import type { Props as MediaProps } from '../types'
+import { getClientSideURL } from '@/utilities/getURL'
 
 export const VideoMedia: React.FC<MediaProps> = (props) => {
   const { onClick, resource, videoClassName } = props
@@ -32,7 +33,7 @@ export const VideoMedia: React.FC<MediaProps> = (props) => {
         onClick={onClick}
         ref={videoRef}
       >
-        <source src={`/media/${filename}`} />
+        <source src={`${getClientSideURL()}/api/media/file/${filename}`} />
       </video>
     )
   }
