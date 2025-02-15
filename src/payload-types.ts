@@ -120,7 +120,15 @@ export interface Site {
 export interface Page {
   id: string;
   title: string;
-  layout: (CallToActionBlock | MediaBlock | SitesBlock | ContentBlock | PasswordGeneratorBlock | ArchiveBlock)[];
+  layout: (
+    | CallToActionBlock
+    | MediaBlock
+    | SitesBlock
+    | ContentBlock
+    | PasswordGeneratorBlock
+    | ArchiveBlock
+    | EmbedBlock
+  )[];
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -431,6 +439,16 @@ export interface ArchiveBlock {
   blockType: 'archive';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EmbedBlock".
+ */
+export interface EmbedBlock {
+  embed?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'embedBlock';
+}
+/**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -679,6 +697,7 @@ export interface PagesSelect<T extends boolean = true> {
         content?: T | ContentBlockSelect<T>;
         passwordGeneratorBlock?: T | PasswordGeneratorBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
+        embedBlock?: T | EmbedBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -775,6 +794,15 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
   categories?: T;
   limit?: T;
   selectedDocs?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EmbedBlock_select".
+ */
+export interface EmbedBlockSelect<T extends boolean = true> {
+  embed?: T;
   id?: T;
   blockName?: T;
 }

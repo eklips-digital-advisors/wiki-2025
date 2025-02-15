@@ -12,6 +12,7 @@ import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 import { Content } from '@/blocks/Content/config'
+import { EmbedBlock } from '@/blocks/EmbedBlock/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -63,7 +64,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, MediaBlock, Sites, Content, PasswordGeneratorBlock, Archive],
+              blocks: [CallToAction, MediaBlock, Sites, Content, PasswordGeneratorBlock, Archive, EmbedBlock],
               required: true,
               admin: {
                 initCollapsed: false,

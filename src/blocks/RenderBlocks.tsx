@@ -8,6 +8,7 @@ import { SitesBlock } from '@/blocks/SitesBlock/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { PasswordGeneratorBlock } from '@/blocks/PasswordGeneratorBlock/Component'
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
+import { EmbedBlock } from '@/blocks/EmbedBlock/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -16,6 +17,7 @@ const blockComponents = {
   sites: SitesBlock,
   content: ContentBlock,
   passwordGeneratorBlock: PasswordGeneratorBlock,
+  embedBlock: EmbedBlock,
 }
 
 export const RenderBlocks: React.FC<{
