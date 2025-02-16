@@ -2,6 +2,9 @@ import type { GlobalConfig } from 'payload'
 import { revalidateSidebar } from '@/Sidebar/hooks/revalidateSidebar'
 export const Sidebar: GlobalConfig = {
   slug: 'sidebar',
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       type: 'array',

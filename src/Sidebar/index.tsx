@@ -23,7 +23,7 @@ export const SidebarClient: React.FC<{ sidebarPosts: SidebarType }> = ({ sidebar
   }
 
   return (
-    <div className="px-4 lg:px-0 mt-32 lg:mt-10">
+    <div className="sidebar px-4 lg:px-0 mt-32 lg:mt-10">
       {sidebarPosts?.items &&
         sidebarPosts?.items?.map((cat: any, i) => {
           return (
@@ -38,7 +38,7 @@ export const SidebarClient: React.FC<{ sidebarPosts: SidebarType }> = ({ sidebar
                 />
               </h2>
 
-              <div className={`relative mt-3 pl-2 ${openCategories.includes(i) ? 'visible' : 'hidden'}`}>
+              <div className={`sidebar-section relative mt-3 pl-2 ${openCategories.includes(i) ? 'visible' : 'hidden'}`}>
                 <ul role="list" className="border-l border-transparent">
                   {cat?.postsOrder &&
                     cat?.postsOrder.map((post: any) => {
