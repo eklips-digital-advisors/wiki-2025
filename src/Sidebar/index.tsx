@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { Sidebar as SidebarType } from '@/payload-types'
@@ -8,13 +8,22 @@ import { ChevronRight } from 'lucide-react'
 
 export const SidebarClient: React.FC<{ sidebarPosts: SidebarType }> = ({ sidebarPosts }) => {
   const pathname = usePathname()
-  const [openCategories, setOpenCategories] = useState<number[]>([0]) // First category is open
+  const [openCategories, setOpenCategories] = useState<number[]>([]) // First category is open
 
   const toggleCategory = (index: number) => {
     setOpenCategories((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     )
   }
+
+  useEffect(() => {
+    const currentSlug = pathname.split('/').pop();
+
+    const categoryIndex = sidebarPosts?.items && sidebarPosts?.items.findIndex(category =>
+      category?.postsOrder?.some((post: any) => post.slug === currentSlug)
+    );
+    setOpenCategories([categoryIndex || 0])
+  }, [])
 
   const getCurrentClass = (slug: string) => {
     return slug.split('/').pop() === pathname.split('/').pop()

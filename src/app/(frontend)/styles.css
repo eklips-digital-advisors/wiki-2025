@@ -60,8 +60,3 @@ body:has(.admin-bar:not(.hidden)) {
     top: 36px;
   }
 }
-
-:where(.sidebar-section:has(.border-emerald-500)) {
-  visibility: visible;
-  display: block;
-}
