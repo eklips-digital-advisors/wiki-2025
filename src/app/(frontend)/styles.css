@@ -60,3 +60,21 @@ body:has(.admin-bar:not(.hidden)) {
     top: 36px;
   }
 }
+
+header {
+  /* width */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    @apply bg-zinc-100;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    @apply bg-zinc-400/60;
+    border-radius: 4px;
+  }
+}
