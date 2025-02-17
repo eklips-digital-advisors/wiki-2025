@@ -17,6 +17,8 @@ import { getCisionScript } from '@/utilities/getCisionScript'
 import {
   getSingleCloudflareItemStatsMultipleDays
 } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemStatsMultipleDays'
+import { toLocaleDateString } from '@/utilities/toLocaleDateString'
+import { formatDateTime } from '@/utilities/formatDateTime'
 
 export const SitesBlock: React.FC = async () => {
   const buildTime: Date = new Date()
@@ -107,27 +109,27 @@ export const SitesBlock: React.FC = async () => {
             csp: csp ? csp : '',
             wcagUpdated: site?.wcagUpdated,
             wcagLevel: site?.wcagLevel,
-            bsScan: site?.bsScan,
+            bsScan: site?.bsScan ? formatDateTime(site?.bsScan) : '',
             phpVersion: site?.phpVersion,
             "site/service": site["site/service"] ?? '',
-            hostname: singlePingdom?.hostname ? singlePingdom?.hostname + singlePingdom?.type?.http?.url : '',
+            production: singlePingdom?.hostname ? `https://${singlePingdom?.hostname + singlePingdom?.type?.http?.url}` : '',
             wpVersion: singleRepoWpVersionParsed || (prodFetch ? `Non WP (${prodFetch.get("x-powered-by") ?? ''})` : 'Unknown'),
-            productionDate: singlePingdom?.hostname ? singlePingdom?.created : '',
+            productionDate: singlePingdom?.hostname ? toLocaleDateString(singlePingdom?.created) : '',
             cloudflare: prodFetch ? prodFetch?.get('server')?.toLowerCase() : '',
             cloudflarePlan: singleClodflare?.result?.plan?.name,
             cloudflareRequests: singleClodflareAnalytics?.requests ? singleClodflareAnalytics?.requests : null,
             cloudflareBandwidth: singleClodflareAnalytics?.bandwidth ? Number(singleClodflareAnalytics?.bandwidth.toFixed(2)) : null,
             cloudflarePercentage: singleClodflareAnalytics?.percentageBandWidth ? Number(singleClodflareAnalytics?.percentageBandWidth.toFixed(1)) : null,
-            createdAt: singleRepo?.repository?.created_at || '',
-            lastCommitAt: singleRepo?.repository?.last_commit_at || '',
-            repositoryName: singleRepo?.repository?.name || '',
+            createdAt: formatDateTime(singleRepo?.repository?.created_at) || '',
+            lastCommitAt: formatDateTime(singleRepo?.repository?.last_commit_at) || '',
+            staging: singleRepo?.repository?.name ? `https://${singleRepo?.repository?.name}.eklipsdevelopment.com` : '',
             ssl: singleClodflareSsl?.result[0]?.certificate_authority || '',
             twoFa: twoFaExists,
             hiddenLogin: hiddenLoginExists,
             framework: site?.framework ? site?.framework : isCwaas,
             pressReleases: {cision: hasCisionScript, mfn: hasMfnScript},
             newsFeeds: site?.newsFeeds,
-            dataBlocks: site?.dataBlocks,
+            dataProvider: site?.dataProvider,
             speedTestScan: site?.speedTestScan,
             lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : '',
             pingdomLink: singlePingdom?.hostname ? `https://my.pingdom.com/app/reports/uptime#check=${singlePingdom.id}` : null,

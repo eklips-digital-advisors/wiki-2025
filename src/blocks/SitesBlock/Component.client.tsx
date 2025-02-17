@@ -7,7 +7,9 @@ import {
   ChevronUp,
   Clock,
   ExternalLink,
-  ExternalLinkIcon, LoaderCircle,
+  ExternalLinkIcon,
+  FileDown,
+  LoaderCircle,
 } from 'lucide-react'
 import Link from 'next/link'
 import Th from '@/components/Table/Th'
@@ -22,10 +24,10 @@ import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { getBsScanBackground } from '@/utilities/GetDynamicBackgrounds/getBsScanBackground'
 import Chart from '@/blocks/SitesBlock/Chart'
-import { formatDateTime } from '@/utilities/formatDateTime'
 import PathTable from '@/blocks/SitesBlock/PathTable'
 import CspTable from '@/blocks/SitesBlock/CspTable'
 import CheckIcon from '@/blocks/SitesBlock/CheckIcon'
+import { exportToExcel } from '@/utilities/exportToExcel'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -92,6 +94,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
     return 0
   })
+  
+  console.log('sites', sites)
 
   return (
     <div>
@@ -106,13 +110,24 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         <Button
           variant="link"
           size="sm"
-          className="cursor-pointer underline inline-flex gap-1 items-center"
+          className="cursor-pointer p-0 underline inline-flex gap-1 items-center"
           onClick={revalidate}
         >
           {loading && <LoaderCircle className="w-4 h-4 animate-spin" />}
           {pullText}
         </Button>
-        {buildTime && <p className="text-zinc-500">Last update: {buildTime.toLocaleString('et-ET')}</p>}
+        {buildTime && (
+          <p className="text-zinc-500">Last update: {buildTime.toLocaleString('et-ET')}</p>
+        )}
+        <Button
+          className="ml-auto cursor-pointer p-0"
+          title="Export to Excel"
+          variant="link"
+          size="sm"
+          onClick={() => exportToExcel(sites)}
+        >
+          <FileDown className="w-5 transition text-emerald-500 hover:text-emerald-400" />
+        </Button>
       </div>
       <div className="relative mb-8 flex gap-1 flex-wrap">
         {columns
@@ -187,8 +202,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('production') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.hostname && (
-                      <Link target="_blank" href={`https://${site?.hostname}`}>
+                    {site?.production && (
+                      <Link target="_blank" href={site?.production}>
                         <ExternalLink className="w-4" />
                       </Link>
                     )}
@@ -196,10 +211,10 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('staging') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.repositoryName && (
+                    {site?.staging && (
                       <Link
                         target="_blank"
-                        href={`https://${site?.repositoryName}.eklipsdevelopment.com`}
+                        href={site?.staging}
                       >
                         <ExternalLink className="w-4" />
                       </Link>
@@ -208,22 +223,17 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('createdAt') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.createdAt && formatDateTime(site?.createdAt)}
+                    {site?.createdAt && site?.createdAt}
                   </td>
                 )}
                 {selectedColumns.includes('lastCommitAt') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.lastCommitAt && formatDateTime(site?.lastCommitAt)}
+                    {site?.lastCommitAt && site?.lastCommitAt}
                   </td>
                 )}
                 {selectedColumns.includes('productionDate') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.productionDate &&
-                      new Date(site?.productionDate * 1000).toLocaleDateString('et-ET', {
-                        month: '2-digit',
-                        year: 'numeric',
-                        day: '2-digit',
-                      })}
+                    {site?.productionDate && site?.productionDate}
                   </td>
                 )}
                 {selectedColumns.includes('siteService') && (
@@ -276,7 +286,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('csp') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.csp && <CspTable cspData={site?.csp}/>}
+                    {site?.csp && <CspTable cspData={site?.csp} />}
                   </td>
                 )}
                 {selectedColumns.includes('phpVersion') && (
@@ -327,9 +337,9 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     {site?.newsFeeds}
                   </td>
                 )}
-                {selectedColumns.includes('dataBlocks') && (
+                {selectedColumns.includes('dataProvider') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.dataBlocks}
+                    {site?.dataProvider}
                   </td>
                 )}
                 {selectedColumns.includes('hasGoogleAnalytics') && (
@@ -354,7 +364,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                       <span
                         className={`${getBsScanBackground(site?.bsScan)} px-1 py-[0.5] text-xs inline-block`}
                       >
-                        {new Date(site?.bsScan).toISOString().split('T')[0]}
+                        {site?.bsScan}
                       </span>
                     )}
                   </td>
@@ -382,12 +392,15 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   </td>
                 )}
                 {selectedColumns.includes('cloudflareBandwidth') && (
-                  <td
-                    className={`whitespace-nowrap px-3 py-3 text-sm`}
-                  >
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm`}>
                     <span className="flex gap-2 items-center">
-                      <span className={`${site?.cloudflarePercentage > 25 ? 'text-rose-400' : 'text-zinc-500'}`}>
-                        {site?.cloudflareBandwidth && site?.cloudflareRequests && site?.cloudflarePercentage && `${site?.cloudflareBandwidth} (${site?.cloudflarePercentage}%) / ${site?.cloudflareRequests}`}
+                      <span
+                        className={`${site?.cloudflarePercentage > 25 ? 'text-rose-400' : 'text-zinc-500'}`}
+                      >
+                        {site?.cloudflareBandwidth &&
+                          site?.cloudflareRequests &&
+                          site?.cloudflarePercentage &&
+                          `${site?.cloudflareBandwidth} (${site?.cloudflarePercentage}%) / ${site?.cloudflareRequests}`}
                       </span>
 
                       {site.singleClodflareAnalyticsMultipleDays ? (
@@ -398,7 +411,11 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                       ) : (
                         <span className="text-zinc-500">No data</span>
                       )}
-                      {site?.singleClodflareUrl && <Link target="_blank" href={site?.singleClodflareUrl}><ExternalLink className="w-5 h-5 text-gray-500 hover:text-gray-700" /></Link>}
+                      {site?.singleClodflareUrl && (
+                        <Link target="_blank" href={site?.singleClodflareUrl}>
+                          <ExternalLink className="w-5 h-5 text-gray-500 hover:text-gray-700" />
+                        </Link>
+                      )}
                     </span>
                   </td>
                 )}

@@ -194,13 +194,24 @@ export const Sites: CollectionConfig<'sites'> = {
       ],
     },
     {
-      type: 'text',
-      name: 'newsFeeds'
+      type: 'select',
+      name: 'newsFeeds',
+      options: [
+        {
+          label: 'viaTT',
+          value: 'viatt',
+        },
+      ],
     },
     {
-      type: 'text',
-      name: 'dataBlocks',
-      label: 'Datablocks'
+      type: 'select',
+      name: 'dataProvider',
+      options: [
+        {
+          label: 'Datablocks',
+          value: 'datablocks',
+        },
+      ],
     },
     {
       type: 'text',

@@ -3,11 +3,11 @@ export interface SiteItem {
   title: string
   'site/service': string
   wpVersion: string
-  productionDate: number
+  productionDate: string
   integrations: {repository: string, cloudflare: string, pingdom: string}
   cloudflare: string
-  repositoryName: string
-  hostname: string
+  staging: string
+  production: string
   createdAt: string
   lastCommitAt: string
   cloudflarePlan: string
@@ -35,7 +35,7 @@ export interface SiteItem {
   pressReleases: {cision: boolean, mfn: boolean}
   newsFeeds: string
   speedTestScan: string
-  dataBlocks: string
+  dataProvider: string
   repository: object
   hasSolr: boolean
   hasGoogleAnalytics: boolean

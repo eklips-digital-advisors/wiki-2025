@@ -1,4 +1,6 @@
 export const formatDateTime = (timestamp: string): string => {
+  if (!timestamp) return '';
+
   const now = new Date()
   let date = now
   if (timestamp) date = new Date(timestamp)
