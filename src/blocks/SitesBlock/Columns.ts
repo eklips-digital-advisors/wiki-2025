@@ -28,7 +28,7 @@ export const columns = [
   { key: 'wcag', label: 'WCAG', defaultVisible: false, sortable: false, auto: false, type: 'test' },
   { key: 'bsScan', label: 'BS Scan', defaultVisible: false, sortable: true, auto: false, type: 'test' },
   { key: 'speedTestScan', label: 'Speed test scan', defaultVisible: false, sortable: false, auto: false, type: 'test' },
-  { key: 'lastResponsetime', label: 'Responce time', defaultVisible: true, sortable: true, auto: true, type: 'test' },
+  { key: 'lastResponsetime', label: 'Response time', defaultVisible: true, sortable: true, auto: true, type: 'test' },
   {
     key: 'cloudflareBandwidth',
     label: 'Cloudflare 24hrs bandwidth (GB) / requests',

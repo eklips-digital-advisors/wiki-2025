@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import {
   ArrowUpDown,
-  Check,
   ChevronDown,
   ChevronUp,
   Clock,
@@ -26,6 +25,7 @@ import Chart from '@/blocks/SitesBlock/Chart'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import PathTable from '@/blocks/SitesBlock/PathTable'
 import CspTable from '@/blocks/SitesBlock/CspTable'
+import CheckIcon from '@/blocks/SitesBlock/CheckIcon'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -271,7 +271,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('ipRestriction') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.ipRestriction && <Check className="w-4" />}
+                    <CheckIcon condition={site?.ipRestriction} />
                   </td>
                 )}
                 {selectedColumns.includes('csp') && (
@@ -289,23 +289,23 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   </td>
                 )}
                 {selectedColumns.includes('framework') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase`}>
                     {site?.framework}
                   </td>
                 )}
                 {selectedColumns.includes('twoFa') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.twoFa && <Check className="w-4" />}
+                    <CheckIcon condition={site?.twoFa} />
                   </td>
                 )}
                 {selectedColumns.includes('hiddenLogin') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.hiddenLogin && <Check className="w-4" />}
+                    <CheckIcon condition={site?.hiddenLogin} />
                   </td>
                 )}
                 {selectedColumns.includes('hasSolr') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.hasSolr && <Check className="w-4" />}
+                    <CheckIcon condition={site?.hasSolr} />
                   </td>
                 )}
                 {selectedColumns.includes('pressReleases') && (
@@ -334,12 +334,12 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('hasGoogleAnalytics') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.hasGoogleAnalytics && <Check className="w-4" />}
+                    <CheckIcon condition={site?.hasGoogleAnalytics} />
                   </td>
                 )}
                 {selectedColumns.includes('hasCookiebot') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.hasCookiebot && <Check className="w-4" />}
+                    <CheckIcon condition={site?.hasCookiebot} />
                   </td>
                 )}
                 {selectedColumns.includes('wcag') && (
