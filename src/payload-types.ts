@@ -104,8 +104,8 @@ export interface Site {
   bsScan?: string | null;
   phpVersion?: ('7.4' | '8.2' | '8.3' | '8.4') | null;
   framework?: ('cwaas' | 'eklips_v1' | 'eklips_v2') | null;
-  newsFeeds?: string | null;
-  dataBlocks?: string | null;
+  newsFeeds?: 'viatt' | null;
+  dataProvider?: 'datablocks' | null;
   speedTestScan?: string | null;
   publishedAt?: string | null;
   slug?: string | null;
@@ -674,7 +674,7 @@ export interface SitesSelect<T extends boolean = true> {
   phpVersion?: T;
   framework?: T;
   newsFeeds?: T;
-  dataBlocks?: T;
+  dataProvider?: T;
   speedTestScan?: T;
   publishedAt?: T;
   slug?: T;

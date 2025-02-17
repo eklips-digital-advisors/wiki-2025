@@ -94,8 +94,6 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
     return 0
   })
-  
-  console.log('sites', sites)
 
   return (
     <div>
