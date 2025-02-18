@@ -96,7 +96,16 @@ export interface Site {
   'site/service'?: 'corporate' | null;
   hosting?: 'adminor' | null;
   server?:
-    | ('06-188-v1' | '06-188-v9' | '06-188-v18' | '06-188-v19' | '06-188-v20' | '06-188-v21' | '06-188-v22')
+    | (
+        | '06-188-v1'
+        | '06-188-v9'
+        | '06-188-v18'
+        | '06-188-v19'
+        | '06-188-v20'
+        | '06-188-v21'
+        | '06-188-v22'
+        | '06-158-v1'
+      )
     | null;
   ipRestriction?: boolean | null;
   wcagUpdated?: string | null;
@@ -106,7 +115,6 @@ export interface Site {
   framework?: ('cwaas' | 'eklips_v1' | 'eklips_v2') | null;
   newsFeeds?: 'viatt' | null;
   dataProvider?: 'datablocks' | null;
-  speedTestScan?: string | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -675,7 +683,6 @@ export interface SitesSelect<T extends boolean = true> {
   framework?: T;
   newsFeeds?: T;
   dataProvider?: T;
-  speedTestScan?: T;
   publishedAt?: T;
   slug?: T;
   slugLock?: T;

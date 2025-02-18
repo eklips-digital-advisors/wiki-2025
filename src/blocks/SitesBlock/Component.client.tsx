@@ -28,6 +28,7 @@ import PathTable from '@/blocks/SitesBlock/PathTable'
 import CspTable from '@/blocks/SitesBlock/CspTable'
 import CheckIcon from '@/blocks/SitesBlock/CheckIcon'
 import { exportToExcel } from '@/utilities/exportToExcel'
+import { parseDate } from '@/utilities/parseDate'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -365,11 +366,6 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                         {site?.bsScan}
                       </span>
                     )}
-                  </td>
-                )}
-                {selectedColumns.includes('speedTestScan') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.speedTestScan}
                   </td>
                 )}
                 {selectedColumns.includes('lastResponsetime') && (

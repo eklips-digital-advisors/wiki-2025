@@ -27,7 +27,6 @@ export const columns = [
   { key: 'hasCookiebot', label: 'Cookiebot', defaultVisible: false, sortable: false, auto: true, type: 'external' },
   { key: 'wcag', label: 'WCAG', defaultVisible: false, sortable: false, auto: false, type: 'test' },
   { key: 'bsScan', label: 'BS Scan', defaultVisible: false, sortable: true, auto: false, type: 'test' },
-  { key: 'speedTestScan', label: 'Speed test scan', defaultVisible: false, sortable: false, auto: false, type: 'test' },
   { key: 'lastResponsetime', label: 'Response time', defaultVisible: true, sortable: true, auto: true, type: 'test' },
   {
     key: 'cloudflareBandwidth',

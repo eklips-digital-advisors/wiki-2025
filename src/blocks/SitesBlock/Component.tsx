@@ -130,7 +130,6 @@ export const SitesBlock: React.FC = async () => {
             pressReleases: {cision: hasCisionScript, mfn: hasMfnScript},
             newsFeeds: site?.newsFeeds,
             dataProvider: site?.dataProvider,
-            speedTestScan: site?.speedTestScan,
             lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : '',
             pingdomLink: singlePingdom?.hostname ? `https://my.pingdom.com/app/reports/uptime#check=${singlePingdom.id}` : null,
             hasSolr,

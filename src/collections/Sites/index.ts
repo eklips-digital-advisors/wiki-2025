@@ -116,6 +116,10 @@ export const Sites: CollectionConfig<'sites'> = {
           label: '06-188-v22',
           value: '06-188-v22',
         },
+        {
+          label: '06-158-v1',
+          value: '06-158-v1',
+        },
       ],
     },
     {
@@ -212,10 +216,6 @@ export const Sites: CollectionConfig<'sites'> = {
           value: 'datablocks',
         },
       ],
-    },
-    {
-      type: 'text',
-      name: 'speedTestScan'
     },
     {
       name: 'publishedAt',
