@@ -22,7 +22,7 @@ import { formatDateTime } from '@/utilities/formatDateTime'
 import { promiseDelay } from '@/utilities/promiseDelay'
 
 export const SitesBlock: React.FC = async () => {
-  const buildTime: string = new Date().toLocaleString('et-ET')
+  const buildTime: string = new Date().toLocaleString('et-ET', { timeZone: "Europe/Tallinn" })
   
   try {
     const payload = await getPayload({ config: configPromise })
@@ -70,7 +70,9 @@ export const SitesBlock: React.FC = async () => {
           const siteIntgrationRepository= site?.integrations?.repository
 
           const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null
+          await promiseDelay(2000)
           const singleRepo = repoPath ? await getSingleRepo(repoPath) : null
+          await promiseDelay(2000)
 
           let singleRepoWpVersionParsed = ''
           let twoFaExists = false
