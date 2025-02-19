@@ -132,7 +132,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
           <FileDown className="w-5 transition text-emerald-500 hover:text-emerald-400" />
         </Button>
       </div>
-      <div className="relative mb-8 flex gap-1 flex-wrap">
+      <div className="bg-white mb-8 flex gap-1 flex-wrap sticky top-20">
         {columns
           .filter((col) => col.key !== 'index')
           .map((col) => (

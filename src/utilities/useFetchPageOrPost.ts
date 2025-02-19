@@ -33,7 +33,6 @@ export function useFetchPageOrPost(slug: string) {
         });
 
         const result = await response.json();
-        console.log("GraphQL Response:", result);
 
         const postId = result?.data?.Posts?.docs?.[0]?.id;
         const pageId = result?.data?.Pages?.docs?.[0]?.id;

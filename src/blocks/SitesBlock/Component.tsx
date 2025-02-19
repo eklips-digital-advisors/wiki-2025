@@ -100,8 +100,6 @@ export const SitesBlock: React.FC = async () => {
                     singleRepoWpVersionParsed = match[1];
                 }
             }
-            
-            console.log('singleRepoWpVersionParsed', singleRepoWpVersionParsed)
 
             if (singleRepoWpVersionParsed === latestWp) wpSitesWithLatestSoftware++
             if (repoPath) totalWpsites++

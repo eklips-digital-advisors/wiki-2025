@@ -1,5 +1,15 @@
+let callCount = 0;
+
 export default async function getSingleRepo(path: string | number) {
   if (!path) return '';
+
+  callCount++;
+
+  // Introduce a delay after every 15 calls
+  if (callCount % 15 === 0) {
+    console.log(`Rate limit reached: waiting for 0.2 seconds...`);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
 
   try {
     const auth = Buffer.from(
