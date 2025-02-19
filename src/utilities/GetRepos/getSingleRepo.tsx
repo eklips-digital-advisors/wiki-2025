@@ -1,6 +1,6 @@
 export default async function getSingleRepo(
   path: string | number,
-  retries: number = 8,
+  retries: number = 3,
   delay: number = 2000
 ): Promise<any | null> {
   if (!path) return '';

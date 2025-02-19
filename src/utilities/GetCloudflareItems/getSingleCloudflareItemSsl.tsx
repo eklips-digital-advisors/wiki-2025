@@ -21,7 +21,7 @@ export async function getSingleCloudflareItemSsl(path: string | number) {
 
     return await response.json();
   } catch (error) {
-    console.error(`Error fetching Cloudflare data from ${path}:`, error);
+    console.error(`Error fetching Cloudflare SSL data from ${path}:`, error);
     return null; // Return `null` to indicate failure
   }
 }

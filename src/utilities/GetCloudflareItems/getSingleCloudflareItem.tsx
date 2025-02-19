@@ -21,7 +21,7 @@ export async function getSingleCloudflareItem(path: string | number) {
 
     return await response.json();
   } catch (error) {
-    console.error(`Error fetching Cloudflare data from ${path}:`, error);
+    console.error(`Error fetching Cloudflare item from ${path}:`, error);
     return null; // Return `null` to indicate failure
   }
 }
