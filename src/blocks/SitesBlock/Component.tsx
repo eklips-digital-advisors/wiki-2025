@@ -19,7 +19,6 @@ import {
 } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemStatsMultipleDays'
 import { toLocaleDateString } from '@/utilities/toLocaleDateString'
 import { formatDateTime } from '@/utilities/formatDateTime'
-import { promiseDelay } from '@/utilities/promiseDelay'
 
 export const SitesBlock: React.FC = async () => {
   const buildTime: string = new Date().toLocaleString('et-ET', { timeZone: "Europe/Tallinn" })
@@ -70,9 +69,7 @@ export const SitesBlock: React.FC = async () => {
           const siteIntgrationRepository= site?.integrations?.repository
 
           const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null
-          await promiseDelay(2000)
           const singleRepo = repoPath ? await getSingleRepo(repoPath) : null
-          await promiseDelay(2000)
 
           let singleRepoWpVersionParsed = ''
           let twoFaExists = false
@@ -83,24 +80,19 @@ export const SitesBlock: React.FC = async () => {
           if (siteIntgrationRepository) {
             const twoFaPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/eklips-2fa`
             twoFaExists = await getSingleRepo(twoFaPath)
-            await promiseDelay(2000)
 
             const hiddenLoginPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/wps-hide-login`
             hiddenLoginExists = await getSingleRepo(hiddenLoginPath)
-            await promiseDelay(2000)
 
             const cwaasPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas`
             isCwaas = await getSingleRepo(cwaasPath) ? 'CWAAS' : null
-            await promiseDelay(2000)
 
             const loadPhpPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas/framework/load.php&contents=true`
             const loadPhp = await getSingleRepo(loadPhpPath)
             if (loadPhp && loadPhp?.contents.includes('box-solr/solr.php')) hasSolr = true
-            await promiseDelay(2000)
 
             const versionPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-includes/version.php&contents=true`
             const singleRepoWpVersion = await getSingleRepo(versionPath)
-            await promiseDelay(2000)
 
             if (singleRepoWpVersion && singleRepoWpVersion.contents) {
                 const match = singleRepoWpVersion.contents.match(/\$wp_version\s*=\s*'([^']+)'/);
