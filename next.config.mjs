@@ -19,6 +19,7 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  staticPageGenerationTimeout: 500,
   env: {
     BUILD_TIMESTAMP: new Date().toLocaleString('et-ET')
   }
