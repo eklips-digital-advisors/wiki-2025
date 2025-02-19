@@ -21,7 +21,7 @@ import { toLocaleDateString } from '@/utilities/toLocaleDateString'
 import { formatDateTime } from '@/utilities/formatDateTime'
 
 export const SitesBlock: React.FC = async () => {
-  const buildTime: string = process.env.BUILD_TIMESTAMP || ''
+  const buildTime: string = new Date().toLocaleString('et-ET')
   
   try {
     const payload = await getPayload({ config: configPromise })

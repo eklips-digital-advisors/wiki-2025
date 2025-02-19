@@ -1,8 +1,10 @@
+import { parseDateUTC } from '@/utilities/parseDateUTC'
+
 export const getBsScanBackground = (isoDateString?: string): string => {
   if (!isoDateString) return ''; // Default for missing date
 
-  const date = new Date(isoDateString);
-  if (isNaN(date.getTime())) return 'bg-gray-500'; // Handle invalid date
+  const date = new Date(parseDateUTC(isoDateString));
+  if (isNaN(date.getTime())) return 'bg-emerald-100'; // Handle invalid date
 
   const now = new Date();
   const sixMonthsAgo = new Date();
