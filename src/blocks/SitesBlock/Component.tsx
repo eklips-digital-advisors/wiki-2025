@@ -128,6 +128,7 @@ export const SitesBlock: React.FC = async () => {
             createdAt: formatDateTime(singleRepo?.repository?.created_at) || '',
             lastCommitAt: formatDateTime(singleRepo?.repository?.last_commit_at) || '',
             staging: singleRepo?.repository?.name ? `https://${singleRepo?.repository?.name}.eklipsdevelopment.com` : '',
+            stagingLink: singleRepo?.repository?.name ? `https://eklips.beanstalkapp.com/${singleRepo?.repository?.name}` : '',
             ssl: singleClodflareSsl?.result[0]?.certificate_authority || '',
             twoFa: twoFaExists,
             hiddenLogin: hiddenLoginExists,

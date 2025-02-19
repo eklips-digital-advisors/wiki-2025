@@ -7,6 +7,7 @@ export interface SiteItem {
   integrations: {repository: string, cloudflare: string, pingdom: string}
   cloudflare: string
   staging: string
+  stagingLink: string
   production: string
   createdAt: string
   lastCommitAt: string

@@ -5,7 +5,7 @@ import {
   ArrowUpDown,
   ChevronDown,
   ChevronUp,
-  Clock,
+  Clock, Database,
   ExternalLink,
   ExternalLinkIcon,
   FileDown,
@@ -29,11 +29,13 @@ import CspTable from '@/blocks/SitesBlock/CspTable'
 import CheckIcon from '@/blocks/SitesBlock/CheckIcon'
 import { exportToExcel } from '@/utilities/exportToExcel'
 import { parseDateUTC } from '@/utilities/parseDateUTC'
+import SecondarySearch from '@/components/SearchSecondary'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [pullText, setPullText] = useState('Pull new data')
+  const [searchValue, setSearchValue] = useState('')
   const { latestWp, wpVersionLatestPercentage, phpApiData, buildTime } = extraInfo
 
   const revalidate = async () => {
@@ -47,6 +49,13 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     setLoading(false)
     setPullText('Pull new data')
   }, [buildTime])
+
+  const handleChange = (e: any) => {
+    e.target.addEventListener('keyup', function () {
+      const value = e.target.value.toLowerCase()
+      setSearchValue(value)
+    })
+  }
 
   const [selectedColumns, setSelectedColumns] = useState(
     columns.filter((col) => col.defaultVisible).map((col) => col.key),
@@ -102,7 +111,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
 
   return (
     <div>
-      <div className="mb-10 text-sm flex flex-wrap items-center gap-4">
+      <div className="text-sm flex flex-wrap items-center gap-4">
         <div className="">
           Latest WP <span className="bg-emerald-100 px-1 py-[2px] leading-[1]">{latestWp}</span> (
           <Link href="https://api.wordpress.org/core/version-check/1.7/" target="_blank">
@@ -122,17 +131,20 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         {buildTime && (
           <p className="text-zinc-500">Last update: {buildTime}</p>
         )}
-        <Button
-          className="ml-auto cursor-pointer p-0"
-          title="Export to Excel"
-          variant="link"
-          size="sm"
-          onClick={() => exportToExcel(sites)}
-        >
-          <FileDown className="w-5 transition text-emerald-500 hover:text-emerald-400" />
-        </Button>
+        <div className="ml-auto flex items-center gap-2">
+          <SecondarySearch handleChange={handleChange} />
+          <Button
+            className="cursor-pointer p-0"
+            title="Export to Excel"
+            variant="link"
+            size="sm"
+            onClick={() => exportToExcel(sites)}
+          >
+            <FileDown className="w-5 transition text-emerald-500 hover:text-emerald-400" />
+          </Button>
+        </div>
       </div>
-      <div className="bg-white mb-8 flex gap-1 flex-wrap sticky top-20">
+      <div className="bg-white pt-8 mb-8 flex gap-1 flex-wrap sticky top-20 z-10">
         {columns
           .filter((col) => col.key !== 'index')
           .map((col) => (
@@ -193,7 +205,9 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
             </tr>
           </thead>
           <tbody>
-            {sortedSites.map((site, index) => (
+            {sortedSites
+              .filter(site => site.title.toLowerCase().includes(searchValue))
+              .map((site, index) => (
               <tr key={site.id}>
                 {selectedColumns.includes('index') && (
                   <td className="text-sm text-zinc-400">{index + 1}</td>
@@ -214,13 +228,23 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('staging') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.staging && (
-                      <Link
-                        target="_blank"
-                        href={site?.staging}
-                      >
-                        <ExternalLink className="w-4" />
-                      </Link>
+                    {site?.staging && site?.stagingLink && (
+                      <div className="flex gap-2 items-center">
+                        <Link
+                          title="Stage URL"
+                          target="_blank"
+                          href={site?.staging}
+                        >
+                          <ExternalLink className="w-4" />
+                        </Link>
+                        <Link
+                          title="Repository link"
+                          target="_blank"
+                          href={site?.stagingLink}
+                        >
+                          <Database className="w-4" />
+                        </Link>
+                      </div>
                     )}
                   </td>
                 )}
