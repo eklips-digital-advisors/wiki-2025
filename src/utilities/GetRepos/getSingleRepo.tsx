@@ -1,9 +1,6 @@
 export default async function getSingleRepo(path: string | number) {
   if (!path) return '';
 
-  console.log(`waiting for 0.2 seconds...`);
-  await new Promise((resolve) => setTimeout(resolve, 200));
-
   try {
     const auth = Buffer.from(
       `${process.env.BEANSTALK_USR}:${process.env.BEANSTALK_PWD}`
