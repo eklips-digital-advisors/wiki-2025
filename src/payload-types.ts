@@ -93,7 +93,7 @@ export interface Site {
     pingdom?: string | null;
     cloudflare?: string | null;
   };
-  'site/service'?: 'corporate' | null;
+  siteService?: 'corporate' | null;
   hosting?: 'adminor' | null;
   server?:
     | (
@@ -672,7 +672,7 @@ export interface SitesSelect<T extends boolean = true> {
         pingdom?: T;
         cloudflare?: T;
       };
-  'site/service'?: T;
+  siteService?: T;
   hosting?: T;
   server?: T;
   ipRestriction?: T;

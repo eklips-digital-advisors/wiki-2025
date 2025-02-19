@@ -64,7 +64,7 @@ export const Sites: CollectionConfig<'sites'> = {
       ],
     },
     {
-      name: 'site/service',
+      name: 'siteService',
       type: 'select',
       defaultValue: 'corporate',
       options: [

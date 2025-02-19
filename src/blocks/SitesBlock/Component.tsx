@@ -21,7 +21,7 @@ import { toLocaleDateString } from '@/utilities/toLocaleDateString'
 import { formatDateTime } from '@/utilities/formatDateTime'
 
 export const SitesBlock: React.FC = async () => {
-  const buildTime: Date = new Date()
+  const buildTime: string = process.env.BUILD_TIMESTAMP || ''
   
   try {
     const payload = await getPayload({ config: configPromise })
@@ -71,7 +71,7 @@ export const SitesBlock: React.FC = async () => {
           const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null
           const singleRepo = repoPath ? await getSingleRepo(repoPath) : null
 
-          let singleRepoWpVersionParsed = null
+          let singleRepoWpVersionParsed = ''
           let twoFaExists = false
           let hiddenLoginExists = false
           let isCwaas = null
@@ -94,7 +94,14 @@ export const SitesBlock: React.FC = async () => {
             const versionPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-includes/version.php&contents=true`
             const singleRepoWpVersion = await getSingleRepo(versionPath)
 
-            singleRepoWpVersionParsed = singleRepoWpVersion?.contents?.match(/\$wp_version\s*=\s*'([^']+)'/)?.[1] ?? null
+            if (singleRepoWpVersion && singleRepoWpVersion.contents) {
+                const match = singleRepoWpVersion.contents.match(/\$wp_version\s*=\s*'([^']+)'/);
+                if (match) {
+                    singleRepoWpVersionParsed = match[1];
+                }
+            }
+            
+            console.log('singleRepoWpVersionParsed', singleRepoWpVersionParsed)
 
             if (singleRepoWpVersionParsed === latestWp) wpSitesWithLatestSoftware++
             if (repoPath) totalWpsites++
@@ -111,7 +118,7 @@ export const SitesBlock: React.FC = async () => {
             wcagLevel: site?.wcagLevel,
             bsScan: site?.bsScan ? formatDateTime(site?.bsScan) : '',
             phpVersion: site?.phpVersion,
-            "site/service": site["site/service"] ?? '',
+            siteService: site?.siteService ?? '',
             production: singlePingdom?.hostname ? `https://${singlePingdom?.hostname + singlePingdom?.type?.http?.url}` : '',
             wpVersion: singleRepoWpVersionParsed || (prodFetch ? `Non WP (${prodFetch.get("x-powered-by") ?? ''})` : 'Unknown'),
             productionDate: singlePingdom?.hostname ? toLocaleDateString(singlePingdom?.created) : '',

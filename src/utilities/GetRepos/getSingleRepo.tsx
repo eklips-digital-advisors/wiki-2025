@@ -17,8 +17,8 @@ export default async function getSingleRepo(path: string | number) {
     const response = await fetch(url, { headers })
 
     if (!response.ok) {
-      return
-      // throw new Error(`HTTP error!`);
+      console.error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+      return null;
     }
 
     return await response.json();

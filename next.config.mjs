@@ -19,6 +19,9 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  env: {
+    BUILD_TIMESTAMP: new Date().toLocaleString('et-ET')
+  }
 }
 
 export default withPayload(nextConfig)

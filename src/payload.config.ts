@@ -15,6 +15,7 @@ import { Sites } from '@/collections/Sites'
 import { Header } from './Header/config'
 import { plugins } from '@/plugins'
 import { Sidebar } from '@/Sidebar/config'
+import { getServerSideURL } from '@/utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -35,6 +36,7 @@ export default buildConfig({
     }
   },
   collections: [Sites, Pages, Posts, Categories, Media, Users],
+  cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Sidebar],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

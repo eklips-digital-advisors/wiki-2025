@@ -1,7 +1,7 @@
 export interface SiteItem {
   id: string
   title: string
-  'site/service': string
+  siteService: string
   wpVersion: string
   productionDate: string
   integrations: {repository: string, cloudflare: string, pingdom: string}
@@ -54,7 +54,7 @@ interface ExtraInfo {
   latestWp: string
   phpApiData: {[key: string]: { name: string }}
   wpVersionLatestPercentage: number
-  buildTime: Date
+  buildTime?: string
 }
 
 export interface SitesBlockProps {

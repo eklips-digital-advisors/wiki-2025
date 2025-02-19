@@ -28,7 +28,7 @@ import PathTable from '@/blocks/SitesBlock/PathTable'
 import CspTable from '@/blocks/SitesBlock/CspTable'
 import CheckIcon from '@/blocks/SitesBlock/CheckIcon'
 import { exportToExcel } from '@/utilities/exportToExcel'
-import { parseDate } from '@/utilities/parseDate'
+import { parseDateUTC } from '@/utilities/parseDateUTC'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -77,18 +77,22 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     const aValue = a[sortConfig.key as keyof SiteItem] as string
     const bValue = b[sortConfig.key as keyof SiteItem] as string
 
-    // Check if the values are in the correct date-time format (YYYY/MM/DD HH:mm:ss Z)
-    const dateRegex = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2} [+-]\d{4}$/
+    const isDateFormat = (value: string) => /^\d{2}\.\d{2}\.\d{4}$/.test(value);
 
-    const isDateFormat = dateRegex.test(aValue) && dateRegex.test(bValue)
+    const isADate = isDateFormat(aValue);
+    const isBDate = isDateFormat(bValue);
 
-    if (isDateFormat) {
-      const dateA = new Date(aValue)
-      const dateB = new Date(bValue)
+    if (isADate && isBDate) {
+      const dateA = parseDateUTC(aValue);
+      const dateB = parseDateUTC(bValue);
+
+      if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+        return 0; // Handle as equal if dates are invalid
+      }
 
       return sortConfig.direction === 'asc'
         ? dateA.getTime() - dateB.getTime()
-        : dateB.getTime() - dateA.getTime()
+        : dateB.getTime() - dateA.getTime();
     }
 
     if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
@@ -116,7 +120,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
           {pullText}
         </Button>
         {buildTime && (
-          <p className="text-zinc-500">Last update: {buildTime.toLocaleString('et-ET')}</p>
+          <p className="text-zinc-500">Last update: {buildTime}</p>
         )}
         <Button
           className="ml-auto cursor-pointer p-0"
@@ -237,7 +241,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('siteService') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site['site/service']}
+                    {site?.siteService}
                   </td>
                 )}
                 {selectedColumns.includes('hosting') && (

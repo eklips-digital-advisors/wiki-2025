@@ -6,11 +6,12 @@ import { cn } from '@/utilities/ui'
 import { useSelectedLayoutSegments } from 'next/navigation'
 import { PayloadAdminBar } from 'payload-admin-bar'
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 
 import './index.scss'
 
 import { getClientSideURL } from '@/utilities/getURL'
+import { useFetchPageOrPost } from '@/utilities/useFetchPageOrPost'
 
 const baseClass = 'admin-bar'
 
@@ -34,13 +35,16 @@ export const AdminBar: React.FC<{
   const segments = useSelectedLayoutSegments()
   const [show, setShow] = useState(false)
   const collection = (
-    collectionLabels[segments?.[1] as keyof typeof collectionLabels] ? segments[1] : 'pages'
+    collectionLabels[segments?.[0] as keyof typeof collectionLabels] ? segments[0] : 'pages'
   ) as keyof typeof collectionLabels
   const router = useRouter()
 
   const onAuthChange = React.useCallback((user: PayloadMeUser) => {
     setShow(Boolean(user?.id))
   }, [])
+
+  const { slug } = useParams()
+  const id = useFetchPageOrPost(slug as string);
 
   return (
     <div
@@ -64,6 +68,7 @@ export const AdminBar: React.FC<{
             plural: collectionLabels[collection]?.plural || 'Pages',
             singular: collectionLabels[collection]?.singular || 'Page',
           }}
+          id={id || ''}
           logo={<Title />}
           onAuthChange={onAuthChange}
           onPreviewExit={() => {

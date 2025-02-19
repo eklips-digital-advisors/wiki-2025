@@ -27,6 +27,12 @@ export default async function Layout({ children }: { children: React.ReactNode }
         <AdminBar
           adminBarProps={{
             preview: isEnabled,
+            createProps: {
+              target: '_self',
+            },
+            editProps: {
+              target: '_self',
+            }
           }}
         />
 
