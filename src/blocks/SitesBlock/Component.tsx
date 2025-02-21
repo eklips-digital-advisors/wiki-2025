@@ -49,10 +49,17 @@ export const SitesBlock: React.FC = async () => {
     for (const site of sites) {
       try {
         const siteIntegrationsCloudflare = site?.integrations?.cloudflare;
-        const singleClodflare = siteIntegrationsCloudflare ? await getSingleCloudflareItem(siteIntegrationsCloudflare) : null;
-        const singleClodflareSsl = siteIntegrationsCloudflare ? await getSingleCloudflareItemSsl(siteIntegrationsCloudflare) : null;
-        const singleClodflareAnalytics = siteIntegrationsCloudflare ? await getSingleCloudflareItemStats(siteIntegrationsCloudflare) : null;
-        const singleClodflareAnalyticsMultipleDays = siteIntegrationsCloudflare ? await getSingleCloudflareItemStatsMultipleDays(siteIntegrationsCloudflare) : null;
+
+        const [singleClodflare, singleClodflareSsl, singleClodflareAnalytics, singleClodflareAnalyticsMultipleDays] =
+          siteIntegrationsCloudflare
+            ? await Promise.all([
+                getSingleCloudflareItem(siteIntegrationsCloudflare),
+                getSingleCloudflareItemSsl(siteIntegrationsCloudflare),
+                getSingleCloudflareItemStats(siteIntegrationsCloudflare),
+                getSingleCloudflareItemStatsMultipleDays(siteIntegrationsCloudflare),
+              ])
+            : [null, null, null, null];
+
         const singleClodflareUrl = singleClodflare?.result?.name && singleClodflare?.result?.owner?.id
           ? `https://dash.cloudflare.com/${singleClodflare?.result?.owner?.id}/${singleClodflare?.result?.name}`
           : null;
@@ -64,14 +71,18 @@ export const SitesBlock: React.FC = async () => {
 
         const csp = prodFetch ? prodFetch?.get("content-security-policy") : "";
 
-        const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : false;
-        const hasCookiebot = siteUrl ? await getCookiebot(siteUrl) : false;
-        const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : false;
-        const hasCisionScript = siteUrl ? await getCisionScript(siteUrl) : false;
+        const [hasGoogleAnalytics, hasCookiebot, hasMfnScript, hasCisionScript] = siteUrl
+          ? await Promise.all([
+              checkGoogleAnalytics(siteUrl),
+              getCookiebot(siteUrl),
+              getMfnScript(siteUrl),
+              getCisionScript(siteUrl),
+            ])
+          : [false, false, false, false];
+
         const siteIntgrationRepository = site?.integrations?.repository;
 
         const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null;
-        await promiseDelay();
         const singleRepo = repoPath ? await getSingleRepo(repoPath) : null;
 
         let singleRepoWpVersionParsed = "";
@@ -89,7 +100,6 @@ export const SitesBlock: React.FC = async () => {
 
           const cwaasPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas`;
           isCwaas = await getSingleRepo(cwaasPath) ? "CWAAS" : null;
-          await promiseDelay();
 
           const loadPhpPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas/framework/load.php&contents=true`;
           const loadPhp = await getSingleRepo(loadPhpPath);
