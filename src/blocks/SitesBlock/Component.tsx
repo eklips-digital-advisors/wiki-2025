@@ -23,7 +23,7 @@ import { promiseDelay } from '@/utilities/promiseDelay'
 
 export const SitesBlock: React.FC = async () => {
   const buildTime: string = new Date().toLocaleString('et-ET', { timeZone: "Europe/Tallinn" })
-  
+
   try {
     const payload = await getPayload({ config: configPromise })
 
@@ -44,120 +44,124 @@ export const SitesBlock: React.FC = async () => {
     let wpSitesWithLatestSoftware = 0
     let totalWpsites = 0
 
-    // Fetch data for each site in parallel
-    const enrichedSites = await Promise.all(
-      sites.map(async (site) => {
-        
-        try {
-          const siteIntegrationsCloudflare= site?.integrations?.cloudflare
-          const singleClodflare = siteIntegrationsCloudflare ? await getSingleCloudflareItem(siteIntegrationsCloudflare) : null
-          const singleClodflareSsl = siteIntegrationsCloudflare ? await getSingleCloudflareItemSsl(siteIntegrationsCloudflare) : null
-          const singleClodflareAnalytics = siteIntegrationsCloudflare ? await getSingleCloudflareItemStats(siteIntegrationsCloudflare) : null
-          const singleClodflareAnalyticsMultipleDays = siteIntegrationsCloudflare ? await getSingleCloudflareItemStatsMultipleDays(siteIntegrationsCloudflare) : null
-          const singleClodflareUrl = singleClodflare?.result?.name && singleClodflare?.result?.owner?.id ? `https://dash.cloudflare.com/${singleClodflare?.result?.owner?.id}/${singleClodflare?.result?.name}` : null
+    const enrichedSites = [];
 
-          const singlePingdom = site?.integrations?.pingdom ? await getSinglePingdom(site?.integrations?.pingdom) : null
-          const prodHostname = singlePingdom?.hostname ?? ""
-          const siteUrl = prodHostname ? `https://${prodHostname}${singlePingdom?.type?.http?.url ?? ""}` : null;
-          const prodFetch = siteUrl ? await getHeaders(siteUrl) : null;
+    for (const site of sites) {
+      try {
+        const siteIntegrationsCloudflare = site?.integrations?.cloudflare;
+        const singleClodflare = siteIntegrationsCloudflare ? await getSingleCloudflareItem(siteIntegrationsCloudflare) : null;
+        const singleClodflareSsl = siteIntegrationsCloudflare ? await getSingleCloudflareItemSsl(siteIntegrationsCloudflare) : null;
+        const singleClodflareAnalytics = siteIntegrationsCloudflare ? await getSingleCloudflareItemStats(siteIntegrationsCloudflare) : null;
+        const singleClodflareAnalyticsMultipleDays = siteIntegrationsCloudflare ? await getSingleCloudflareItemStatsMultipleDays(siteIntegrationsCloudflare) : null;
+        const singleClodflareUrl = singleClodflare?.result?.name && singleClodflare?.result?.owner?.id
+          ? `https://dash.cloudflare.com/${singleClodflare?.result?.owner?.id}/${singleClodflare?.result?.name}`
+          : null;
 
-          const csp = prodFetch ? prodFetch?.get('content-security-policy') : '';
+        const singlePingdom = site?.integrations?.pingdom ? await getSinglePingdom(site?.integrations?.pingdom) : null;
+        const prodHostname = singlePingdom?.hostname ?? "";
+        const siteUrl = prodHostname ? `https://${prodHostname}${singlePingdom?.type?.http?.url ?? ""}` : null;
+        const prodFetch = siteUrl ? await getHeaders(siteUrl) : null;
 
-          const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : false;
-          const hasCookiebot = siteUrl ? await getCookiebot(siteUrl) : false;
-          const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : false;
-          const hasCisionScript = siteUrl ? await getCisionScript(siteUrl) : false;
-          const siteIntgrationRepository= site?.integrations?.repository
+        const csp = prodFetch ? prodFetch?.get("content-security-policy") : "";
 
-          const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null
-          await promiseDelay(5000)
-          const singleRepo = repoPath ? await getSingleRepo(repoPath) : null
-          await promiseDelay(5000)
+        const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : false;
+        const hasCookiebot = siteUrl ? await getCookiebot(siteUrl) : false;
+        const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : false;
+        const hasCisionScript = siteUrl ? await getCisionScript(siteUrl) : false;
+        const siteIntgrationRepository = site?.integrations?.repository;
 
-          let singleRepoWpVersionParsed = ''
-          let twoFaExists = false
-          let hiddenLoginExists = false
-          let isCwaas = null
-          let hasSolr = false
+        const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null;
+        await promiseDelay();
+        const singleRepo = repoPath ? await getSingleRepo(repoPath) : null;
+        await promiseDelay();
 
-          if (siteIntgrationRepository) {
-            const twoFaPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/eklips-2fa`
-            twoFaExists = await getSingleRepo(twoFaPath)
-            await promiseDelay(5000)
+        let singleRepoWpVersionParsed = "";
+        let twoFaExists = false;
+        let hiddenLoginExists = false;
+        let isCwaas = null;
+        let hasSolr = false;
 
-            const hiddenLoginPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/wps-hide-login`
-            hiddenLoginExists = await getSingleRepo(hiddenLoginPath)
-            await promiseDelay(5000)
+        if (siteIntgrationRepository) {
+          const twoFaPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/eklips-2fa`;
+          twoFaExists = await getSingleRepo(twoFaPath);
+          await promiseDelay();
 
-            const cwaasPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas`
-            isCwaas = await getSingleRepo(cwaasPath) ? 'CWAAS' : null
-            await promiseDelay(5000)
+          const hiddenLoginPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/wps-hide-login`;
+          hiddenLoginExists = await getSingleRepo(hiddenLoginPath);
+          await promiseDelay();
 
-            const loadPhpPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas/framework/load.php&contents=true`
-            const loadPhp = await getSingleRepo(loadPhpPath)
-            if (loadPhp && loadPhp?.contents.includes('box-solr/solr.php')) hasSolr = true
-            await promiseDelay(5000)
+          const cwaasPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas`;
+          isCwaas = await getSingleRepo(cwaasPath) ? "CWAAS" : null;
+          await promiseDelay();
 
-            const versionPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-includes/version.php&contents=true`
-            const singleRepoWpVersion = await getSingleRepo(versionPath)
-            await promiseDelay(5000)
+          const loadPhpPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas/framework/load.php&contents=true`;
+          const loadPhp = await getSingleRepo(loadPhpPath);
+          if (loadPhp && loadPhp?.contents.includes("box-solr/solr.php")) hasSolr = true;
+          await promiseDelay();
 
-            if (singleRepoWpVersion && singleRepoWpVersion.contents) {
-                const match = singleRepoWpVersion.contents.match(/\$wp_version\s*=\s*'([^']+)'/);
-                if (match) {
-                    singleRepoWpVersionParsed = match[1];
-                }
+          const versionPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-includes/version.php&contents=true`;
+          const singleRepoWpVersion = await getSingleRepo(versionPath);
+          await promiseDelay();
+
+          if (singleRepoWpVersion && singleRepoWpVersion.contents) {
+            const match = singleRepoWpVersion.contents.match(/\$wp_version\s*=\s*'([^']+)'/);
+            if (match) {
+              singleRepoWpVersionParsed = match[1];
             }
-
-            if (singleRepoWpVersionParsed === latestWp) wpSitesWithLatestSoftware++
-            if (repoPath) totalWpsites++
           }
 
-          return {
-            id: site.id,
-            title: site.title,
-            ipRestriction: site?.ipRestriction,
-            hosting: site?.hosting,
-            server: site?.server,
-            csp: csp ? csp : '',
-            wcagUpdated: site?.wcagUpdated,
-            wcagLevel: site?.wcagLevel,
-            bsScan: site?.bsScan ? formatDateTime(site?.bsScan) : '',
-            phpVersion: site?.phpVersion,
-            siteService: site?.siteService ?? '',
-            production: singlePingdom?.hostname ? `https://${singlePingdom?.hostname + singlePingdom?.type?.http?.url}` : '',
-            wpVersion: singleRepoWpVersionParsed || (prodFetch ? `Non WP (${prodFetch.get("x-powered-by") ?? ''})` : 'Unknown'),
-            productionDate: singlePingdom?.hostname ? toLocaleDateString(singlePingdom?.created) : '',
-            cloudflare: prodFetch ? prodFetch?.get('server')?.toLowerCase() : '',
-            cloudflarePlan: singleClodflare?.result?.plan?.name,
-            cloudflareRequests: singleClodflareAnalytics?.requests ? singleClodflareAnalytics?.requests : null,
-            cloudflareBandwidth: singleClodflareAnalytics?.bandwidth ? Number(singleClodflareAnalytics?.bandwidth.toFixed(2)) : null,
-            cloudflarePercentage: singleClodflareAnalytics?.percentageBandWidth ? Number(singleClodflareAnalytics?.percentageBandWidth.toFixed(1)) : null,
-            createdAt: formatDateTime(singleRepo?.repository?.created_at) || '',
-            lastCommitAt: formatDateTime(singleRepo?.repository?.last_commit_at) || '',
-            staging: singleRepo?.repository?.name ? `https://${singleRepo?.repository?.name}.eklipsdevelopment.com` : '',
-            stagingLink: singleRepo?.repository?.name ? `https://eklips.beanstalkapp.com/${singleRepo?.repository?.name}` : '',
-            ssl: singleClodflareSsl?.result[0]?.certificate_authority || '',
-            twoFa: twoFaExists,
-            hiddenLogin: hiddenLoginExists,
-            framework: site?.framework ? site?.framework : isCwaas,
-            pressReleases: {cision: hasCisionScript, mfn: hasMfnScript},
-            newsFeeds: site?.newsFeeds,
-            dataProvider: site?.dataProvider,
-            lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : '',
-            pingdomLink: singlePingdom?.hostname ? `https://my.pingdom.com/app/reports/uptime#check=${singlePingdom.id}` : null,
-            hasSolr,
-            hasGoogleAnalytics,
-            hasCookiebot,
-            singleClodflareAnalyticsMultipleDays,
-            singleClodflareUrl
-          }
-        } catch (error) {
-          console.error(`Error processing site ${site.id}:`, error)
-          return null // Skip site if it fails
+          if (singleRepoWpVersionParsed === latestWp) wpSitesWithLatestSoftware++;
+          if (repoPath) totalWpsites++;
         }
-      })
-    )
+
+        enrichedSites.push({
+          id: site.id,
+          title: site.title,
+          ipRestriction: site?.ipRestriction,
+          hosting: site?.hosting,
+          server: site?.server,
+          csp: csp ? csp : "",
+          wcagUpdated: site?.wcagUpdated,
+          wcagLevel: site?.wcagLevel,
+          bsScan: site?.bsScan ? formatDateTime(site?.bsScan) : "",
+          phpVersion: site?.phpVersion,
+          siteService: site?.siteService ?? "",
+          production: singlePingdom?.hostname
+            ? `https://${singlePingdom?.hostname + singlePingdom?.type?.http?.url}`
+            : "",
+          wpVersion: singleRepoWpVersionParsed || (prodFetch ? `Non WP (${prodFetch.get("x-powered-by") ?? ""})` : "Unknown"),
+          productionDate: singlePingdom?.hostname ? toLocaleDateString(singlePingdom?.created) : "",
+          cloudflare: prodFetch ? prodFetch?.get("server")?.toLowerCase() : "",
+          cloudflarePlan: singleClodflare?.result?.plan?.name,
+          cloudflareRequests: singleClodflareAnalytics?.requests ? singleClodflareAnalytics?.requests : null,
+          cloudflareBandwidth: singleClodflareAnalytics?.bandwidth ? Number(singleClodflareAnalytics?.bandwidth.toFixed(2)) : null,
+          cloudflarePercentage: singleClodflareAnalytics?.percentageBandWidth
+            ? Number(singleClodflareAnalytics?.percentageBandWidth.toFixed(1))
+            : null,
+          createdAt: formatDateTime(singleRepo?.repository?.created_at) || "",
+          lastCommitAt: formatDateTime(singleRepo?.repository?.last_commit_at) || "",
+          staging: singleRepo?.repository?.name ? `https://${singleRepo?.repository?.name}.eklipsdevelopment.com` : "",
+          stagingLink: singleRepo?.repository?.name ? `https://eklips.beanstalkapp.com/${singleRepo?.repository?.name}` : "",
+          ssl: singleClodflareSsl?.result[0]?.certificate_authority || "",
+          twoFa: twoFaExists,
+          hiddenLogin: hiddenLoginExists,
+          framework: site?.framework ? site?.framework : isCwaas,
+          pressReleases: { cision: hasCisionScript, mfn: hasMfnScript },
+          newsFeeds: site?.newsFeeds,
+          dataProvider: site?.dataProvider,
+          lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : "",
+          pingdomLink: singlePingdom?.hostname ? `https://my.pingdom.com/app/reports/uptime#check=${singlePingdom.id}` : null,
+          hasSolr,
+          hasGoogleAnalytics,
+          hasCookiebot,
+          singleClodflareAnalyticsMultipleDays,
+          singleClodflareUrl,
+        });
+      } catch (error) {
+        console.error(`Error processing site ${site.id}:`, error);
+        // Skip site if it fails
+      }
+    }
 
     // Remove failed sites
     const validSites: SiteItem[] = enrichedSites.filter((site): site is SiteItem => site !== null);

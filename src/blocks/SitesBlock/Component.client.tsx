@@ -112,6 +112,9 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
   return (
     <div>
       <div className="text-sm flex flex-wrap items-center gap-4">
+        <div className="bg-zinc-800 text-white rounded-md px-2">
+          {sites?.length} sites in total
+        </div>
         <div className="">
           Latest WP <span className="bg-emerald-100 px-1 py-[2px] leading-[1]">{latestWp}</span> (
           <Link href="https://api.wordpress.org/core/version-check/1.7/" target="_blank">
@@ -413,7 +416,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     )}
                   </td>
                 )}
-                {selectedColumns.includes('cloudflareBandwidth') && (
+                {selectedColumns.includes('cloudflarePercentage') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm`}>
                     <span className="flex gap-2 items-center">
                       <span

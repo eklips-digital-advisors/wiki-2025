@@ -29,7 +29,7 @@ export const columns = [
   { key: 'bsScan', label: 'BS Scan', defaultVisible: false, sortable: true, auto: false, type: 'test' },
   { key: 'lastResponsetime', label: 'Response time', defaultVisible: true, sortable: true, auto: true, type: 'test' },
   {
-    key: 'cloudflareBandwidth',
+    key: 'cloudflarePercentage',
     label: 'Cloudflare 24hrs bandwidth (GB) / requests',
     defaultVisible: true,
     sortable: true,
