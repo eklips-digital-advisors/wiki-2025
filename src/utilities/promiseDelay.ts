@@ -5,6 +5,6 @@ export function promiseDelay() {
     return 0;
   }
 
-  console.log(`delay 4200ms`);
-  return new Promise(resolve => setTimeout(resolve, 4200));
+  console.log(`delay 1200ms`);
+  return new Promise(resolve => setTimeout(resolve, 1200));
 }

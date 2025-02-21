@@ -73,7 +73,6 @@ export const SitesBlock: React.FC = async () => {
         const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null;
         await promiseDelay();
         const singleRepo = repoPath ? await getSingleRepo(repoPath) : null;
-        await promiseDelay();
 
         let singleRepoWpVersionParsed = "";
         let twoFaExists = false;
@@ -84,11 +83,9 @@ export const SitesBlock: React.FC = async () => {
         if (siteIntgrationRepository) {
           const twoFaPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/eklips-2fa`;
           twoFaExists = await getSingleRepo(twoFaPath);
-          await promiseDelay();
 
           const hiddenLoginPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/plugins/wps-hide-login`;
           hiddenLoginExists = await getSingleRepo(hiddenLoginPath);
-          await promiseDelay();
 
           const cwaasPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas`;
           isCwaas = await getSingleRepo(cwaasPath) ? "CWAAS" : null;
@@ -97,11 +94,9 @@ export const SitesBlock: React.FC = async () => {
           const loadPhpPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas/framework/load.php&contents=true`;
           const loadPhp = await getSingleRepo(loadPhpPath);
           if (loadPhp && loadPhp?.contents.includes("box-solr/solr.php")) hasSolr = true;
-          await promiseDelay();
 
           const versionPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-includes/version.php&contents=true`;
           const singleRepoWpVersion = await getSingleRepo(versionPath);
-          await promiseDelay();
 
           if (singleRepoWpVersion && singleRepoWpVersion.contents) {
             const match = singleRepoWpVersion.contents.match(/\$wp_version\s*=\s*'([^']+)'/);
