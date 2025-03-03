@@ -54,10 +54,18 @@
   }
 }
 
+.pill-container {
+  top: 56px;
+}
+
 body:has(.admin-bar:not(.hidden)) {
   .header-top,
   header.contents {
     top: 36px;
+  }
+
+  .pill-container {
+    top: 92px;
   }
 }
 

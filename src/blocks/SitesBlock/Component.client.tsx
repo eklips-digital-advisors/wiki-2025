@@ -147,7 +147,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
           </Button>
         </div>
       </div>
-      <div className="bg-white pt-8 mb-8 flex gap-1 flex-wrap sticky top-[68px] z-10">
+      <div className="pill-container bg-white pt-8 mb-8 flex gap-1 flex-wrap sticky z-10">
         {columns
           .filter((col) => col.key !== 'index')
           .map((col) => (
