@@ -34,7 +34,7 @@ const Pill: React.FC<PillProps> = ({ active = false, type, children, onClick }) 
       role={'button'}
       aria-label={'Toggle columns'}
       onClick={onClick}
-      className={`border border-b-2 border-l-zinc-300 border-r-zinc-300 border-t-zinc-300 rounded-sm text-sm flex gap-1 items-center px-1 py-[2px] cursor-pointer hover:bg-zinc-200/60 ${active ? 'bg-zinc-200/80' : 'bg-white'} ${getClassNames(type)}`}
+      className={`border border-b-2 border-l-zinc-300 border-r-zinc-300 border-t-zinc-300 rounded-sm text-sm flex gap-1 items-center px-1 py-[2px] cursor-pointer hover:bg-zinc-200/60 ${active ? 'bg-zinc-200' : 'bg-white'} ${getClassNames(type)}`}
     >
       {active ? <X className="w-4" /> : <Plus className="w-4" />}
       {children}
