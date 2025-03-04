@@ -428,13 +428,13 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                           `${site?.cloudflareBandwidth} (${site?.cloudflarePercentage}%) / ${site?.cloudflareRequests}`}
                       </span>
 
-                      {site.singleClodflareAnalyticsMultipleDays ? (
+                      {site.singleClodflareAnalyticsMultipleDays && site.cloudflarePlan === 'Enterprise Website' ? (
                         <>
                           <Chart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
                           <PathTable siteChartData={site.singleClodflareAnalyticsMultipleDays} />
                         </>
                       ) : (
-                        <span className="text-zinc-500">No data</span>
+                        <span className="text-zinc-500 sr-only">No data</span>
                       )}
                       {site?.singleClodflareUrl && (
                         <Link target="_blank" href={site?.singleClodflareUrl}>
