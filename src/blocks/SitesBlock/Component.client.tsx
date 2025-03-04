@@ -40,7 +40,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
 
   const revalidate = async () => {
     setLoading(true)
-    setPullText('Pulling, please wait. Takes around 3-4 minutes')
+    setPullText('Pulling, please wait...')
     await fetch('/next/revalidate', { method: 'POST' })
     router.refresh()
   }
