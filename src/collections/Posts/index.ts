@@ -7,6 +7,7 @@ import {
   HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  EXPERIMENTAL_TableFeature
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '../../access/authenticated'
@@ -91,6 +92,7 @@ export const Posts: CollectionConfig<'posts'> = {
                         FixedToolbarFeature(),
                         InlineToolbarFeature(),
                         HorizontalRuleFeature(),
+                        EXPERIMENTAL_TableFeature()
                       ]
                     },
                   }),
@@ -115,6 +117,7 @@ export const Posts: CollectionConfig<'posts'> = {
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),
+                    EXPERIMENTAL_TableFeature()
                   ]
                 },
               }),
