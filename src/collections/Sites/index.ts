@@ -139,12 +139,12 @@ export const Sites: CollectionConfig<'sites'> = {
           type: 'select',
           options: [
             {
-              label: '2.2 AA',
-              value: 'aa',
+              label: '2.1 AA',
+              value: '21aa',
             },
             {
-              label: '2.2 AAA',
-              value: 'aaa',
+              label: '2.1 AAA',
+              value: '21aaa',
             },
           ],
         },
