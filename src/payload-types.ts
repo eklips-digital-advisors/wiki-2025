@@ -93,11 +93,12 @@ export interface Site {
     pingdom?: string | null;
     cloudflare?: string | null;
   };
-  siteService?: 'corporate' | null;
-  hosting?: 'adminor' | null;
+  siteService?: ('corporate' | 'investor' | 'transaction' | 'campaign' | 'other') | null;
+  hosting?: ('adminor' | 'azure') | null;
   server?:
     | (
         | '06-188-v1'
+        | '06-188-v2'
         | '06-188-v9'
         | '06-188-v18'
         | '06-188-v19'
@@ -105,11 +106,12 @@ export interface Site {
         | '06-188-v21'
         | '06-188-v22'
         | '06-158-v1'
+        | '06-275-v1'
       )
     | null;
   ipRestriction?: boolean | null;
   wcagUpdated?: string | null;
-  wcagLevel?: ('aa' | 'aaa') | null;
+  wcagLevel?: ('21aa' | '21aaa') | null;
   bsScan?: string | null;
   phpVersion?: ('7.4' | '8.2' | '8.3' | '8.4') | null;
   framework?: ('cwaas' | 'eklips_v1' | 'eklips_v2') | null;

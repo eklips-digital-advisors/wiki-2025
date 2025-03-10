@@ -98,6 +98,10 @@ export const Sites: CollectionConfig<'sites'> = {
           label: 'Adminor',
           value: 'adminor',
         },
+        {
+          label: 'Azure',
+          value: 'azure',
+        },
       ],
     },
     {

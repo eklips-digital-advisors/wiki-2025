@@ -295,15 +295,10 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 {selectedColumns.includes('cloudflare') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site.cloudflare === 'cloudflare' ? (
-                      <CloudFlare className="w-12" />
+                      <span className="text-xs"><CloudFlare className="w-12" /> {site.cloudflarePlan}</span>
                     ) : (
                       site?.cloudflare
                     )}
-                  </td>
-                )}
-                {selectedColumns.includes('cloudflarePlan') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site.cloudflarePlan}
                   </td>
                 )}
                 {selectedColumns.includes('ssl') && (

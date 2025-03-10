@@ -11,7 +11,6 @@ export const columns = [
   { key: 'server', label: 'Server', defaultVisible: false, sortable: true, auto: false, type: 'server' },
   { key: 'wpVersion', label: 'WP Version', defaultVisible: true, sortable: true, auto: true, type: 'server' },
   { key: 'cloudflare', label: 'Cloudflare', defaultVisible: true, sortable: true, auto: true, type: 'server' },
-  { key: 'cloudflarePlan', label: 'Cloudflare plan', defaultVisible: false, sortable: false, auto: true, type: 'server' },
   { key: 'ssl', label: 'SSL', defaultVisible: false, sortable: false, auto: true, type: 'server' },
   { key: 'ipRestriction', label: 'IP Restriction', defaultVisible: false, sortable: false, auto: false, type: 'server' },
   { key: 'csp', label: 'CSP', defaultVisible: false, sortable: false, auto: true, type: 'server' },
