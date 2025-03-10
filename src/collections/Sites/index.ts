@@ -227,16 +227,6 @@ export const Sites: CollectionConfig<'sites'> = {
     },
     {
       type: 'select',
-      name: 'newsFeeds',
-      options: [
-        {
-          label: 'viaTT',
-          value: 'viatt',
-        },
-      ],
-    },
-    {
-      type: 'select',
       name: 'dataProvider',
       options: [
         {
