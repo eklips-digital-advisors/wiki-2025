@@ -72,6 +72,22 @@ export const Sites: CollectionConfig<'sites'> = {
           label: 'Corporate',
           value: 'corporate',
         },
+        {
+          label: 'Investor',
+          value: 'investor',
+        },
+        {
+          label: 'Transaction',
+          value: 'transaction',
+        },
+        {
+          label: 'Campaign',
+          value: 'campaign',
+        },
+        {
+          label: 'Other',
+          value: 'other',
+        },
       ],
     },
     {
@@ -91,6 +107,10 @@ export const Sites: CollectionConfig<'sites'> = {
         {
           label: '06-188-v1',
           value: '06-188-v1',
+        },
+        {
+          label: '06-188-v2',
+          value: '06-188-v2',
         },
         {
           label: '06-188-v9',
@@ -119,6 +139,10 @@ export const Sites: CollectionConfig<'sites'> = {
         {
           label: '06-158-v1',
           value: '06-158-v1',
+        },
+        {
+          label: '06-275-v1',
+          value: '06-275-v1',
         },
       ],
     },
