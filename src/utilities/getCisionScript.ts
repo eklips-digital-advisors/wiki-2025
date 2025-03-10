@@ -9,7 +9,8 @@ export async function getCisionScript(url: string) {
 
     // Check for Cision script
     return (
-      html.includes('cision')
+      html.includes('target-ticker-cision') ||
+        html.includes('publish.ne.cision.com')
     )
   } catch (error) {
     console.error(`Error checking Cision script on ${url}:`, error)
