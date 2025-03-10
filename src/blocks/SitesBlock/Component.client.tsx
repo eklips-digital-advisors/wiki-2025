@@ -357,11 +357,6 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     </span>
                   </td>
                 )}
-                {selectedColumns.includes('newsFeeds') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.newsFeeds}
-                  </td>
-                )}
                 {selectedColumns.includes('dataProvider') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     {site?.dataProvider}
@@ -372,9 +367,9 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     <CheckIcon condition={site?.hasGoogleAnalytics} />
                   </td>
                 )}
-                {selectedColumns.includes('hasCookiebot') && (
+                {selectedColumns.includes('cookieProvider') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    <CheckIcon condition={site?.hasCookiebot} />
+                    {site?.cookieProvider}
                   </td>
                 )}
                 {selectedColumns.includes('wcag') && (

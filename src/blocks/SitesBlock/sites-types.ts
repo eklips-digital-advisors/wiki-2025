@@ -34,13 +34,12 @@ export interface SiteItem {
   updatedAt: string
   pingdom: string
   pressReleases: {cision: boolean, mfn: boolean}
-  newsFeeds: string
   speedTestScan: string
   dataProvider: string
   repository: object
   hasSolr: boolean
   hasGoogleAnalytics: boolean
-  hasCookiebot: boolean
+  cookieProvider: string
   pingdomLink: string | null
   singleClodflareUrl: string | null
   singleClodflareAnalyticsMultipleDays: {

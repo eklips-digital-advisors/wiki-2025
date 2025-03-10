@@ -7,11 +7,17 @@ export async function getCookiebot(url: string) {
 
     const html = await response.text()
 
-    // Check for Cookiebot script
-    return (
+    const hasCookiebot =
       html.includes('https://consent.cookiebot.com/uc.js') ||
       html.includes('<script id="Cookiebot"')
-    )
+
+    const hasOneTrust =
+      html.includes('https://cdn.cookielaw.org/')
+
+    if (hasCookiebot) return 'Cookiebot'
+    if (hasOneTrust) return 'OneTrust'
+
+    return ''
   } catch (error) {
     console.error(`Error checking Cookiebot on ${url}:`, error)
     return false

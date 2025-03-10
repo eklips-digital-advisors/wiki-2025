@@ -20,6 +20,7 @@ import {
 import { toLocaleDateString } from '@/utilities/toLocaleDateString'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import pLimit from 'p-limit';
+import { getSSLCertificate } from '@/utilities/getNodeSsl'
 
 export const SitesBlock: React.FC = async () => {
   const buildTime: string = new Date().toLocaleString('et-ET', { timeZone: "Europe/Tallinn" })
@@ -62,10 +63,12 @@ export const SitesBlock: React.FC = async () => {
           const siteUrl = prodHostname ? `https://${prodHostname}${singlePingdom?.type?.http?.url ?? ""}` : null;
           const prodFetch = siteUrl ? await getHeaders(siteUrl) : null;
 
+          const sslIssuerOrganization = prodHostname ? await getSSLCertificate(prodHostname) : '';
+
           const csp = prodFetch ? prodFetch?.get('content-security-policy') : '';
 
           const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : false;
-          const hasCookiebot = siteUrl ? await getCookiebot(siteUrl) : false;
+          const cookieProvider = siteUrl ? await getCookiebot(siteUrl) : '';
           const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : false;
           const hasCisionScript = siteUrl ? await getCisionScript(siteUrl) : false;
           const siteIntgrationRepository= site?.integrations?.repository
@@ -131,18 +134,17 @@ export const SitesBlock: React.FC = async () => {
             lastCommitAt: formatDateTime(singleRepo?.repository?.last_commit_at) || '',
             staging: singleRepo?.repository?.name ? `https://${singleRepo?.repository?.name}.eklipsdevelopment.com` : '',
             stagingLink: singleRepo?.repository?.name ? `https://eklips.beanstalkapp.com/${singleRepo?.repository?.name}` : '',
-            ssl: singleClodflareSsl?.result[0]?.certificate_authority || '',
+            ssl: sslIssuerOrganization || singleClodflareSsl?.result[0]?.certificate_authority || '',
             twoFa: twoFaExists,
             hiddenLogin: hiddenLoginExists,
             framework: site?.framework ? site?.framework : isCwaas,
             pressReleases: {cision: hasCisionScript, mfn: hasMfnScript},
-            newsFeeds: site?.newsFeeds,
             dataProvider: site?.dataProvider,
             lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : '',
             pingdomLink: singlePingdom?.hostname ? `https://my.pingdom.com/app/reports/uptime#check=${singlePingdom.id}` : null,
             hasSolr,
             hasGoogleAnalytics,
-            hasCookiebot,
+            cookieProvider,
             singleClodflareAnalyticsMultipleDays,
             singleClodflareUrl
           }
