@@ -13,7 +13,8 @@ export async function getDataBlocks(url: string) {
       html.includes('target-ticker-mfn') ||
       html.includes('mfn-block') ||
       html.includes('mfn-subscribe') ||
-      html.includes('module-mfn')
+      html.includes('module-mfn') ||
+      html.includes('widget.datablocks.se')
 
     if (dataBlocks) return 'Datablocks'
 
