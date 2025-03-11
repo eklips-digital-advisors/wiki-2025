@@ -226,16 +226,6 @@ export const Sites: CollectionConfig<'sites'> = {
       ],
     },
     {
-      type: 'select',
-      name: 'dataProvider',
-      options: [
-        {
-          label: 'Datablocks',
-          value: 'datablocks',
-        },
-      ],
-    },
-    {
       name: 'publishedAt',
       type: 'date',
       admin: {

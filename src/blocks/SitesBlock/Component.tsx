@@ -10,10 +10,10 @@ import { getSingleCloudflareItem } from '@/utilities/GetCloudflareItems/getSingl
 import { getSingleCloudflareItemStats } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemStats'
 import { getSingleCloudflareItemSsl } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemSsl'
 import { SiteItem } from '@/blocks/SitesBlock/sites-types'
-import { checkGoogleAnalytics } from '@/utilities/getGoogleAnalytics'
-import { getCookiebot } from '@/utilities/getCookiebot'
-import { getMfnScript } from '@/utilities/getMfnScript'
-import { getCisionScript } from '@/utilities/getCisionScript'
+import { checkGoogleAnalytics } from '@/utilities/GetProviders/getGoogleAnalytics'
+import { getCookiebot } from '@/utilities/GetProviders/getCookiebot'
+import { getMfnScript } from '@/utilities/GetProviders/getMfnScript'
+import { getCisionScript } from '@/utilities/GetProviders/getCisionScript'
 import {
   getSingleCloudflareItemStatsMultipleDays
 } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemStatsMultipleDays'
@@ -21,6 +21,7 @@ import { toLocaleDateString } from '@/utilities/toLocaleDateString'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import pLimit from 'p-limit';
 import { getSSLCertificate } from '@/utilities/getNodeSsl'
+import { getDataBlocks } from '@/utilities/GetProviders/getDataBlocks'
 
 export const SitesBlock: React.FC = async () => {
   const buildTime: string = new Date().toLocaleString('et-ET', { timeZone: "Europe/Tallinn" })
@@ -70,6 +71,7 @@ export const SitesBlock: React.FC = async () => {
           const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : false;
           const cookieProvider = siteUrl ? await getCookiebot(siteUrl) : '';
           const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : false;
+          const hasDataBlocks = siteUrl ? await getDataBlocks(siteUrl) : '';
           const hasCisionScript = siteUrl ? await getCisionScript(siteUrl) : false;
           const siteIntgrationRepository= site?.integrations?.repository
 
@@ -107,7 +109,7 @@ export const SitesBlock: React.FC = async () => {
             }
 
             if (singleRepoWpVersionParsed === latestWp) wpSitesWithLatestSoftware++
-            if (repoPath) totalWpsites++
+            if (repoPath && singleRepoWpVersion) totalWpsites++
           }
 
           return {
@@ -139,7 +141,7 @@ export const SitesBlock: React.FC = async () => {
             hiddenLogin: hiddenLoginExists,
             framework: site?.framework ? site?.framework : isCwaas,
             pressReleases: {cision: hasCisionScript, mfn: hasMfnScript},
-            dataProvider: site?.dataProvider,
+            dataProvider: hasDataBlocks,
             lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : '',
             pingdomLink: singlePingdom?.hostname ? `https://my.pingdom.com/app/reports/uptime#check=${singlePingdom.id}` : null,
             hasSolr,
