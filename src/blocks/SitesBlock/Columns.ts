@@ -20,7 +20,7 @@ export const columns = [
   { key: 'hiddenLogin', label: 'Hidden login', defaultVisible: false, sortable: false, auto: true, type: 'feature' },
   { key: 'hasSolr', label: 'SOLR', defaultVisible: false, sortable: false, auto: true, type: 'feature' },
   { key: 'pressReleases', label: 'Press releases', defaultVisible: false, sortable: false, auto: true, type: 'external' },
-  { key: 'dataProvider', label: 'Data provider', defaultVisible: false, sortable: true, auto: true, type: 'external' },
+  { key: 'dataProvider', label: 'Share data provider', defaultVisible: false, sortable: true, auto: true, type: 'external' },
   { key: 'hasGoogleAnalytics', label: 'Analytics', defaultVisible: false, sortable: false, auto: true, type: 'external' },
   { key: 'cookieProvider', label: 'Cookie provider', defaultVisible: false, sortable: true, auto: true, type: 'external' },
   { key: 'wcag', label: 'WCAG', defaultVisible: false, sortable: false, auto: false, type: 'test' },

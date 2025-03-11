@@ -67,6 +67,10 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     )
   }
 
+  const clearAllColumns = () => {
+    setSelectedColumns((prev) => prev.filter((col) => col === "index" || col === "title"));
+  };
+
   const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({
     key: null,
     direction: 'asc',
@@ -134,7 +138,15 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         {buildTime && (
           <p className="text-zinc-500">Last update: {buildTime}</p>
         )}
-        <div className="ml-auto flex items-center gap-2">
+        <Button
+          variant="link"
+          size="sm"
+          className="ml-auto px-0 cursor-pointer underline"
+          onClick={clearAllColumns}
+        >
+          Clear all filters
+        </Button>
+        <div className="flex items-center gap-2">
           <SecondarySearch handleChange={handleChange} />
           <Button
             className="cursor-pointer p-0"

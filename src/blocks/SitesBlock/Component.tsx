@@ -61,7 +61,7 @@ export const SitesBlock: React.FC = async () => {
 
           const singlePingdom = site?.integrations?.pingdom ? await getSinglePingdom(site?.integrations?.pingdom) : null
           const prodHostname = singlePingdom?.hostname ?? ""
-          const siteUrl = prodHostname ? `https://${prodHostname}${singlePingdom?.type?.http?.url ?? ""}` : null;
+          const siteUrl = prodHostname ? `https://${prodHostname}` : null;
           const prodFetch = siteUrl ? await getHeaders(siteUrl) : null;
 
           const sslIssuerOrganization = prodHostname ? await getSSLCertificate(prodHostname) : '';
@@ -124,7 +124,7 @@ export const SitesBlock: React.FC = async () => {
             bsScan: site?.bsScan ? formatDateTime(site?.bsScan) : '',
             phpVersion: site?.phpVersion,
             siteService: site?.siteService ?? '',
-            production: singlePingdom?.hostname ? `https://${singlePingdom?.hostname + singlePingdom?.type?.http?.url}` : '',
+            production: singlePingdom?.hostname ? `https://${singlePingdom?.hostname}` : '',
             wpVersion: singleRepoWpVersionParsed || (prodFetch ? `${prodFetch.get("x-powered-by") ?? ''}` : 'Unknown'),
             productionDate: singlePingdom?.hostname ? toLocaleDateString(singlePingdom?.created) : '',
             cloudflare: prodFetch ? prodFetch?.get('server')?.toLowerCase() : '',
