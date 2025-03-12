@@ -38,7 +38,7 @@ export interface SiteItem {
   dataProvider: string
   repository: object
   hasSolr: boolean
-  hasGoogleAnalytics: boolean
+  hasGoogleAnalytics: string
   cookieProvider: string
   pingdomLink: string | null
   singleClodflareUrl: string | null

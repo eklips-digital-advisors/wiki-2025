@@ -7,10 +7,14 @@ export async function checkGoogleAnalytics(url: string) {
 
     const html = await response.text()
 
-    // Check for Google Analytics tracking codes
-    return (
-      html.includes('https://www.googletagmanager.com/gtm.js?id=')
-    )
+    const analytics = html.includes('google-analytics.com')
+    const tagManager = html.includes('googletagmanager.com')
+
+    if (tagManager && analytics) return 'Google TagManager, Google Analytics'
+    if (analytics) return 'Google Analytics'
+    if (tagManager) return 'Google TagManager'
+
+    return ''
   } catch (error) {
     console.error(`Error checking Google Analytics on ${url}:`, error)
     return false

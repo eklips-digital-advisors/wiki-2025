@@ -68,7 +68,7 @@ export const SitesBlock: React.FC = async () => {
 
           const csp = prodFetch ? prodFetch?.get('content-security-policy') : '';
 
-          const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : false;
+          const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : '';
           const cookieProvider = siteUrl ? await getCookiebot(siteUrl) : '';
           const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : false;
           const hasDataBlocks = siteUrl ? await getDataBlocks(siteUrl) : '';

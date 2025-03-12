@@ -376,7 +376,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('hasGoogleAnalytics') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    <CheckIcon condition={site?.hasGoogleAnalytics} />
+                    {site?.hasGoogleAnalytics}
                   </td>
                 )}
                 {selectedColumns.includes('cookieProvider') && (
