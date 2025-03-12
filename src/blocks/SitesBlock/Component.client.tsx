@@ -30,6 +30,7 @@ import CheckIcon from '@/blocks/SitesBlock/CheckIcon'
 import { exportToExcel } from '@/utilities/exportToExcel'
 import { parseDateUTC } from '@/utilities/parseDateUTC'
 import SecondarySearch from '@/components/SearchSecondary'
+import { ChartPerformance } from '@/blocks/SitesBlock/ChartPerformance'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -433,6 +434,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                       {site.singleClodflareAnalyticsMultipleDays && site.cloudflarePlan === 'Enterprise Website' ? (
                         <>
                           <Chart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                          <ChartPerformance siteChartData={site.singleClodflareAnalyticsMultipleDays} />
                           <PathTable siteChartData={site.singleClodflareAnalyticsMultipleDays} />
                         </>
                       ) : (

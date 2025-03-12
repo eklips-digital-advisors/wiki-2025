@@ -49,6 +49,10 @@ export async function getSingleCloudflareItemStatsMultipleDays(id: string | numb
                   sum {
                       edgeResponseBytes
                   }
+                  avg {
+                    originResponseDurationMs
+                    edgeTimeToFirstByteMs
+                }
               }
             }
           }

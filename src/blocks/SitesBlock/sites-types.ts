@@ -4,7 +4,7 @@ export interface SiteItem {
   siteService: string
   wpVersion: string
   productionDate: string
-  integrations: {repository: string, cloudflare: string, pingdom: string}
+  integrations: { repository: string; cloudflare: string; pingdom: string }
   cloudflare: string
   staging: string
   stagingLink: string
@@ -33,7 +33,7 @@ export interface SiteItem {
   slugLock?: boolean | null
   updatedAt: string
   pingdom: string
-  pressReleases: {cision: boolean, mfn: boolean}
+  pressReleases: { cision: boolean; mfn: boolean }
   speedTestScan: string
   dataProvider: string
   repository: object
@@ -43,16 +43,20 @@ export interface SiteItem {
   pingdomLink: string | null
   singleClodflareUrl: string | null
   singleClodflareAnalyticsMultipleDays: {
-    groupedData: {date: string, requests: string, bandwidth: string, dateTime: string}[]
+    groupedData: { date: string; requests: string; bandwidth: string; dateTime: string }[]
     totalBandwidth: number
     totalRequests: number
-    pathData: {sum: {edgeResponseBytes: number}, dimensions: {clientRequestPath: string}}[]
+    pathData: {
+      sum: { edgeResponseBytes: number }
+      dimensions: { clientRequestPath: string }
+      avg: { edgeTimeToFirstByteMs: number; originResponseDurationMs: number }
+    }[]
   }
 }
 
 interface ExtraInfo {
   latestWp: string
-  phpApiData: {[key: string]: { name: string }}
+  phpApiData: { [key: string]: { name: string } }
   wpVersionLatestPercentage: number
   buildTime: string
 }
