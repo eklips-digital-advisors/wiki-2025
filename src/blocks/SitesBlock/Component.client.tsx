@@ -72,7 +72,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
   };
 
   const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({
-    key: null,
+    key: 'title',
     direction: 'asc',
   })
 
