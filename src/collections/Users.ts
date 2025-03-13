@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '@/access/authenticated'
+import { isAdmin } from '@/utilities/isAdmin'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -16,6 +17,20 @@ export const Users: CollectionConfig = {
   },
   auth: true,
   fields: [
+    {
+      admin: {
+        position: 'sidebar',
+      },
+      name: 'role',
+      type: 'select',
+      defaultValue: ['user'],
+      options: ['user', 'admin'],
+      // access: {
+      //   update: ({ req }) => {
+      //     return isAdmin(req.user)
+      //   },
+      // },
+    },
     {
       name: 'name',
       type: 'text',
