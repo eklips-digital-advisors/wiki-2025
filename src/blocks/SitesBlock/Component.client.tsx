@@ -31,6 +31,8 @@ import { exportToExcel } from '@/utilities/exportToExcel'
 import { parseDateUTC } from '@/utilities/parseDateUTC'
 import SecondarySearch from '@/components/SearchSecondary'
 import { ChartPerformance } from '@/blocks/SitesBlock/ChartPerformance'
+import { getLabel } from '@/utilities/getLabel'
+import { frameworkOptions, wcagOptions } from '@/collections/Sites/selectOptions'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -338,7 +340,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('framework') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase`}>
-                    {site?.framework}
+                    {getLabel(site?.framework, frameworkOptions)}
                   </td>
                 )}
                 {selectedColumns.includes('twoFa') && (
@@ -387,8 +389,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('wcag') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
-                    {site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}
-                    {site?.wcagLevel}
+                    <strong className="block leading-4">{getLabel(site?.wcagLevel, wcagOptions)}</strong>
+                    <span className="leading-4">{site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}</span>
                   </td>
                 )}
                 {selectedColumns.includes('bsScan') && (

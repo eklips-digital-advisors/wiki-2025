@@ -81,7 +81,7 @@ export const SitesBlock: React.FC = async () => {
           let singleRepoWpVersionParsed = ''
           let twoFaExists = false
           let hiddenLoginExists = false
-          let isCwaas = null
+          let isCwaas = ''
           let hasSolr = false
 
           if (siteIntgrationRepository) {
@@ -92,7 +92,7 @@ export const SitesBlock: React.FC = async () => {
             hiddenLoginExists = await limit(() => getSingleRepo(hiddenLoginPath));
 
             const cwaasPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas`
-            isCwaas = await limit(() => getSingleRepo(cwaasPath)) ? 'CWAAS' : null
+            isCwaas = await limit(() => getSingleRepo(cwaasPath)) ? 'CWAAS' : ''
 
             const loadPhpPath = `repositories/${siteIntgrationRepository}/node.json?path=wp-content/themes/cwaas/framework/load.php&contents=true`
             const loadPhp = await limit(() => getSingleRepo(loadPhpPath));
