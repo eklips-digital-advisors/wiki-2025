@@ -25,11 +25,11 @@ export const Users: CollectionConfig = {
       type: 'select',
       defaultValue: ['user'],
       options: ['user', 'admin'],
-      // access: {
-      //   update: ({ req }) => {
-      //     return isAdmin(req.user)
-      //   },
-      // },
+      access: {
+        update: ({ req }) => {
+          return isAdmin(req.user)
+        },
+      },
     },
     {
       name: 'name',
