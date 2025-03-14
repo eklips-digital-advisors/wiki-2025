@@ -270,6 +270,7 @@ export interface User {
   id: string;
   role?: ('user' | 'admin') | null;
   name?: string | null;
+  includeInPlanningTool?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -902,6 +903,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface UsersSelect<T extends boolean = true> {
   role?: T;
   name?: T;
+  includeInPlanningTool?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
