@@ -12,11 +12,18 @@ export async function getCisionBlocks(baseUrl: string) {
     const fetchPromises = paths.map(async (path) => {
       const url = new URL(path, baseUrl).href;
       try {
-        const response = await fetch(url, { method: 'GET' });
+        const response = await fetch(url, { method: 'GET', redirect: 'manual' });
+
+        if (response.status >= 300 && response.status < 400) {
+          console.warn(`Skipping ${url} due to redirect (status: ${response.status})`);
+          return false; // Skip checking this URL if it's a redirect
+        }
+
         if (!response.ok) {
           console.warn(`Failed to fetch ${url}: ${response.status}`);
           return false;
         }
+
         const html = await response.text();
         return (
           html.includes('sharegraph-container') ||
