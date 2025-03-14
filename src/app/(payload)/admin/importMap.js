@@ -28,12 +28,14 @@ import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f
 import { AdminLabel as AdminLabel_65870e975164d8f9606e9c0570c4baed } from '@/blocks/SitesBlock/AdminLabel'
 import { AdminLabel as AdminLabel_8a89170dcab2ba62d0d62b99eaec6de8 } from '@/blocks/PasswordGeneratorBlock/AdminLabel'
 import { EmbedBlockAdmin as EmbedBlockAdmin_6988fc001331360694f061bda37d898b } from '@/blocks/EmbedBlock/AdminComponent'
+import { AdminLabel as AdminLabel_f939e3ea3f230ca39884e14ff5832336 } from '@/blocks/PlanningBlock/AdminLabel'
 import { TableFeatureClient as TableFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/RowLabel'
 import { RowLabelSidebar as RowLabelSidebar_1bbdf57a0f6999b3c1d33f9fb34e8d9e } from '@/Sidebar/RowLabel'
+import { default as default_a29039a4702396a2bcdf90da8fc9c6d5 } from '@/components/Users/AdminUserProfileImage'
 import { default as default_cf95cccfe8c80dcd732ba77db2ae871a } from '@/components/Favicon'
 import { default as default_2b7e2e151f989fb419ce3009e56b903e } from '@/components/Logo'
 import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
@@ -69,12 +71,14 @@ export const importMap = {
   "@/blocks/SitesBlock/AdminLabel#AdminLabel": AdminLabel_65870e975164d8f9606e9c0570c4baed,
   "@/blocks/PasswordGeneratorBlock/AdminLabel#AdminLabel": AdminLabel_8a89170dcab2ba62d0d62b99eaec6de8,
   "@/blocks/EmbedBlock/AdminComponent#EmbedBlockAdmin": EmbedBlockAdmin_6988fc001331360694f061bda37d898b,
+  "@/blocks/PlanningBlock/AdminLabel#AdminLabel": AdminLabel_f939e3ea3f230ca39884e14ff5832336,
   "@payloadcms/richtext-lexical/client#TableFeatureClient": TableFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/Header/RowLabel#RowLabel": RowLabel_ec255a65fa6fa8d1faeb09cf35284224,
   "@/Sidebar/RowLabel#RowLabelSidebar": RowLabelSidebar_1bbdf57a0f6999b3c1d33f9fb34e8d9e,
+  "@/components/Users/AdminUserProfileImage#default": default_a29039a4702396a2bcdf90da8fc9c6d5,
   "@/components/Favicon#default": default_cf95cccfe8c80dcd732ba77db2ae871a,
   "@/components/Logo#default": default_2b7e2e151f989fb419ce3009e56b903e,
   "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6

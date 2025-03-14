@@ -16,6 +16,13 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/resource": "^6.1.15",
+    "@fullcalendar/resource-daygrid": "^6.1.15",
+    "@fullcalendar/resource-timeline": "^6.1.15",
     "@payloadcms/db-mongodb": "latest",
     "@payloadcms/live-preview-react": "^3.19.0",
     "@payloadcms/next": "latest",

@@ -2,7 +2,7 @@ import React from 'react'
 export const AdminLabel = () => {
   return (
     <>
-      <h4>Sites list</h4>
+      <h4>Planning tool</h4>
     </>
   )
 }

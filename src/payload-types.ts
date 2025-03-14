@@ -136,6 +136,7 @@ export interface Page {
     | PasswordGeneratorBlock
     | ArchiveBlock
     | EmbedBlock
+    | PlanningBlock
   )[];
   publishedAt?: string | null;
   slug?: string | null;
@@ -459,6 +460,16 @@ export interface EmbedBlock {
   blockType: 'embedBlock';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PlanningBlock".
+ */
+export interface PlanningBlock {
+  title?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'planning';
+}
+/**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -705,6 +716,7 @@ export interface PagesSelect<T extends boolean = true> {
         passwordGeneratorBlock?: T | PasswordGeneratorBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         embedBlock?: T | EmbedBlockSelect<T>;
+        planning?: T | PlanningBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -810,6 +822,15 @@ export interface ArchiveBlockSelect<T extends boolean = true> {
  */
 export interface EmbedBlockSelect<T extends boolean = true> {
   embed?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PlanningBlock_select".
+ */
+export interface PlanningBlockSelect<T extends boolean = true> {
+  title?: T;
   id?: T;
   blockName?: T;
 }

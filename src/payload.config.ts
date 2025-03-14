@@ -23,6 +23,9 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     user: Users.slug,
+    avatar: {
+      Component: '@/components/Users/AdminUserProfileImage'
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },

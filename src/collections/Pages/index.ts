@@ -5,6 +5,7 @@ import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Archive } from '../../blocks/ArchiveBlock/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { Sites } from '../../blocks/SitesBlock/config'
+import { Planning } from '../../blocks/PlanningBlock/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { PasswordGeneratorBlock } from '../../blocks/PasswordGeneratorBlock/config'
 import { slugField } from '@/fields/slug'
@@ -64,7 +65,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, MediaBlock, Sites, Content, PasswordGeneratorBlock, Archive, EmbedBlock],
+              blocks: [CallToAction, MediaBlock, Sites, Content, PasswordGeneratorBlock, Archive, EmbedBlock, Planning],
               required: true,
               admin: {
                 initCollapsed: false,

@@ -15,6 +15,11 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
+      // Add S3 host configuration
+      {
+        protocol: 'https',
+        hostname: 's3-eu-west-1.amazonaws.com',
+      },
     ],
   },
   reactStrictMode: true,
