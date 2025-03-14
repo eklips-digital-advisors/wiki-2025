@@ -19,7 +19,6 @@ export async function getCisionBlocks(baseUrl: string) {
         }
         const html = await response.text();
         return (
-          html.includes('target-ticker') ||
           html.includes('sharegraph-container') ||
           html.includes('target-sharegraph-wrapper')
         );
