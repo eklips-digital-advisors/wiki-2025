@@ -111,6 +111,13 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         : dateB.getTime() - dateA.getTime();
     }
 
+    if (sortConfig.key === "dataProvider") {
+      const aScore = aValue ? Object.values(aValue).filter(Boolean).length : 0;
+      const bScore = bValue ? Object.values(bValue).filter(Boolean).length : 0;
+
+      return sortConfig.direction === 'asc' ? aScore - bScore : bScore - aScore;
+    }
+
     if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
     if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
     return 0

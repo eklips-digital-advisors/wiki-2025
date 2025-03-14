@@ -51,7 +51,7 @@ export async function getDataBlocks(baseUrl: string) {
 
     const results = await Promise.all(fetchPromises);
 
-    return results.includes(true) ? 'Datablocks' : '';
+    return results.includes(true);
   } catch (error) {
     console.error(`Unexpected error in getDataBlocks:`, error);
     return false;
