@@ -374,7 +374,16 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('dataProvider') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.dataProvider}
+                    <span className="flex gap-1 flex-wrap">
+                      {site?.dataProvider.cisionBlocks && (
+                        <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">
+                          CisionBlocks
+                        </span>
+                      )}
+                      {site?.dataProvider.dataBlocks && (
+                        <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">DataBlocks</span>
+                      )}
+                    </span>
                   </td>
                 )}
                 {selectedColumns.includes('hasGoogleAnalytics') && (

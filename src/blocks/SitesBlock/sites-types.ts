@@ -35,7 +35,7 @@ export interface SiteItem {
   pingdom: string
   pressReleases: { cision: boolean; mfn: boolean }
   speedTestScan: string
-  dataProvider: string
+  dataProvider: { cisionBlocks: boolean; dataBlocks: boolean }
   repository: object
   hasSolr: boolean
   hasGoogleAnalytics: string
