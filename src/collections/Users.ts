@@ -37,6 +37,11 @@ export const Users: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'media',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
       name: 'includeInPlanningTool',
       label: 'Include in Planning Tool',
       type: 'checkbox',

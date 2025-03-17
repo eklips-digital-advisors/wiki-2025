@@ -47,6 +47,11 @@ export const Media: CollectionConfig = {
         width: 500,
         height: 500,
       },
+      {
+        name: 'icon',
+        width: 32,
+        height: 32,
+      },
     ],
   },
 }
