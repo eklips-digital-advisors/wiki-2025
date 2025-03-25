@@ -20,6 +20,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 's3-eu-west-1.amazonaws.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'tw-eu-files.s3-eu-west-1.amazonaws.com',
+      },
     ],
   },
   reactStrictMode: true,

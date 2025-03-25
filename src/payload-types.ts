@@ -17,13 +17,20 @@ export interface Config {
     categories: Category;
     media: Media;
     users: User;
+    projects: Project;
+    'time-entries': TimeEntry;
     search: Search;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    projects: {
+      users: 'users';
+      timeEntries: 'time-entries';
+    };
+  };
   collectionsSelect: {
     sites: SitesSelect<false> | SitesSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
@@ -31,6 +38,8 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    'time-entries': TimeEntriesSelect<false> | TimeEntriesSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -272,6 +281,7 @@ export interface User {
   role?: ('user' | 'admin') | null;
   name?: string | null;
   media?: (string | null) | Media;
+  projects?: (string | Project)[] | null;
   includeInPlanningTool?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -343,6 +353,39 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: string;
+  title?: string | null;
+  projectTeamwork?: string | null;
+  image?: string | null;
+  users?: {
+    docs?: (string | User)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
+  timeEntries?: {
+    docs?: (string | TimeEntry)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "time-entries".
+ */
+export interface TimeEntry {
+  id: string;
+  date: string;
+  hours: number;
+  user: string | User;
+  project: string | Project;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -630,6 +673,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: string | Project;
+      } | null)
+    | ({
+        relationTo: 'time-entries';
+        value: string | TimeEntry;
       } | null)
     | ({
         relationTo: 'search';
@@ -944,6 +995,7 @@ export interface UsersSelect<T extends boolean = true> {
   role?: T;
   name?: T;
   media?: T;
+  projects?: T;
   includeInPlanningTool?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -954,6 +1006,31 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  projectTeamwork?: T;
+  image?: T;
+  users?: T;
+  timeEntries?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "time-entries_select".
+ */
+export interface TimeEntriesSelect<T extends boolean = true> {
+  date?: T;
+  hours?: T;
+  user?: T;
+  project?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

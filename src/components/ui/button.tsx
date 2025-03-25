@@ -23,7 +23,7 @@ const buttonVariants = cva(
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         ghost: 'hover:bg-card hover:text-accent-foreground',
         link: 'text-sm/5 text-zinc-600 transition hover:text-zinc-900',
-        outline: 'border hover:bg-zinc-800 hover:text-white',
+        outline: 'py-1 px-3 border hover:bg-zinc-800 hover:text-white',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
       },
     },

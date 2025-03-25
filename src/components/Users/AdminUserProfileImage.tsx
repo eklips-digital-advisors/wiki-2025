@@ -18,8 +18,9 @@ const AdminUserProfileImage: React.FC = async () => {
       <Image
         src={src}
         alt="Avatas image"
-        style={{ borderRadius: '50%' }}
+        style={{ borderRadius: '50%', objectFit: 'cover' }}
         fill
+        sizes="32px"
       />
     </div>
   ) : (

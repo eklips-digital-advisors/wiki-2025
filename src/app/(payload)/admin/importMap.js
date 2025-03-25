@@ -31,6 +31,8 @@ import { EmbedBlockAdmin as EmbedBlockAdmin_6988fc001331360694f061bda37d898b } f
 import { AdminLabel as AdminLabel_f939e3ea3f230ca39884e14ff5832336 } from '@/blocks/PlanningBlock/AdminLabel'
 import { TableFeatureClient as TableFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { AdminTitle as AdminTitle_d86fe82692f841f091ff1293b9d12447 } from '@/collections/Projects/AdminTitle'
+import { GetProjects as GetProjects_696c81dbd9287d762bd8b8fa4f95e8ec } from '@/utilities/GetTeamwork/getProjects'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/RowLabel'
@@ -74,6 +76,8 @@ export const importMap = {
   "@/blocks/PlanningBlock/AdminLabel#AdminLabel": AdminLabel_f939e3ea3f230ca39884e14ff5832336,
   "@payloadcms/richtext-lexical/client#TableFeatureClient": TableFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "@/collections/Projects/AdminTitle#AdminTitle": AdminTitle_d86fe82692f841f091ff1293b9d12447,
+  "@/utilities/GetTeamwork/getProjects#GetProjects": GetProjects_696c81dbd9287d762bd8b8fa4f95e8ec,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/Header/RowLabel#RowLabel": RowLabel_ec255a65fa6fa8d1faeb09cf35284224,

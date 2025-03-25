@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '@/access/authenticated'
 import { isAdmin, isAdminLevel } from '@/access/isAdmin'
 import { isAdminOrSelf } from '@/access/isAdminOrSelf'
+import { revalidatePlanning } from '@/blocks/PlanningBlock/hooks/revalidatePlanning'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -37,9 +38,16 @@ export const Users: CollectionConfig = {
       type: 'text',
     },
     {
+      label: 'Profile image',
       name: 'media',
       type: 'upload',
       relationTo: 'media',
+    },
+    {
+      name: 'projects',
+      type: 'relationship',
+      relationTo: 'projects',
+      hasMany: true,
     },
     {
       name: 'includeInPlanningTool',
@@ -56,4 +64,7 @@ export const Users: CollectionConfig = {
     }
   ],
   timestamps: true,
+  hooks: {
+    afterChange: [revalidatePlanning]
+  }
 }

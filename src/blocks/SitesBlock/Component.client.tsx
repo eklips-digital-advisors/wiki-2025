@@ -44,7 +44,13 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
   const revalidate = async () => {
     setLoading(true)
     setPullText('Pulling, please wait...')
-    await fetch('/next/revalidate', { method: 'POST' })
+    await fetch('/next/revalidate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ path: '/sites' }), // Pass the path dynamically
+    });
     router.refresh()
   }
 

@@ -12,6 +12,8 @@ import { Posts } from '@/collections/Posts'
 import { Categories } from '@/collections/Categories'
 import { Pages } from '@/collections/Pages'
 import { Sites } from '@/collections/Sites'
+import { Projects } from '@/collections/Projects'
+import { TimeEntries } from '@/collections/TimeEntries'
 import { Header } from './Header/config'
 import { plugins } from '@/plugins'
 import { Sidebar } from '@/Sidebar/config'
@@ -38,7 +40,7 @@ export default buildConfig({
       }
     }
   },
-  collections: [Sites, Pages, Posts, Categories, Media, Users],
+  collections: [Sites, Pages, Posts, Categories, Media, Users, Projects, TimeEntries],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Sidebar],
   editor: lexicalEditor(),
