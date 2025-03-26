@@ -32,7 +32,7 @@ export const SidebarClient: React.FC<{ sidebarPosts: SidebarType }> = ({ sidebar
     if (sidebarPosts?.items) {
       sidebarPosts.items.forEach((mainItem: any) => {
         mainItem.subItems?.forEach((category: any, categoryIndex: number) => {
-          const matchingPost = category.postsOrder?.find(
+          const matchingPost = category?.postsOrder?.find(
             (post: any) => post?.slug === currentSlug
           );
 
