@@ -15,6 +15,7 @@ export const PlanningBlock: React.FC = async () => {
         equals: true,
       }
     },
+    sort: 'position',
     // select: {
     //   name: true,
     //   id: true,

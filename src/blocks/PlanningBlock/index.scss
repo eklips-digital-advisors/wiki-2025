@@ -48,8 +48,10 @@
   }
 
   .load-indicator {
-    left: 4px;
     top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
   }
 
   thead {

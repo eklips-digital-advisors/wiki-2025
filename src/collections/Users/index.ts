@@ -3,6 +3,7 @@ import { authenticated } from '@/access/authenticated'
 import { isAdmin, isAdminLevel } from '@/access/isAdmin'
 import { isAdminOrSelf } from '@/access/isAdminOrSelf'
 import { revalidatePlanning } from '@/blocks/PlanningBlock/hooks/revalidatePlanning'
+import { positionOptions } from '@/collections/Users/positionOptions'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -42,6 +43,11 @@ export const Users: CollectionConfig = {
       name: 'media',
       type: 'upload',
       relationTo: 'media',
+    },
+    {
+      name: 'position',
+      type: 'select',
+      options: positionOptions
     },
     {
       name: 'projects',

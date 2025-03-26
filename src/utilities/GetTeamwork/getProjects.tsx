@@ -1,10 +1,9 @@
 import React from 'react';
-import { DropdownValueAsLabel } from '@/components/DropdownValueAsLabel'
 import { Dropdown } from '@/components/Dropdown'
 
 export const GetProjects: React.FC = async () => {
   const API_KEY = process.env.TEAMWORK_API_KEY;
-  const API_URL = `${process.env.TEAMWORK_BASE_URL}/projects/api/v3/projects.json`;
+  const API_URL = `${process.env.TEAMWORK_BASE_URL}/projects/api/v3/projects.json?pageSize=500`;
 
   try {
     if (!process.env.TEAMWORK_API_KEY) {

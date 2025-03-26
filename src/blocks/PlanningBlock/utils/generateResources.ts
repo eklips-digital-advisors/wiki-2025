@@ -7,6 +7,7 @@ export const generateResources = (users: User[]) => {
       title: user.name || '',
       projects: user.projects || [],
       profileImage: user?.media?.url || '',
+      position: user?.position || '',
     }
 
     const userProjects = Array.isArray(user?.projects)

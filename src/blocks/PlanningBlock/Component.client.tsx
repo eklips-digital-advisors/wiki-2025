@@ -23,7 +23,8 @@ import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
 import { getFrontendUser } from '@/utilities/getFrontendUser'
 import { calculateUserWeeklyLoads, createUserWeeklySummaryEvents } from '@/blocks/PlanningBlock/utils/calculateUserLoads'
 import { generateResources } from '@/blocks/PlanningBlock/utils/generateResources'
-import { DateTime } from 'luxon'
+import { getLabel } from '@/utilities/getLabel'
+import { positionOptions } from '@/collections/Users/positionOptions'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -102,10 +103,11 @@ export const PlanningComponentClient: React.FC<{
           left: 'prev,next today',
           center: 'title',
           right:
-            'resourceTimelineMonth,resourceTimelineEightWeeks',
+            'resourceTimelineMonth,resourceTimelineEightWeeks,resourceTimelineSixMonths',
         }}
         resources={resources}
         resourcesInitiallyExpanded={false}
+        resourceOrder="position"
         events={events}
         eventContent={(arg) => {
           const { isSummary, bgColorSummary, heightPercentSummary } = arg.event.extendedProps
@@ -113,7 +115,7 @@ export const PlanningComponentClient: React.FC<{
           if (isSummary) {
             return (
               <div className="h-[48px] flex items-center justify-center">
-                <span className={`load-indicator inline-block h-[56px] w-[110px] absolute`}>
+                <span className={`load-indicator inline-block h-[56px] absolute`}>
                   <span
                     className={`absolute left-0 right-0 bottom-0 w-full rounded-md ${bgColorSummary}`}
                     style={{ height: `${heightPercentSummary}%` }}
@@ -148,18 +150,27 @@ export const PlanningComponentClient: React.FC<{
             duration: { weeks: 8 }, // you can change to any number of weeks
             slotDuration: { weeks: 1 },
           },
+          resourceTimelineSixMonths: {
+            type: 'resourceTimeline',
+            duration: { months: 6 },
+            slotDuration: { weeks: 1 },
+          },
         }}
         buttonText={{
-          resourceTimelineEightWeeks: '2 months', // Alternative way to label it
+          resourceTimelineEightWeeks: '2 months',
+          resourceTimelineSixMonths: '6 months',
         }}
         resourceLabelContent={(arg) => {
-          // console.log('arg', arg)
+          console.log('arg', arg.resource)
           if (!arg.resource._resource.parentId) {
             return (
               <div className="flex justify-between gap-2 items-center">
                 <div className="flex gap-2 items-center ml-2">
                   <ProfileImage name={arg?.resource?._resource?.title} url={arg?.resource?._resource?.extendedProps?.profileImage} />
-                  {arg.resource.title}
+                  <span className="flex flex-col gap-1">
+                    <span className="leading-4">{arg.resource.title}</span>
+                    <span className="text-[12px] leading-3">{getLabel(arg?.resource?._resource?.extendedProps?.position, positionOptions)}</span>
+                  </span>
                 </div>
                 <div
                   title="Add project"

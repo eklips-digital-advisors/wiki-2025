@@ -281,6 +281,7 @@ export interface User {
   role?: ('user' | 'admin') | null;
   name?: string | null;
   media?: (string | null) | Media;
+  position?: ('frontend' | 'backend' | 'designer' | 'pm' | 'qa' | 'sm' | 'other') | null;
   projects?: (string | Project)[] | null;
   includeInPlanningTool?: boolean | null;
   updatedAt: string;
@@ -996,6 +997,7 @@ export interface UsersSelect<T extends boolean = true> {
   role?: T;
   name?: T;
   media?: T;
+  position?: T;
   projects?: T;
   includeInPlanningTool?: T;
   updatedAt?: T;
