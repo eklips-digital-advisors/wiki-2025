@@ -2,17 +2,18 @@ import type { CollectionConfig } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { isAdminOrSelf } from '@/access/isAdminOrSelf'
 
 export const TimeEntries: CollectionConfig = {
   slug: 'time-entries',
   access: {
-    create: authenticated,
-    delete: authenticated,
+    create: isAdminOrSelf,
+    delete: isAdminOrSelf,
     read: anyone,
-    update: authenticated,
+    update: isAdminOrSelf,
   },
   admin: {
-    useAsTitle: 'date',
+    useAsTitle: 'week',
   },
   // defaultPopulate: {
   //   date: true,
@@ -22,21 +23,26 @@ export const TimeEntries: CollectionConfig = {
   // },
   fields: [
     {
+      name: 'week',
+      type: 'text',
+      required: true,
+    },
+    {
       name: 'date',
       type: 'date',
-      required: true,
-      hooks: {
-        beforeValidate: [
-          ({ value }) => {
-            if (value && typeof value === 'string') {
-              const date = new Date(value);
-              date.setUTCHours(0, 0, 0, 0);
-              return date.toISOString();
-            }
-            return value;
-          },
-        ],
-      },
+      // required: true,
+      // hooks: {
+      //   beforeValidate: [
+      //     ({ value }) => {
+      //       if (value && typeof value === 'string') {
+      //         const date = new Date(value);
+      //         date.setUTCHours(0, 0, 0, 0);
+      //         return date.toISOString();
+      //       }
+      //       return value;
+      //     },
+      //   ],
+      // },
     },
     {
       name: 'hours',

@@ -1,6 +1,7 @@
 import { Where } from 'payload'
 import { stringify } from 'qs-esm'
 import { getClientSideURL } from '@/utilities/getURL'
+import { getClickedWeek } from '@/utilities/getClickedWeek'
 
 export const onCalendarDateClick = async ({
   info,
@@ -11,6 +12,7 @@ export const onCalendarDateClick = async ({
   toggleModal,
   modalSlug,
   setToast,
+  loggedUser
 }: {
   info: any
   setClickedInfo: (info: any) => void
@@ -20,11 +22,14 @@ export const onCalendarDateClick = async ({
   toggleModal: (slug: string) => void
   modalSlug: string
   setToast: (toast: any) => void
+  loggedUser: any
 }) => {
   setClickedInfo(info)
 
   const isEventClick = !!info.event
-  const clickedDate = isEventClick ? info.event.startStr : info.dateStr
+  const clickedDate = isEventClick ? info.event.start : info.date
+  const clickedWeek = getClickedWeek(clickedDate)
+  
   const projectId = isEventClick
     ? info.event.getResources()?.[0]?.extendedProps?.projectId
     : info?.resource?.extendedProps?.projectId
@@ -32,6 +37,11 @@ export const onCalendarDateClick = async ({
   const userId = isEventClick
     ? info.event.getResources()?.[0]?._resource?.parentId
     : info?.resource?._resource?.parentId
+  
+  if (loggedUser?.id !== userId && loggedUser.role !== 'admin') {
+    setToast({ message: 'Cannot update other user unless you are admin', type: 'error' })
+    return
+  }
 
   if (!projectId) setToast({ message: 'Cannot add time to user, please add to project', type: 'error' })
 
@@ -41,7 +51,7 @@ export const onCalendarDateClick = async ({
 
   const query: Where = {
     and: [
-      { date: { equals: clickedDate } },
+      { week: { equals: clickedWeek } },
       { project: { equals: projectId } },
       { user: { equals: userId } },
     ],

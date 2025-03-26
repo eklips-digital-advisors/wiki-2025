@@ -15,6 +15,11 @@ export const handleRemoveProject = async (
   const user = resource?._resource?.parentId
   const projectId = resource?.extendedProps?.projectId
 
+  if (loggedUser?.id !== user && loggedUser.role !== 'admin') {
+    setToast({ message: 'Cannot update other user unless you are admin', type: 'error' })
+    return
+  }
+
   if (!user || !projectId || !resource) return
 
   const existingProjects = resource?.extendedProps?.projects || []

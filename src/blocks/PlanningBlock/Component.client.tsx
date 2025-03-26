@@ -21,8 +21,9 @@ import { handleDeleteDateClick } from '@/blocks/PlanningBlock/utils/handleDelete
 import { Toast } from '@/components/Toast'
 import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
 import { getFrontendUser } from '@/utilities/getFrontendUser'
-import { calculateUserDailyLoads, createUserSummaryEvents } from '@/blocks/PlanningBlock/utils/calculateUserLoads'
+import { calculateUserWeeklyLoads, createUserWeeklySummaryEvents } from '@/blocks/PlanningBlock/utils/calculateUserLoads'
 import { generateResources } from '@/blocks/PlanningBlock/utils/generateResources'
+import { DateTime } from 'luxon'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -45,12 +46,14 @@ export const PlanningComponentClient: React.FC<{
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
 
+  // console.log('timeEntriesState', timeEntriesState)
+
   useEffect(() => {
     getFrontendUser().then(setLoggedUser)
   }, []);
   
-  const userDailyLoads = useMemo(() => calculateUserDailyLoads(timeEntriesState), [timeEntriesState])
-  const userSummaryEvents = useMemo(() => createUserSummaryEvents(userDailyLoads), [userDailyLoads])
+  const userWeeklyLoads = useMemo(() => calculateUserWeeklyLoads(timeEntriesState), [timeEntriesState])
+  const userSummaryEvents = useMemo(() => createUserWeeklySummaryEvents(userWeeklyLoads), [userWeeklyLoads])
   const resources = useMemo(() => generateResources(usersState), [usersState])
 
   const handleCalendarClick = async (info: any) => {
@@ -68,17 +71,22 @@ export const PlanningComponentClient: React.FC<{
       toggleModal,
       modalSlug: hoursModalSlug,
       setToast,
+      loggedUser,
     })
   }
 
-  const projectEvents = (timeEntriesState || []).flatMap((entry: any) => ({
-    id: `${entry.id}-${entry.user.id}`, // make it unique per user to avoid FullCalendar suppressing it
-    resourceId: `project-${entry.project.id}-${entry.user.id}`, // must match how your resources are built
-    title: `${entry.hours}h`,
-    start: new Date(entry.date).toISOString(),
-    end: new Date(new Date(entry.date).setDate(new Date(entry.date).getDate() + 1)).toISOString()
-    // end: entry.date,
-  }))
+  const projectEvents = (timeEntriesState || []).flatMap((entry: any) => {
+    const startDate = new Date(entry.date) // Already normalized to Monday
+    const endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000) // +7 days
+
+    return {
+      id: `${entry.id}-${entry.user.id}`,
+      resourceId: `project-${entry.project.id}-${entry.user.id}`,
+      title: `${entry.hours}h`,
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
+    }
+  })
 
   const events = [...projectEvents, ...userSummaryEvents]
 
@@ -86,14 +94,15 @@ export const PlanningComponentClient: React.FC<{
     <>
       <FullCalendar
         plugins={[resourceTimelinePlugin, interactionPlugin]}
-        initialView="resourceTimelineTwoWeeks"
+        initialView="resourceTimelineEightWeeks"
         schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
         timeZone="UTC"
+        firstDay={1}
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
           right:
-            'resourceTimelineDay,resourceTimelineWeek,resourceTimelineTwoWeeks,resourceTimelineMonth',
+            'resourceTimelineMonth,resourceTimelineEightWeeks',
         }}
         resources={resources}
         resourcesInitiallyExpanded={false}
@@ -104,7 +113,7 @@ export const PlanningComponentClient: React.FC<{
           if (isSummary) {
             return (
               <div className="h-[48px] flex items-center justify-center">
-                <span className={`load-indicator inline-block h-[56px] w-[56px] absolute`}>
+                <span className={`load-indicator inline-block h-[56px] w-[110px] absolute`}>
                   <span
                     className={`absolute left-0 right-0 bottom-0 w-full rounded-md ${bgColorSummary}`}
                     style={{ height: `${heightPercentSummary}%` }}
@@ -128,25 +137,20 @@ export const PlanningComponentClient: React.FC<{
         dateClick={handleCalendarClick}
         droppable={false}
         height="auto"
-        slotDuration="24:00:00" // Each slot represents a full day
+        slotDuration={{ weeks: 1 }}
         slotLabelFormat={[
-          { weekday: 'narrow' }, // "S" for Sunday
-          { day: 'numeric' }, // "9" for the date
+          { month: 'long' }, // "9" for the date
+          { week: 'numeric' }, // "S" for Sunday
         ]}
-        businessHours={{
-          daysOfWeek: [1, 2, 3, 4, 5], // Only Monday to Friday (disable weekends)
-          startTime: '00:00',
-          endTime: '24:00',
-        }}
-        weekends={true}
         views={{
-          resourceTimelineTwoWeeks: {
+          resourceTimelineEightWeeks: {
             type: 'resourceTimeline',
-            duration: { weeks: 2 }, // Extend to 2 weeks
+            duration: { weeks: 8 }, // you can change to any number of weeks
+            slotDuration: { weeks: 1 },
           },
         }}
         buttonText={{
-          resourceTimelineTwoWeeks: '2 weeks', // Alternative way to label it
+          resourceTimelineEightWeeks: '2 months', // Alternative way to label it
         }}
         resourceLabelContent={(arg) => {
           // console.log('arg', arg)
@@ -235,7 +239,8 @@ export const PlanningComponentClient: React.FC<{
                   setUsersState,
                   router,
                   modalSlug,
-                  setToast
+                  setToast,
+                  loggedUser
                 })
               }
             >

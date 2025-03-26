@@ -2,6 +2,8 @@ import { Where } from 'payload'
 import { stringify } from 'qs-esm'
 import { getClientSideURL } from '@/utilities/getURL'
 
+import { getClickedWeek } from '@/utilities/getClickedWeek'
+
 export const handleSaveDateClick = async (
   info: any,
   router: any,
@@ -10,9 +12,11 @@ export const handleSaveDateClick = async (
 ) => {
   // Normalize for both dateClick and eventClick
   const isEventClick = !!info.event
-  const clickedDate = isEventClick ? info.event.startStr : info.dateStr
+  const clickedDate = isEventClick ? info.event.start : info.date
 
   if (!hours) return
+
+  const clickedWeek = getClickedWeek(clickedDate)
 
   // Get projectId and userId
   const projectId = isEventClick
@@ -27,7 +31,7 @@ export const handleSaveDateClick = async (
 
   const query: Where = {
     and: [
-      { date: { equals: clickedDate } },
+      { week: { equals: clickedWeek } },
       { project: { equals: projectId } },
       { user: { equals: userId } },
     ],
@@ -72,6 +76,7 @@ export const handleSaveDateClick = async (
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           hours: parseInt(hours, 10),
+          week: clickedWeek,
           date: clickedDate,
           project: projectId,
           user: userId,

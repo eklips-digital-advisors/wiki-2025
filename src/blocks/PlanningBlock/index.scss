@@ -29,39 +29,18 @@
     tr {
       .fc-timeline-slot-frame {
         justify-content: center;
+        display: flex;
+        align-items: center;
       }
 
-      &:first-child {
-        th {
-          border-bottom: none;
-          line-height: 1.1;
-          font-weight: normal;
+      th {
+        //border-top: none;
+        line-height: 1.1;
+        font-weight: bold;
 
-          .fc-timeline-slot-frame {
-            display: flex;
-            align-items: flex-end;
-          }
-        }
-      }
-
-      &:last-child {
-        th {
-          border-top: none;
-          line-height: 1.1;
-          font-weight: bold;
-
-          .fc-timeline-slot-frame {
-            display: flex;
-            align-items: flex-start;
-          }
-
-          &.fc-day-today {
-            a {
-              background-color: var(--color-zinc-100);
-              padding: 2px 4px;
-              border-radius: 8px;
-              color: var(--color-emerald-500);
-            }
+        &.fc-day-today {
+          a {
+            color: var(--color-emerald-500);
           }
         }
       }
@@ -69,8 +48,8 @@
   }
 
   .load-indicator {
-    left: 3px;
-    top: -5px;
+    left: 4px;
+    top: -4px;
   }
 
   thead {

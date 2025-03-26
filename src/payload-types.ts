@@ -380,7 +380,8 @@ export interface Project {
  */
 export interface TimeEntry {
   id: string;
-  date: string;
+  week: string;
+  date?: string | null;
   hours: number;
   user: string | User;
   project: string | Project;
@@ -1025,6 +1026,7 @@ export interface ProjectsSelect<T extends boolean = true> {
  * via the `definition` "time-entries_select".
  */
 export interface TimeEntriesSelect<T extends boolean = true> {
+  week?: T;
   date?: T;
   hours?: T;
   user?: T;

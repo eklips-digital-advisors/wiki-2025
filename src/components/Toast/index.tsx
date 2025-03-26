@@ -21,7 +21,7 @@ export const Toast = ({
 
   return (
     <div
-      className={`fixed bottom-4 right-4 px-4 py-3 rounded shadow-md text-white flex items-center gap-2 ${
+      className={`fixed bottom-4 right-4 px-4 py-3 z-10 rounded shadow-md text-white flex items-center gap-2 ${
         type === 'success' ? 'bg-emerald-400' : 'bg-rose-400'
       }`}
     >

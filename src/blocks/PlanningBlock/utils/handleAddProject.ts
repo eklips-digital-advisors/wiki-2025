@@ -9,7 +9,8 @@ export const handleAddProject = async ({
   setUsersState,
   router,
   modalSlug,
-  setToast
+  setToast,
+  loggedUser
 }: {
   selectedProjectId: string | null
   selectedResource: any
@@ -20,11 +21,17 @@ export const handleAddProject = async ({
   router: any
   modalSlug: string
   setToast: (toast: any) => void
+  loggedUser: any
 }) => {
   if (!selectedProjectId || !selectedResource) return
 
   const existingProjects = selectedResource?.extendedProps?.projects || []
   const projectExists = existingProjects.some((project: any) => project.id === selectedProjectId)
+
+  if (loggedUser?.id !== selectedResource.id && loggedUser.role !== 'admin') {
+    setToast({ message: 'Cannot update other user unless you are admin', type: 'error' })
+    return
+  }
 
   if (projectExists) {
     console.log(

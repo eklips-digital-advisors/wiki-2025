@@ -1,9 +1,9 @@
 import { TimeEntry } from '@/payload-types'
 
-export type UserDailyLoads = Record<string, Record<string, number>>
+export type UserWeeklyLoads = Record<string, Record<string, number>>
 
-export const calculateUserDailyLoads = (timeEntries: TimeEntry[]): UserDailyLoads => {
-  const loads: UserDailyLoads = {}
+export const calculateUserWeeklyLoads = (timeEntries: TimeEntry[]): UserWeeklyLoads => {
+  const loads: UserWeeklyLoads = {}
 
   timeEntries.forEach((entry: any) => {
     const userId = entry.user.id
@@ -27,19 +27,23 @@ export const calculateUserDailyLoads = (timeEntries: TimeEntry[]): UserDailyLoad
   return loads
 }
 
-export const createUserSummaryEvents = (userDailyLoads: UserDailyLoads) => {
-  return Object.entries(userDailyLoads).flatMap(([userId, dayLoads]) =>
-    Object.entries(dayLoads).map(([date, hours]) => {
-      const heightPercentSummary = Math.min((hours / 8) * 100, 100)
-      const isOverloadedSummary = hours > 8
+export const createUserWeeklySummaryEvents = (userWeeklyLoads: UserWeeklyLoads) => {
+  return Object.entries(userWeeklyLoads).flatMap(([userId, weekLoads]) =>
+    Object.entries(weekLoads).map(([weekStartDate, hours]) => {
+      const heightPercentSummary = Math.min((hours / 40) * 100, 100) // Assuming 40h/week load
+      const isOverloadedSummary = hours > 40
       const bgColorSummary = isOverloadedSummary ? 'bg-rose-200/70' : 'bg-emerald-200/70'
 
+      const start = new Date(weekStartDate)
+      const end = new Date(start)
+      end.setDate(start.getDate() + 7) // full week
+
       return {
-        id: `summary-${userId}-${date}`,
+        id: `summary-${userId}-${weekStartDate}`,
         resourceId: userId,
         title: `${hours}h`,
-        start: new Date(date).toISOString(),
-        end: new Date(new Date(date).setDate(new Date(date).getDate() + 1)).toISOString(),
+        start: start.toISOString(),
+        end: end.toISOString(),
         extendedProps: {
           isSummary: true,
           hours,

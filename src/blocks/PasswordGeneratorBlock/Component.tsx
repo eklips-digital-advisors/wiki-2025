@@ -42,13 +42,13 @@ export const PasswordGeneratorBlock = () => {
       />
       <div className="flex items-center gap-1">
         <button
-          className="btn !mr-0 h-10 sm:text-sm border border-zinc-200 focus:outline-none focus:border-zinc-400 hover:border-zinc-400 px-4 py-2 rounded-md"
+          className="!mr-0 h-10 sm:text-sm border border-zinc-200 focus:outline-none focus:border-zinc-400 hover:border-zinc-400 px-4 py-2 rounded-md"
           onClick={() => generatePassword()}>Generate Password
         </button>
         <input className="h-10 sm:text-sm border border-zinc-200 px-4 py-2 rounded-md bg-gray-50" type="text"
                value={password} readOnly/>
         <button
-          className={`${copyText === 'Copy' ? '' : 'bg-zinc-100'} btn mr-0 h-10 sm:text-sm border border-zinc-200 focus:outline-none focus:border-zinc-400 hover:border-zinc-400 px-4 py-2 rounded-md`}
+          className={`${copyText === 'Copy' ? '' : 'bg-zinc-100'} mr-0 h-10 sm:text-sm border border-zinc-200 focus:outline-none focus:border-zinc-400 hover:border-zinc-400 px-4 py-2 rounded-md`}
           onClick={copyToClipboard}>{copyText}</button>
       </div>
     </div>

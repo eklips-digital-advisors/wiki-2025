@@ -1,6 +1,7 @@
 import { Where } from 'payload'
 import { stringify } from 'qs-esm'
 import { getClientSideURL } from '@/utilities/getURL'
+import { getClickedWeek } from '@/utilities/getClickedWeek'
 
 export const handleDeleteDateClick = async (
   info: any,
@@ -9,7 +10,8 @@ export const handleDeleteDateClick = async (
 ) => {
   // Normalize for both dateClick and eventClick
   const isEventClick = !!info.event
-  const clickedDate = isEventClick ? info.event.startStr : info.dateStr
+  const clickedDate = isEventClick ? info.event.start : info.date
+  const clickedWeek = getClickedWeek(clickedDate)
 
   // Get projectId and userId
   const projectId = isEventClick
@@ -19,12 +21,14 @@ export const handleDeleteDateClick = async (
   const userId = isEventClick
     ? info.event.getResources()?.[0]?._resource?.parentId
     : info?.resource?._resource?.parentId
+  
+  console.log('userId', userId)
 
   if (!projectId || !userId || !clickedDate) return
 
   const query: Where = {
     and: [
-      { date: { equals: clickedDate } },
+      { week: { equals: clickedWeek } },
       { project: { equals: projectId } },
       { user: { equals: userId } },
     ],
