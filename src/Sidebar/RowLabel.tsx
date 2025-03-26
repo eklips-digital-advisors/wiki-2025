@@ -1,11 +1,9 @@
 'use client'
-import { Sidebar } from '@/payload-types'
 import { RowLabelProps, useRowLabel } from '@payloadcms/ui'
 import { useEffect, useState } from 'react'
 
 export const RowLabelSidebar: React.FC<RowLabelProps> = () => {
-  const data = useRowLabel<NonNullable<Sidebar['items']>[number]>()
-  // console.log('data', data)
+  const data = useRowLabel<any>()
 
   const categoryId = data?.data?.categoriesOrder
   const [categoryName, setCategoryName] = useState<string | null>('')
