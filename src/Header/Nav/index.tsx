@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { CMSLink } from '@/components/Link'
 import type { Header as HeaderType } from '@/payload-types'
 import { Button } from '@/components/ui/button'
+import {usePathname} from "next/navigation";
 
 interface UserData {
   user: string
@@ -12,6 +13,7 @@ interface UserData {
 export const HeaderTop: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
   const [userData, setUserData] = useState<UserData | null>(null);
+  const pathname = usePathname()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +34,14 @@ export const HeaderTop: React.FC<{ data: HeaderType }> = ({ data }) => {
     fetchData();
   }, []); // Empty dependency array ensures it runs only once when component mounts
 
+  const getCurrentClass = (label: string) => {
+    if (label === pathname.replace(/^\/+/, '')) {
+      return 'underline'
+    }
+
+    return ''
+  }
+
   return (
     <div className="header-top fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between gap-12 px-4 transition sm:px-6 lg:z-30 lg:px-8 backdrop-blur-xs lg:left-72 xl:left-80">
       <div className="absolute inset-x-0 top-full h-px transition bg-zinc-900/7.5"></div>
@@ -42,7 +52,7 @@ export const HeaderTop: React.FC<{ data: HeaderType }> = ({ data }) => {
       <div className="flex items-center gap-4 md:gap-8">
         <nav className="flex gap-4 md:gap-8 items-center">
           {navItems.map(({ link }, i) => {
-            return <CMSLink key={i} {...link} appearance="link" />
+            return <CMSLink key={i} {...link} appearance="link" className={`${getCurrentClass(link?.label.toLowerCase())}`} />
           })}
         </nav>
         {!userData?.user && <Button><Link href="/admin">Sign in</Link></Button>}

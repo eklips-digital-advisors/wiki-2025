@@ -1160,10 +1160,22 @@ export interface Header {
  */
 export interface Sidebar {
   id: string;
+  /**
+   * 1st level of sidebar
+   */
   items?:
     | {
-        categoriesOrder: string | Category;
-        postsOrder: (string | Post)[];
+        title: string;
+        /**
+         * 2nd level of sidebar
+         */
+        subItems?:
+          | {
+              categoriesOrder: string | Category;
+              postsOrder: (string | Post)[];
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -1201,8 +1213,14 @@ export interface SidebarSelect<T extends boolean = true> {
   items?:
     | T
     | {
-        categoriesOrder?: T;
-        postsOrder?: T;
+        title?: T;
+        subItems?:
+          | T
+          | {
+              categoriesOrder?: T;
+              postsOrder?: T;
+              id?: T;
+            };
         id?: T;
       };
   updatedAt?: T;

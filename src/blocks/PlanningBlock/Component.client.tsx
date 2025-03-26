@@ -161,7 +161,6 @@ export const PlanningComponentClient: React.FC<{
           resourceTimelineSixMonths: '6 months',
         }}
         resourceLabelContent={(arg) => {
-          console.log('arg', arg.resource)
           if (!arg.resource._resource.parentId) {
             return (
               <div className="flex justify-between gap-2 items-center">
