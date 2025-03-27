@@ -1166,7 +1166,7 @@ export interface Sidebar {
   items?:
     | {
         /**
-         * Fill when adding 2nd level subitems
+         * Fill only when adding 2nd level subitems
          */
         title?: string | null;
         firstLevelCategoriesOrder?: (string | null) | Category;

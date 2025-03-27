@@ -10,7 +10,7 @@ import '@payloadcms/ui/css'
 import { Button } from '@/components/ui/button'
 import { SelectInput } from '@payloadcms/ui'
 import { useModal, Modal, ModalToggler, ModalContainer } from '@faceless-ui/modal'
-import { CircleX, PackagePlus } from 'lucide-react'
+import { ArrowRightLeft, CircleX, PackagePlus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { handleAddProject } from '@/blocks/PlanningBlock/utils/handleAddProject'
 import { handleRemoveProject } from '@/blocks/PlanningBlock/utils/handleRemoveProject'
@@ -25,6 +25,7 @@ import { calculateUserWeeklyLoads, createUserWeeklySummaryEvents } from '@/block
 import { generateResources } from '@/blocks/PlanningBlock/utils/generateResources'
 import { getLabel } from '@/utilities/getLabel'
 import { positionOptions } from '@/collections/Users/positionOptions'
+import { generateInvertedResources } from '@/blocks/PlanningBlock/utils/generateInvertedResources'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -46,16 +47,21 @@ export const PlanningComponentClient: React.FC<{
   const [defaultHours, setDefaultHours] = useState<string | null>(null)
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
+  const [isInverted, setIsInverted] = useState(false)
 
   // console.log('timeEntriesState', timeEntriesState)
 
   useEffect(() => {
     getFrontendUser().then(setLoggedUser)
   }, []);
-  
+
   const userWeeklyLoads = useMemo(() => calculateUserWeeklyLoads(timeEntriesState), [timeEntriesState])
   const userSummaryEvents = useMemo(() => createUserWeeklySummaryEvents(userWeeklyLoads), [userWeeklyLoads])
-  const resources = useMemo(() => generateResources(usersState), [usersState])
+  const resources = useMemo(() => {
+    return isInverted
+      ? generateInvertedResources(usersState, projectsState)
+      : generateResources(usersState)
+  }, [usersState, projectsState, isInverted])
 
   const handleCalendarClick = async (info: any) => {
     if (!loggedUser) {
@@ -108,6 +114,19 @@ export const PlanningComponentClient: React.FC<{
         resources={resources}
         resourcesInitiallyExpanded={false}
         resourceOrder="position"
+        resourceAreaHeaderContent={() => (
+          <div className="flex justify-between gap-2 items-center w-full">
+            <span><span className="font-medium">Resources</span> <span className="font-normal">{`${isInverted ? '(projects)' : '(users)'}`}</span></span>
+            <Tooltip content="Revert users/projects" position="left">
+              <button
+                onClick={() => setIsInverted(prev => !prev)}
+                className="bg-none p-0 border-0 cursor-pointer"
+              >
+                <ArrowRightLeft className="w-[20px] h-[20px] stroke-zinc-800 hover:stroke-zinc-700" />
+              </button>
+            </Tooltip>
+          </div>
+        )}
         events={events}
         eventContent={(arg) => {
           const { isSummary, bgColorSummary, heightPercentSummary } = arg.event.extendedProps
@@ -165,29 +184,35 @@ export const PlanningComponentClient: React.FC<{
             return (
               <div className="flex justify-between gap-2 items-center">
                 <div className="flex gap-2 items-center ml-2">
-                  <ProfileImage name={arg?.resource?._resource?.title} url={arg?.resource?._resource?.extendedProps?.profileImage} />
+                  <ProfileImage
+                    name={arg?.resource?._resource?.title}
+                    url={arg?.resource?._resource?.extendedProps?.profileImage || arg?.resource?._resource?.extendedProps?.projectImage}
+                    variant={isInverted ? 'square' : 'rounded'}
+                  />
                   <span className="flex flex-col gap-1">
                     <span className="leading-4">{arg.resource.title}</span>
                     <span className="text-[12px] leading-3">{getLabel(arg?.resource?._resource?.extendedProps?.position, positionOptions)}</span>
                   </span>
                 </div>
-                <div
-                  title="Add project"
-                  className="text-xs cursor-pointer flex items-center"
-                  onClick={() => {
-                    if (!loggedUser) {
-                      setToast({ message: 'Please log in first', type: 'error' })
-                      return
-                    }
+                {!isInverted &&
+                  <div
+                    title="Add project"
+                    className="text-xs cursor-pointer flex items-center"
+                    onClick={() => {
+                      if (!loggedUser) {
+                        setToast({ message: 'Please log in first', type: 'error' })
+                        return
+                      }
 
-                    setSelectedResource(arg.resource)
-                    toggleModal(modalSlug) // Open modal manually
-                  }}
-                >
-                  <Tooltip content="Add project" position="left">
-                    <PackagePlus className="w-[20px] h-[20px] stroke-emerald-400 hover:stroke-emerald-500" />
-                  </Tooltip>
-                </div>
+                      setSelectedResource(arg.resource)
+                      toggleModal(modalSlug) // Open modal manually
+                    }}
+                  >
+                    <Tooltip content="Add project" position="left">
+                      <PackagePlus className="w-[20px] h-[20px] stroke-emerald-400 hover:stroke-emerald-300" />
+                    </Tooltip>
+                  </div>
+                }
               </div>
             )
           } else {
@@ -195,9 +220,14 @@ export const PlanningComponentClient: React.FC<{
               <div className="flex justify-between gap-2">
                 <div className="flex gap-2 items-center ml-2">
                   {arg.resource.title}
-                  <ProfileImage name={arg?.resource?._resource?.title} url={arg?.resource?._resource?.extendedProps?.projectImage} size={20} variant="square" />
+                  <ProfileImage
+                    name={arg?.resource?._resource?.title}
+                    url={arg?.resource?._resource?.extendedProps?.projectImage || arg?.resource?._resource?.extendedProps?.profileImage}
+                    size={20}
+                    variant={!isInverted ? 'square' : 'rounded'}
+                  />
                 </div>
-                {arg.resource.title &&
+                {arg.resource.title && !isInverted &&
                   <Button
                     className="p-0 cursor-pointer"
                     variant="link"
@@ -205,7 +235,7 @@ export const PlanningComponentClient: React.FC<{
                     onClick={() => handleRemoveProject(arg?.resource, setUsersState, router, setToast, loggedUser)}
                   >
                     <Tooltip content="Remove project" position="left">
-                      <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-500" />
+                      <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
                     </Tooltip>
                   </Button>
                 }

@@ -22,7 +22,7 @@ export default function Tooltip({
 
   return (
     <div
-      className="relative inline-block"
+      className="relative inline-flex items-center"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >

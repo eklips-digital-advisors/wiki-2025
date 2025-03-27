@@ -58,6 +58,15 @@
   thead {
     .fc-datagrid-cell-cushion {
       padding-block: 14px;
+      width: 100%;
+
+      .fc-datagrid-expander {
+        display: none;
+      }
+
+      .fc-datagrid-cell-main {
+        width: 100%
+      }
     }
   }
 
