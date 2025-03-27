@@ -7,8 +7,6 @@ export const onCalendarDateClick = async ({
   info,
   setClickedInfo,
   setHoursInput,
-  setDefaultHours,
-  setShowHoursModal,
   toggleModal,
   modalSlug,
   setToast,
@@ -17,8 +15,6 @@ export const onCalendarDateClick = async ({
   info: any
   setClickedInfo: (info: any) => void
   setHoursInput: (val: string) => void
-  setDefaultHours: (val: string | null) => void
-  setShowHoursModal: (val: boolean) => void
   toggleModal: (slug: string) => void
   modalSlug: string
   setToast: (toast: any) => void
@@ -69,12 +65,9 @@ export const onCalendarDateClick = async ({
 
   if (existingEntry?.hours) {
     setHoursInput(existingEntry.hours.toString())
-    setDefaultHours(existingEntry.hours.toString())
   } else {
     setHoursInput('')
-    setDefaultHours(null)
   }
 
-  setShowHoursModal(true)
   toggleModal(modalSlug)
 }

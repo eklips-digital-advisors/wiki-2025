@@ -40,11 +40,9 @@ export const PlanningComponentClient: React.FC<{
   const [selectedResource, setSelectedResource] = useState<any | null>(null)
   const modalSlug = 'project-modal-selection'
   const { toggleModal } = useModal()
-  const [showHoursModal, setShowHoursModal] = useState(false)
   const [hoursInput, setHoursInput] = useState('')
   const [clickedInfo, setClickedInfo] = useState<any>(null)
   const hoursModalSlug = 'hours-entry-modal'
-  const [defaultHours, setDefaultHours] = useState<string | null>(null)
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
   const [isInverted, setIsInverted] = useState(false)
@@ -73,8 +71,6 @@ export const PlanningComponentClient: React.FC<{
       info,
       setClickedInfo,
       setHoursInput,
-      setDefaultHours,
-      setShowHoursModal,
       toggleModal,
       modalSlug: hoursModalSlug,
       setToast,
@@ -315,7 +311,6 @@ export const PlanningComponentClient: React.FC<{
                 onClick={async () => {
                   await handleSaveDateClick(clickedInfo, router, hoursInput, setTimeEntriesState)
                   setToast({ message: 'Hours saved', type: 'success' })
-                  setShowHoursModal(false)
                   setHoursInput('')
                   toggleModal(hoursModalSlug)
                 }}
@@ -328,7 +323,6 @@ export const PlanningComponentClient: React.FC<{
                 onClick={async () => {
                   await handleDeleteDateClick(clickedInfo, router, setTimeEntriesState)
                   setToast({ message: 'Entry deleted', type: 'success' })
-                  setShowHoursModal(false)
                   setHoursInput('')
                   toggleModal(hoursModalSlug)
                 }}
