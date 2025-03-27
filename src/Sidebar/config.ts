@@ -17,12 +17,40 @@ export const Sidebar: GlobalConfig = {
         {
           name: 'title',
           type: 'text',
-          required: true,
+          admin: {
+            description: 'Fill when adding 2nd level subitems'
+          }
+        },
+        {
+          name: 'firstLevelCategoriesOrder',
+          type: 'relationship',
+          relationTo: 'categories',
+          admin: {
+            condition: (_, siblingData) => siblingData.title === '',
+          },
+        },
+        {
+          name: 'firstLevelPostsOrder',
+          type: 'relationship',
+          relationTo: 'posts',
+          unique: true,
+          hasMany: true,
+          admin: {
+            isSortable: true,
+            condition: (_, siblingData) => siblingData.title === '',
+          },
+          filterOptions: ({ siblingData }) => {
+            return {
+              // @ts-expect-error I dont know why
+              categories: { in: siblingData?.firstLevelCategoriesOrder },
+            };
+          },
         },
         {
           type: 'array',
           name: 'subItems',
           admin: {
+            condition: (_, siblingData) => siblingData.title !== '',
             components: {
               RowLabel: '@/Sidebar/RowLabel#RowLabelSidebar',
             },

@@ -1165,7 +1165,12 @@ export interface Sidebar {
    */
   items?:
     | {
-        title: string;
+        /**
+         * Fill when adding 2nd level subitems
+         */
+        title?: string | null;
+        firstLevelCategoriesOrder?: (string | null) | Category;
+        firstLevelPostsOrder?: (string | Post)[] | null;
         /**
          * 2nd level of sidebar
          */
@@ -1214,6 +1219,8 @@ export interface SidebarSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
+        firstLevelCategoriesOrder?: T;
+        firstLevelPostsOrder?: T;
         subItems?:
           | T
           | {
