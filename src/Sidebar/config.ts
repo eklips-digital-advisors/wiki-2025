@@ -18,7 +18,7 @@ export const Sidebar: GlobalConfig = {
           name: 'title',
           type: 'text',
           admin: {
-            description: 'Fill when adding 2nd level subitems'
+            description: 'Fill only when adding 2nd level subitems'
           }
         },
         {
@@ -26,7 +26,7 @@ export const Sidebar: GlobalConfig = {
           type: 'relationship',
           relationTo: 'categories',
           admin: {
-            condition: (_, siblingData) => siblingData.title === '',
+            condition: (_, siblingData) => !siblingData.title,
           },
         },
         {
@@ -37,7 +37,7 @@ export const Sidebar: GlobalConfig = {
           hasMany: true,
           admin: {
             isSortable: true,
-            condition: (_, siblingData) => siblingData.title === '',
+            condition: (_, siblingData) => !siblingData.title,
           },
           filterOptions: ({ siblingData }) => {
             return {
@@ -50,7 +50,7 @@ export const Sidebar: GlobalConfig = {
           type: 'array',
           name: 'subItems',
           admin: {
-            condition: (_, siblingData) => siblingData.title !== '',
+            condition: (_, siblingData) => !!siblingData.title,
             components: {
               RowLabel: '@/Sidebar/RowLabel#RowLabelSidebar',
             },
