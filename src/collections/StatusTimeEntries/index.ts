@@ -1,11 +1,11 @@
 import type { CollectionConfig } from 'payload'
 
-import { anyone } from '../access/anyone'
-import { authenticated } from '../access/authenticated'
 import { isAdminOrSelf } from '@/access/isAdminOrSelf'
+import { anyone } from '@/access/anyone'
+import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
 
-export const TimeEntries: CollectionConfig = {
-  slug: 'time-entries',
+export const StatusTimeEntries: CollectionConfig = {
+  slug: 'status-time-entries',
   access: {
     create: isAdminOrSelf,
     delete: isAdminOrSelf,
@@ -15,12 +15,6 @@ export const TimeEntries: CollectionConfig = {
   admin: {
     useAsTitle: 'start',
   },
-  // defaultPopulate: {
-  //   date: true,
-  //   hours: true,
-  //   user: true,
-  //   project: true,
-  // },
   fields: [
     {
       name: 'start',
@@ -31,15 +25,9 @@ export const TimeEntries: CollectionConfig = {
       type: 'date',
     },
     {
-      name: 'hours',
-      type: 'number',
-      required: true,
-    },
-    {
-      name: 'user',
-      type: 'relationship',
-      relationTo: 'users',
-      required: true,
+      name: 'status',
+      type: 'select',
+      options: statusOptions
     },
     {
       name: 'project',

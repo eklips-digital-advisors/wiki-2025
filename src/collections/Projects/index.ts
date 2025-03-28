@@ -63,6 +63,12 @@ export const Projects: CollectionConfig = {
       collection: 'time-entries',
       on: 'project',
     },
+    {
+      name: 'statusTimeEntries',
+      type: 'join',
+      collection: 'status-time-entries',
+      on: 'project',
+    },
   ],
   hooks: {
     afterChange: [revalidatePlanning],

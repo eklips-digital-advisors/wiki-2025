@@ -19,6 +19,7 @@ export interface Config {
     users: User;
     projects: Project;
     'time-entries': TimeEntry;
+    'status-time-entries': StatusTimeEntry;
     search: Search;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -29,6 +30,7 @@ export interface Config {
     projects: {
       users: 'users';
       timeEntries: 'time-entries';
+      statusTimeEntries: 'status-time-entries';
     };
   };
   collectionsSelect: {
@@ -40,6 +42,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'time-entries': TimeEntriesSelect<false> | TimeEntriesSelect<true>;
+    'status-time-entries': StatusTimeEntriesSelect<false> | StatusTimeEntriesSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -372,6 +375,10 @@ export interface Project {
     docs?: (string | TimeEntry)[] | null;
     hasNextPage?: boolean | null;
   } | null;
+  statusTimeEntries?: {
+    docs?: (string | StatusTimeEntry)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -381,10 +388,23 @@ export interface Project {
  */
 export interface TimeEntry {
   id: string;
-  week: string;
-  date?: string | null;
+  start?: string | null;
+  end?: string | null;
   hours: number;
   user: string | User;
+  project: string | Project;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "status-time-entries".
+ */
+export interface StatusTimeEntry {
+  id: string;
+  start?: string | null;
+  end?: string | null;
+  status?: ('planning' | 'development' | 'test-content' | 'launch') | null;
   project: string | Project;
   updatedAt: string;
   createdAt: string;
@@ -683,6 +703,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'time-entries';
         value: string | TimeEntry;
+      } | null)
+    | ({
+        relationTo: 'status-time-entries';
+        value: string | StatusTimeEntry;
       } | null)
     | ({
         relationTo: 'search';
@@ -1020,6 +1044,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   image?: T;
   users?: T;
   timeEntries?: T;
+  statusTimeEntries?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1028,10 +1053,22 @@ export interface ProjectsSelect<T extends boolean = true> {
  * via the `definition` "time-entries_select".
  */
 export interface TimeEntriesSelect<T extends boolean = true> {
-  week?: T;
-  date?: T;
+  start?: T;
+  end?: T;
   hours?: T;
   user?: T;
+  project?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "status-time-entries_select".
+ */
+export interface StatusTimeEntriesSelect<T extends boolean = true> {
+  start?: T;
+  end?: T;
+  status?: T;
   project?: T;
   updatedAt?: T;
   createdAt?: T;

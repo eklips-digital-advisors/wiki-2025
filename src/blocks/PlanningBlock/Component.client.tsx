@@ -79,8 +79,8 @@ export const PlanningComponentClient: React.FC<{
   }
 
   const projectEvents = (timeEntriesState || []).flatMap((entry: any) => {
-    const startDate = new Date(entry.date) // Already normalized to Monday
-    const endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000) // +7 days
+    const startDate = new Date(entry.start)
+    const endDate = new Date(entry.end)
 
     return {
       id: `${entry.id}-${entry.user.id}`,
@@ -142,7 +142,7 @@ export const PlanningComponentClient: React.FC<{
           }
 
           return (
-            <div className="h-[40px] flex items-center justify-center">
+            <div className="fc-event-regular h-[26px] flex items-center justify-center bg-emerald-900 hover:bg-emerald-800 text-white">
               <span className="text-[16px] z-10">{arg.event.title}</span>
             </div>
           )
@@ -151,7 +151,8 @@ export const PlanningComponentClient: React.FC<{
         eventResizableFromStart={false}
         eventDurationEditable={false}
         eventClick={handleCalendarClick}
-        dateClick={handleCalendarClick}
+        selectable={true}
+        select={handleCalendarClick}
         droppable={false}
         height="auto"
         slotDuration={{ weeks: 1 }}
@@ -246,6 +247,7 @@ export const PlanningComponentClient: React.FC<{
           className="bg-white p-4 w-100 rounded-md border border-zinc-200 left-1/2 top-1/2 -translate-1/2"
           slug={modalSlug}
           onClick={(e) => e.stopPropagation()}
+          closeOnBlur={false}
         >
           <ModalToggler className="absolute -right-2 -top-2 cursor-pointer" slug={modalSlug}>
             <CircleX className="w-5 h-5 fill-white" />
@@ -291,6 +293,7 @@ export const PlanningComponentClient: React.FC<{
           className="bg-white p-4 w-100 rounded-md border border-zinc-200 left-1/2 top-1/2 -translate-1/2"
           slug={hoursModalSlug}
           onClick={(e) => e.stopPropagation()}
+          closeOnBlur={false}
         >
           <ModalToggler className="absolute -right-2 -top-2 cursor-pointer border-0 focus:border-0" slug={hoursModalSlug}>
             <CircleX className="w-5 h-5 fill-white hover:stroke-emerald-500" />

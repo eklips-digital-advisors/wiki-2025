@@ -70,6 +70,12 @@
     }
   }
 
+  .fc-timeline-lane {
+    &:has(.load-indicator) {
+      background-color: var(--color-zinc-100);
+    }
+  }
+
   .fc-datagrid-body {
     .fc-datagrid-cell-cushion {
       display: flex;
@@ -85,6 +91,10 @@
 
   .fc-timeline-event-harness {
     top: 8px!important;
+
+    &:has(.fc-event-regular) {
+      top: 16px!important;
+    }
   }
 
   .fc-timeline-event {

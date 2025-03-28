@@ -1,7 +1,6 @@
 import { Where } from 'payload'
 import { stringify } from 'qs-esm'
 import { getClientSideURL } from '@/utilities/getURL'
-import { getClickedWeek } from '@/utilities/getClickedWeek'
 
 export const onCalendarDateClick = async ({
   info,
@@ -23,8 +22,14 @@ export const onCalendarDateClick = async ({
   setClickedInfo(info)
 
   const isEventClick = !!info.event
-  const clickedDate = isEventClick ? info.event.start : info.date
-  const clickedWeek = getClickedWeek(clickedDate)
+
+  const start = isEventClick
+    ? info.event.start
+    : info.start; // from select info
+
+  const end = isEventClick
+    ? info.event.end
+    : info.end; // from select info
   
   const projectId = isEventClick
     ? info.event.getResources()?.[0]?.extendedProps?.projectId
@@ -41,13 +46,13 @@ export const onCalendarDateClick = async ({
 
   if (!projectId) setToast({ message: 'Cannot add time to user, please add to project', type: 'error' })
 
-  if (!projectId || !userId || !clickedDate) {
+  if (!projectId || !userId || !start) {
     return
   }
 
   const query: Where = {
     and: [
-      { week: { equals: clickedWeek } },
+      { start: { equals: start } },
       { project: { equals: projectId } },
       { user: { equals: userId } },
     ],

@@ -1,14 +1,21 @@
 import { TimeEntry } from '@/payload-types'
+import {
+  parseISO,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  format
+} from 'date-fns'
 
 export type UserWeeklyLoads = Record<string, Record<string, number>>
 
 export const calculateUserWeeklyLoads = (timeEntries: TimeEntry[]): UserWeeklyLoads => {
-  const loads: UserWeeklyLoads = {}
+  const weeklyHours: Record<string, Record<string, number>> = {}
 
-  timeEntries.forEach((entry: any) => {
-    const userId = entry.user.id
-    const projectId = entry.project.id
-    const userProjects = entry.user.projects || []
+  timeEntries.forEach((event: any) => {
+    const userId = event.user.id
+    const projectId = event.project.id
+    const userProjects = event.user.projects || []
 
     const projectExistsForUser = userProjects.some((p: any) =>
       typeof p === 'object' ? p.id === projectId : p === projectId
@@ -16,15 +23,43 @@ export const calculateUserWeeklyLoads = (timeEntries: TimeEntry[]): UserWeeklyLo
 
     if (!projectExistsForUser) return
 
-    const date = new Date(entry.date).toISOString().split('T')[0]
+    const start = parseISO(event.start)
+    const end = parseISO(event.end)
 
-    if (!loads[userId]) loads[userId] = {}
-    if (!loads[userId][date]) loads[userId][date] = 0
+    let current = start
 
-    loads[userId][date] += entry.hours
+    while (current < end) {
+      const weekStart = startOfWeek(current, { weekStartsOn: 1 }) // Monday
+      const weekEnd = endOfWeek(current, { weekStartsOn: 1 }) // Sunday
+      const segmentEnd = end < addDays(weekEnd, 1) ? end : addDays(weekEnd, 1)
+
+      const weekKey = format(weekStart, 'yyyy-MM-dd') // Use week start date as key
+
+      if (!weeklyHours[userId]) {
+        weeklyHours[userId] = {}
+      }
+
+      if (!weeklyHours[userId][weekKey]) {
+        weeklyHours[userId][weekKey] = 0
+      }
+
+      weeklyHours[userId][weekKey] += event.hours
+
+      current = segmentEnd
+    }
   })
 
-  return loads
+  const result: Record<string, Record<string, number>> = {}
+
+  for (const userId in weeklyHours) {
+    result[userId] = {}
+
+    for (const weekKey in weeklyHours[userId]) {
+      result[userId][weekKey] = Math.round(weeklyHours[userId][weekKey])
+    }
+  }
+
+  return result
 }
 
 export const createUserWeeklySummaryEvents = (userWeeklyLoads: UserWeeklyLoads) => {
@@ -32,7 +67,7 @@ export const createUserWeeklySummaryEvents = (userWeeklyLoads: UserWeeklyLoads) 
     Object.entries(weekLoads).map(([weekStartDate, hours]) => {
       const heightPercentSummary = Math.min((hours / 40) * 100, 100) // Assuming 40h/week load
       const isOverloadedSummary = hours > 40
-      const bgColorSummary = isOverloadedSummary ? 'bg-rose-200/70' : 'bg-emerald-200/70'
+      const bgColorSummary = isOverloadedSummary ? 'bg-rose-200' : 'bg-emerald-200'
 
       const start = new Date(weekStartDate)
       const end = new Date(start)
