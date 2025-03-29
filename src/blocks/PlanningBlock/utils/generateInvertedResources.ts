@@ -5,9 +5,9 @@ export const generateInvertedResources = (users: User[], projects: Project[]) =>
     const projectUsers = users
       .filter((user: any) => user.projects?.some((p: any) => p.id === project.id))
       .map((user: any) => ({
-        id: `user-${user.id}-project-${project.id}`,
+        id: `user-${user.id}-${project.id}`,
         title: user.name || '',
-        parentId: `project-${project.id}`,
+        parentId: `${project.id}`,
         profileImage: user?.media?.url || '',
         position: user?.position || '',
       }))
@@ -18,7 +18,7 @@ export const generateInvertedResources = (users: User[], projects: Project[]) =>
     }
 
     const projectResource = {
-      id: `project-${project.id}`,
+      id: `${project.id}`,
       title: project.title || '',
       users: [],
       projectImage: project.image || '',

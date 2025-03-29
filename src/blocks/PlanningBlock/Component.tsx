@@ -16,13 +16,6 @@ export const PlanningBlock: React.FC = async () => {
       }
     },
     sort: 'position',
-    // select: {
-    //   name: true,
-    //   id: true,
-    //   role: true,
-    //   projects: true,
-    //   media: true,
-    // }
   })
 
   const projects = await payload.find({
@@ -37,15 +30,16 @@ export const PlanningBlock: React.FC = async () => {
   const timeEntries = await payload.find({
     collection: 'time-entries',
     limit: 9999,
-    // select: {
-    //   title: true,
-    //   id: true,
-    // }
+  });
+
+  const statusTimeEntries = await payload.find({
+    collection: 'status-time-entries',
+    limit: 9999,
   });
 
   return (
     <ModalProvider>
-      <PlanningComponentClient users={users?.docs} projects={projects.docs} timeEntries={timeEntries.docs} />
+      <PlanningComponentClient users={users?.docs} projects={projects.docs} timeEntries={timeEntries.docs} statusTimeEntries={statusTimeEntries.docs} />
     </ModalProvider>
   )
 }

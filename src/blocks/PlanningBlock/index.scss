@@ -72,7 +72,7 @@
 
   .fc-timeline-lane {
     &:has(.load-indicator) {
-      background-color: var(--color-zinc-100);
+      background-color: var(--color-zinc-50);
     }
   }
 
@@ -94,6 +94,10 @@
 
     &:has(.fc-event-regular) {
       top: 16px!important;
+    }
+
+    &:has(.inverted) {
+      top: 12px!important;
     }
   }
 
@@ -142,7 +146,7 @@
   }
 }
 
-.project-select {
+.modal-select {
   --theme-input-bg: #fff;
   --theme-elevation-100: var(--color-zinc-100);
   --theme-elevation-300: var(--color-zinc-200);
