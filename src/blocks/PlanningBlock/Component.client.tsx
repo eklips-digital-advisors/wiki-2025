@@ -140,7 +140,7 @@ export const PlanningComponentClient: React.FC<{
     <>
       <FullCalendar
         plugins={[resourceTimelinePlugin, interactionPlugin]}
-        initialView="resourceTimelineEightWeeks"
+        initialView="resourceTimelineThreeMonths"
         schedulerLicenseKey="CC-Attribution-NonCommercial-NoDerivatives"
         timeZone="UTC"
         firstDay={1}
@@ -148,7 +148,7 @@ export const PlanningComponentClient: React.FC<{
           left: 'prev,next today',
           center: 'title',
           right:
-            'resourceTimelineMonth,resourceTimelineEightWeeks,resourceTimelineSixMonths',
+            'resourceTimelineMonth,resourceTimelineThreeMonths,resourceTimelineSixMonths',
         }}
         resources={resources}
         resourcesInitiallyExpanded={false}
@@ -157,7 +157,7 @@ export const PlanningComponentClient: React.FC<{
           <div className="flex justify-between gap-2 items-center w-full">
             <span className="inline-flex gap-2 items-center">
               <span className="font-medium text-lg">{`${isInverted ? 'Projects' : 'People'}`}</span>
-              <span className="text-xs leading-3 rounded-2xl bg-zinc-100 p-1">{`${isInverted ? projectsState?.length : usersState?.length}`}</span>
+              <span className="text-xs leading-3 rounded-2xl bg-zinc-100 p-1">{`${isInverted ? resources?.filter((item: any) => item.projectImage || item.projectImage === "").length : usersState?.length}`}</span>
             </span>
             <Tooltip content="Switch people/projects" position="left">
               <button
@@ -220,9 +220,9 @@ export const PlanningComponentClient: React.FC<{
           { week: 'numeric' }, // "S" for Sunday
         ]}
         views={{
-          resourceTimelineEightWeeks: {
+          resourceTimelineThreeMonths: {
             type: 'resourceTimeline',
-            duration: { weeks: 8 }, // you can change to any number of weeks
+            duration: { weeks: 12 },
             slotDuration: { weeks: 1 },
           },
           resourceTimelineSixMonths: {
@@ -232,7 +232,7 @@ export const PlanningComponentClient: React.FC<{
           },
         }}
         buttonText={{
-          resourceTimelineEightWeeks: '2 months',
+          resourceTimelineThreeMonths: '3 months',
           resourceTimelineSixMonths: '6 months',
         }}
         resourceLabelContent={getResourceLabelContent({
