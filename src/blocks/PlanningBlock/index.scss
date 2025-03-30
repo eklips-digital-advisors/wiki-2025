@@ -151,3 +151,7 @@
   --theme-elevation-100: var(--color-zinc-100);
   --theme-elevation-300: var(--color-zinc-200);
 }
+
+body:has(.fc) {
+  overflow: visible!important;
+}

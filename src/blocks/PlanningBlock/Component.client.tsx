@@ -7,34 +7,26 @@ import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
 import interactionPlugin from '@fullcalendar/interaction'
 import './index.scss'
 import '@payloadcms/ui/css'
-import { Button } from '@/components/ui/button'
-import { SelectInput } from '@payloadcms/ui'
-import { useModal, Modal, ModalToggler, ModalContainer } from '@faceless-ui/modal'
-import { ArrowRightLeft, CircleX, PackagePlus } from 'lucide-react'
+import { useModal } from '@faceless-ui/modal'
+import { ArrowRightLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { handleAddProject } from '@/blocks/PlanningBlock/utils/handleAddProject'
-import { handleRemoveProject } from '@/blocks/PlanningBlock/utils/handleRemoveProject'
 import Tooltip from '@/components/Tooltip'
 import { onCalendarDateClick } from '@/blocks/PlanningBlock/utils/onCalendarDateClick'
-import { handleSaveDateClick } from '@/blocks/PlanningBlock/utils/handleSaveDateClick'
-import { handleDeleteDateClick } from '@/blocks/PlanningBlock/utils/handleDeleteDateClick'
 import { Toast } from '@/components/Toast'
-import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
 import { getFrontendUser } from '@/utilities/getFrontendUser'
 import { calculateUserWeeklyLoads, createUserWeeklySummaryEvents } from '@/blocks/PlanningBlock/utils/calculateUserLoads'
 import { generateResources } from '@/blocks/PlanningBlock/utils/generateResources'
 import { getLabel } from '@/utilities/getLabel'
-import { positionOptions } from '@/collections/Users/positionOptions'
 import { generateInvertedResources } from '@/blocks/PlanningBlock/utils/generateInvertedResources'
 import { onCalendarDateClickInverted } from '@/blocks/PlanningBlock/utils/onCalendarDateClickInverted'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
-import { handleSaveDateClickInverted } from '@/blocks/PlanningBlock/utils/handleSaveDateClickInverted'
-import { handleDeleteDateClickInverted } from '@/blocks/PlanningBlock/utils/handleDeleteDateClickInverted'
-import { getStatusBg } from '@/blocks/PlanningBlock/utils/getStatusBg'
 import { StatusModal } from '@/blocks/PlanningBlock/modals/StatusModal'
 import { HoursModal } from '@/blocks/PlanningBlock/modals/HoursModal'
 import { ProjectModal } from '@/blocks/PlanningBlock/modals/ProjectModal'
 import { getResourceLabelContent } from '@/blocks/PlanningBlock/utils/getResourceLabelContent'
+import { getEventBg } from '@/blocks/PlanningBlock/utils/getEventBg'
+import { handleResizeClick } from '@/blocks/PlanningBlock/utils/handleResizeClick'
+import { handleResizeClickInverted } from '@/blocks/PlanningBlock/utils/handleResizeClickInverted'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -59,8 +51,6 @@ export const PlanningComponentClient: React.FC<{
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
   const [isInverted, setIsInverted] = useState(false)
-
-  // console.log('statusInput', statusInput)
 
   useEffect(() => {
     getFrontendUser().then(setLoggedUser)
@@ -165,8 +155,11 @@ export const PlanningComponentClient: React.FC<{
         resourceOrder="position"
         resourceAreaHeaderContent={() => (
           <div className="flex justify-between gap-2 items-center w-full">
-            <span><span className="font-medium">Resources</span> <span className="font-normal">{`${isInverted ? '(projects)' : '(users)'}`}</span></span>
-            <Tooltip content="Revert users/projects" position="left">
+            <span className="inline-flex gap-2 items-center">
+              <span className="font-medium text-lg">{`${isInverted ? 'Projects' : 'People'}`}</span>
+              <span className="text-xs leading-3 rounded-2xl bg-zinc-100 p-1">{`${isInverted ? projectsState?.length : usersState?.length}`}</span>
+            </span>
+            <Tooltip content="Switch people/projects" position="left">
               <button
                 onClick={() => setIsInverted(prev => !prev)}
                 className="bg-none p-0 border-0 cursor-pointer"
@@ -195,20 +188,31 @@ export const PlanningComponentClient: React.FC<{
           }
 
           return (
-            <div className={`fc-event-regular ${isInverted ? `${getStatusBg(arg.event.title)} text-white inverted h-[40px]` : 'h-[26px] bg-emerald-900 hover:bg-emerald-800 text-white'} flex items-center justify-center`}>
+            <div className={`fc-event-regular flex items-center justify-center ${getEventBg(arg, isInverted)}`}>
               <span className={`${isInverted ? 'text-[14px]' : 'text-[16px]'} z-10`}>{arg.event.title}</span>
             </div>
           )
         }}
         editable={true}
-        eventResizableFromStart={false}
-        eventDurationEditable={false}
         eventClick={handleCalendarClick}
         eventOverlap={false}
         selectable={true}
         select={handleCalendarClick}
+        eventDrop={async (info) => {
+          if (isInverted) {
+            await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast)
+          } else {
+            await handleResizeClick(info, router, setTimeEntriesState, loggedUser, setToast)
+          }
+        }}
+        eventResize={async (info) => {
+          if (isInverted) {
+            await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast)
+          } else {
+            await handleResizeClick(info, router, setTimeEntriesState, loggedUser, setToast)
+          }
+        }}
         selectOverlap={false}
-        droppable={false}
         height="auto"
         slotDuration={{ weeks: 1 }}
         slotLabelFormat={[
