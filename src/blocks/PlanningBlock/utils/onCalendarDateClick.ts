@@ -1,5 +1,3 @@
-import { Where } from 'payload'
-import { stringify } from 'qs-esm'
 import { getClientSideURL } from '@/utilities/getURL'
 
 export const onCalendarDateClick = async ({
@@ -49,27 +47,22 @@ export const onCalendarDateClick = async ({
   if (!projectId || !userId || !start) {
     return
   }
+  
+  const eventId = info?.event?.id?.split?.('-')?.[0]?.trim()
 
-  const query: Where = {
-    and: [
-      { start: { equals: start } },
-      { project: { equals: projectId } },
-      { user: { equals: userId } },
-    ],
-  }
+  if (eventId) {
+    const res = await fetch(`${getClientSideURL()}/api/time-entries/${eventId}`, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    })
 
-  const stringifiedQuery = stringify({ where: query }, { addQueryPrefix: true })
+    const existingEntry = await res.json()
 
-  const res = await fetch(`${getClientSideURL()}/api/time-entries${stringifiedQuery}`, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-  })
-
-  const { docs: existingEntries } = await res.json()
-  const existingEntry = existingEntries?.[0]
-
-  if (existingEntry?.hours) {
-    setHoursInput(existingEntry.hours.toString())
+    if (existingEntry?.hours) {
+      setHoursInput(existingEntry.hours.toString())
+    } else {
+      setHoursInput('')
+    }
   } else {
     setHoursInput('')
   }

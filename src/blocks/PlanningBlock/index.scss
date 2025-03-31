@@ -74,6 +74,10 @@
     &:has(.load-indicator) {
       background-color: var(--color-zinc-50);
     }
+
+    &:has(.default) {
+      background-color: var(--color-zinc-100);
+    }
   }
 
   .fc-datagrid-body {
@@ -151,6 +155,12 @@
           transform: translate(-50%, -50%)rotate(90deg);
         }
       }
+    }
+  }
+
+  .fc-resource {
+    &:has(.default-resource) {
+      background-color: var(--color-zinc-100);
     }
   }
 }

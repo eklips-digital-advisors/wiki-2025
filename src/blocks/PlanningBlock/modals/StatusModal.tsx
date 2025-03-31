@@ -69,8 +69,7 @@ export const StatusModal: React.FC<Props> = ({
               variant="outline"
               className="cursor-pointer self-start"
               onClick={async () => {
-                await handleDeleteDateClickInverted(clickedInfo, router, setStatusTimeEntriesState)
-                setToast({ message: 'Entry deleted', type: 'success' })
+                await handleDeleteDateClickInverted(clickedInfo, router, setStatusTimeEntriesState, setToast)
                 setStatusInput(statusOptions[0].value)
                 toggleModal(statusModalSlug)
               }}

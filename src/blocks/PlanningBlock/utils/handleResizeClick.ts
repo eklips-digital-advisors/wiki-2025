@@ -23,7 +23,7 @@ export const handleResizeClick = async (
     ? info.event.end
     : info.end;
 
-  const eventId = info.event.id.split('-')[0].trim()
+  const eventId = info?.event?.id?.split?.('-')?.[0]?.trim()
 
   if (!eventId || !start) return
 

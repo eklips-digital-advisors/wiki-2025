@@ -1,5 +1,3 @@
-import { Where } from 'payload'
-import { stringify } from 'qs-esm'
 import { getClientSideURL } from '@/utilities/getURL'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
 
@@ -57,23 +55,22 @@ export const onCalendarDateClickInverted = async ({
   if (!projectId || !start) {
     return
   }
+  
+  const eventId = info?.event?.id
 
-  const query: Where = {
-    and: [{ start: { equals: start } }, { project: { equals: projectId } }],
-  }
+  if (eventId) {
+    const res = await fetch(`${getClientSideURL()}/api/status-time-entries/${eventId}`, {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    })
 
-  const stringifiedQuery = stringify({ where: query }, { addQueryPrefix: true })
+    const existingEntry = await res.json()
 
-  const res = await fetch(`${getClientSideURL()}/api/status-time-entries${stringifiedQuery}`, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-  })
-
-  const { docs: existingEntries } = await res.json()
-  const existingEntry = existingEntries?.[0]
-
-  if (existingEntry?.status) {
-    setStatusInput(existingEntry.status)
+    if (existingEntry?.status) {
+      setStatusInput(existingEntry.status)
+    } else {
+      setStatusInput(statusOptions[0].value)
+    }
   } else {
     setStatusInput(statusOptions[0].value)
   }

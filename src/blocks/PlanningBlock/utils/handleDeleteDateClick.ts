@@ -1,45 +1,27 @@
-import { Where } from 'payload'
-import { stringify } from 'qs-esm'
 import { getClientSideURL } from '@/utilities/getURL'
 
 export const handleDeleteDateClick = async (
   info: any,
   router: any,
-  setTimeEntriesState: any
+  setTimeEntriesState: any,
+  setToast: any
 ) => {
   // Normalize for both dateClick and eventClick
   const isEventClick = !!info.event
-  const start = isEventClick ? info.event.start : info.date
+  const eventId = info?.event?.id?.split?.('-')?.[0]?.trim()
 
-  // Get projectId and userId
-  const projectId = isEventClick
-    ? info.event.getResources()?.[0]?.extendedProps?.projectId
-    : info?.resource?.extendedProps?.projectId
-
-  const userId = isEventClick
-    ? info.event.getResources()?.[0]?._resource?.parentId
-    : info?.resource?._resource?.parentId
-
-  if (!projectId || !userId || !start) return
-
-  const query: Where = {
-    and: [
-      { start: { equals: start } },
-      { project: { equals: projectId } },
-      { user: { equals: userId } },
-    ],
+  if (!eventId || !isEventClick) {
+    setToast({ message: 'Entry not deleted, no event id, does event exist?', type: 'error' })
+    return
   }
 
-  const stringifiedQuery = stringify({ where: query }, { addQueryPrefix: true })
-
   try {
-    const res = await fetch(`${getClientSideURL()}/api/time-entries${stringifiedQuery}`, {
+    const res = await fetch(`${getClientSideURL()}/api/time-entries/${eventId}`, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
 
-    const { docs: existingEntries } = await res.json()
-    const existingEntry = existingEntries?.[0]
+    const existingEntry = await res.json()
 
     if (!existingEntry?.id) return
 
@@ -49,6 +31,8 @@ export const handleDeleteDateClick = async (
     })
 
     setTimeEntriesState((prev: any) => prev.filter((entry: any) => entry.id !== existingEntry.id))
+
+    setToast({ message: 'Entry deleted', type: 'success' })
 
     await fetch('/next/revalidate', {
       method: 'POST',

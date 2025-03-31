@@ -30,10 +30,11 @@ export const getResourceLabelContent = ({
 }: Props) => {
   const ResourceLabelContent = (arg: any) => {
     const resource = arg.resource
+    const type = resource._resource?.extendedProps?.type
 
     if (!resource._resource.parentId) {
       return (
-        <div className="flex justify-between gap-2 items-center">
+        <div className={`flex justify-between gap-2 items-center ${type ? 'default-resource' : ''}`}>
           <div className="flex gap-2 items-center ml-2">
             <ProfileImage
               name={resource._resource?.title}

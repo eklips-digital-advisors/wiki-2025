@@ -1,5 +1,3 @@
-import { Where } from 'payload'
-import { stringify } from 'qs-esm'
 import { getClientSideURL } from '@/utilities/getURL'
 
 export const handleSaveDateClick = async (
@@ -32,45 +30,38 @@ export const handleSaveDateClick = async (
 
   if (!projectId || !userId || !start) return
 
-  const query: Where = {
-    and: [
-      { start: { equals: start } },
-      { project: { equals: projectId } },
-      { user: { equals: userId } },
-    ],
-  }
-
-  const stringifiedQuery = stringify({ where: query }, { addQueryPrefix: true })
+  const eventId = info?.event?.id?.split?.('-')?.[0]?.trim()
 
   try {
-    const res = await fetch(`${getClientSideURL()}/api/time-entries${stringifiedQuery}`, {
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-    })
+    if (eventId) {
+      const res = await fetch(`${getClientSideURL()}/api/time-entries/${eventId}`, {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      })
+  
+      const existingEntry = await res.json()
 
-    const { docs: existingEntries } = await res.json()
-    const existingEntry = existingEntries?.[0]
-
-    if (existingEntry) {
-      // Update the existing entry
-      const updateRes = await fetch(
-        `${getClientSideURL()}/api/time-entries/${existingEntry.id}`,
-        {
-          method: 'PATCH',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hours: parseInt(hours, 10) }),
-        }
-      )
-      const updated = await updateRes.json()
-      const newTimeEntryState = updated?.doc
-
-      if (newTimeEntryState) {
-        setTimeEntriesState((prev: any) =>
-          prev.map((entry: any) => (entry.id === newTimeEntryState.id ? newTimeEntryState : entry)),
+      if (existingEntry && existingEntry.id) {
+        // Update the existing entry
+        const updateRes = await fetch(
+          `${getClientSideURL()}/api/time-entries/${existingEntry.id}`,
+          {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ hours: parseInt(hours, 10) }),
+          }
         )
+        const updated = await updateRes.json()
+        const newTimeEntryState = updated?.doc
+  
+        if (newTimeEntryState) {
+          setTimeEntriesState((prev: any) =>
+            prev.map((entry: any) => (entry.id === newTimeEntryState.id ? newTimeEntryState : entry)),
+          )
+        }
+        console.log('Updated entry:', updated) 
       }
-      console.log('Updated entry:', updated)
     } else {
       // Create a new entry
       const createRes = await fetch(`${getClientSideURL()}/api/time-entries`, {

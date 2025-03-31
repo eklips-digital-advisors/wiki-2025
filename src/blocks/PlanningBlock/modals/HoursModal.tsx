@@ -79,8 +79,7 @@ export const HoursModal: React.FC<Props> = ({
               variant="outline"
               className="cursor-pointer self-start"
               onClick={async () => {
-                await handleDeleteDateClick(clickedInfo, router, setTimeEntriesState)
-                setToast({ message: 'Entry deleted', type: 'success' })
+                await handleDeleteDateClick(clickedInfo, router, setTimeEntriesState, setToast)
                 setHoursInput('')
                 toggleModal(hoursModalSlug)
               }}

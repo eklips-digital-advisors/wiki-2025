@@ -1,5 +1,3 @@
-import { Where } from 'payload'
-import { stringify } from 'qs-esm'
 import { getClientSideURL } from '@/utilities/getURL'
 
 export const handleSaveDateClickInverted = async (
@@ -26,45 +24,40 @@ export const handleSaveDateClickInverted = async (
     : info.resource?.id;
 
   if (!projectId || !start) return
-
-  const query: Where = {
-    and: [
-      { start: { equals: start } },
-      { project: { equals: projectId } },
-    ],
-  }
-
-  const stringifiedQuery = stringify({ where: query }, { addQueryPrefix: true })
+  
+  const eventId = info?.event?.id
 
   try {
-    const res = await fetch(`${getClientSideURL()}/api/status-time-entries${stringifiedQuery}`, {
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-    })
+    if (eventId) {
 
-    const { docs: existingEntries } = await res.json()
-    const existingEntry = existingEntries?.[0]
+      const res = await fetch(`${getClientSideURL()}/api/status-time-entries/${eventId}`, {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      })
 
-    if (existingEntry) {
-      // Update the existing entry
-      const updateRes = await fetch(
-        `${getClientSideURL()}/api/status-time-entries/${existingEntry.id}`,
-        {
-          method: 'PATCH',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: status }),
-        }
-      )
-      const updated = await updateRes.json()
-      const newTimeEntryState = updated?.doc
+      const existingEntry = await res.json()
 
-      if (newTimeEntryState) {
-        setStatusTimeEntriesState((prev: any) =>
-          prev.map((entry: any) => (entry.id === newTimeEntryState.id ? newTimeEntryState : entry)),
+      if (existingEntry && existingEntry.id) {
+        // Update the existing entry
+        const updateRes = await fetch(
+          `${getClientSideURL()}/api/status-time-entries/${existingEntry.id}`,
+          {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: status }),
+          }
         )
+        const updated = await updateRes.json()
+        const newTimeEntryState = updated?.doc
+
+        if (newTimeEntryState) {
+          setStatusTimeEntriesState((prev: any) =>
+            prev.map((entry: any) => (entry.id === newTimeEntryState.id ? newTimeEntryState : entry)),
+          )
+        }
+        console.log('Updated entry:', updated)
       }
-      console.log('Updated entry:', updated)
     } else {
       // Create a new entry
       const createRes = await fetch(`${getClientSideURL()}/api/status-time-entries`, {
