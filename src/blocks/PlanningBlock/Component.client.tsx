@@ -33,7 +33,8 @@ export const PlanningComponentClient: React.FC<{
   projects: Project[]
   timeEntries: TimeEntry[]
   statusTimeEntries: StatusTimeEntry[]
-}> = ({ users, projects, timeEntries, statusTimeEntries }) => {
+  teamworkEvents: any[]
+}> = ({ users, projects, timeEntries, statusTimeEntries, teamworkEvents }) => {
   const router = useRouter()
   const [usersState, setUsersState] = useState<User[]>(users)
   const [projectsState] = useState<Project[]>(projects)
@@ -132,8 +133,22 @@ export const PlanningComponentClient: React.FC<{
     }
   })
 
+  const teamworkEventsForInverted = (teamworkEvents || []).flatMap((entry: any) => {
+    const startDate = new Date(entry.start)
+    const endDate = new Date(entry.end)
+
+    return {
+      id: `${entry.id}`,
+      resourceId: entry.title.toLowerCase().includes('vacation') ? 'eklips-vacation' : 'eklips-internal',
+      title: entry.title || 'Untitled Event',
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
+      type: entry.title.toLowerCase().includes('vacation') ? 'vacation default' : 'default',
+    }
+  })
+
   const events = useMemo(() => {
-    return isInverted ? [...invertedEvents, ...projectEventsInverted] : [...projectEvents, ...userSummaryEvents]
+    return isInverted ? [...invertedEvents, ...projectEventsInverted, ...teamworkEventsForInverted] : [...projectEvents, ...userSummaryEvents]
   }, [isInverted, invertedEvents, projectEvents, userSummaryEvents])
 
   return (
@@ -170,6 +185,10 @@ export const PlanningComponentClient: React.FC<{
           </div>
         )}
         events={events}
+        eventDidMount={(info) => {
+          const tooltipText = info.event.extendedProps.titleAttr || info.event.title;
+          info.el.setAttribute('title', tooltipText);
+        }}
         eventContent={(arg) => {
           const { isSummary, bgColorSummary, heightPercentSummary } = arg.event.extendedProps
 
@@ -188,7 +207,7 @@ export const PlanningComponentClient: React.FC<{
           }
 
           return (
-            <div className={`fc-event-regular flex items-center justify-center ${getEventBg(arg, isInverted)}`}>
+            <div className={`flex items-center justify-center ${getEventBg(arg, isInverted)}`}>
               <span className={`${isInverted ? 'text-[14px]' : 'text-[16px]'} z-10`}>{arg.event.title}</span>
             </div>
           )

@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { PlanningComponentClient } from '@/blocks/PlanningBlock/Component.client'
 import { ModalProvider } from '@faceless-ui/modal'
+import { GetTeamworkEvents } from '@/utilities/GetTeamwork/getTeamworkEvents'
 
 export const PlanningBlock: React.FC = async () => {
   const payload = await getPayload({ config: configPromise })
@@ -37,9 +38,17 @@ export const PlanningBlock: React.FC = async () => {
     limit: 9999,
   });
 
+  const teamworkEvents = await GetTeamworkEvents();
+
   return (
     <ModalProvider>
-      <PlanningComponentClient users={users?.docs} projects={projects.docs} timeEntries={timeEntries.docs} statusTimeEntries={statusTimeEntries.docs} />
+      <PlanningComponentClient
+        users={users?.docs}
+        projects={projects.docs}
+        timeEntries={timeEntries.docs}
+        statusTimeEntries={statusTimeEntries.docs}
+        teamworkEvents={teamworkEvents}
+      />
     </ModalProvider>
   )
 }

@@ -90,7 +90,9 @@
   }
 
   .fc-timeline-event-harness {
-    top: 8px!important;
+    &:not(:has(.default)) {
+      top: 8px!important;
+    }
 
     &:has(.fc-event-regular) {
       top: 16px!important;
@@ -98,6 +100,13 @@
 
     &:has(.inverted) {
       top: 12px!important;
+    }
+
+    .default span {
+      max-width: 72px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 

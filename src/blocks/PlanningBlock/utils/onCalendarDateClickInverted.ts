@@ -46,6 +46,11 @@ export const onCalendarDateClickInverted = async ({
     return
   }
 
+  if (isEventClick && info.event?.extendedProps?.type) {
+    setToast({ message: 'Cannot edit teamwork events', type: 'error' })
+    return
+  }
+
   if (!projectId)
     setToast({ message: 'Cannot add time to user, please add to project', type: 'error' })
 

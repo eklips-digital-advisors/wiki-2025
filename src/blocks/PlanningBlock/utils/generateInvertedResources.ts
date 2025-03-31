@@ -1,7 +1,7 @@
 import { Project, User } from '@/payload-types'
 
 export const generateInvertedResources = (users: User[], projects: Project[]) => {
-  return projects.flatMap((project) => {
+  const resources = projects.flatMap((project) => {
     const projectUsers = users
       .filter((user: any) => user.projects?.some((p: any) => p.id === project.id))
       .map((user: any) => ({
@@ -26,4 +26,21 @@ export const generateInvertedResources = (users: User[], projects: Project[]) =>
 
     return [projectResource, ...projectUsers]
   })
+
+  const staticProjects = [
+    {
+      id: 'eklips-vacation',
+      title: 'Eklips - Vacation',
+      users: [],
+      projectImage: '',
+    },
+    {
+      id: 'eklips-internal',
+      title: 'Eklips - Internal',
+      users: [],
+      projectImage: '',
+    },
+  ]
+
+  return [...resources, ...staticProjects]
 }

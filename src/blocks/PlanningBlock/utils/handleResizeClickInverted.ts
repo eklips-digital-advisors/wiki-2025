@@ -20,6 +20,11 @@ export const handleResizeClickInverted = async (
     return
   }
 
+  if (isEventClick && info.event?.extendedProps?.type) {
+    setToast({ message: 'Cannot edit teamwork events', type: 'error' })
+    return
+  }
+
   const start = isEventClick
     ? info.event.start
     : info.start;
