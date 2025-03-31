@@ -65,17 +65,19 @@ export const StatusModal: React.FC<Props> = ({
             >
               Save
             </Button>
-            <Button
-              variant="outline"
-              className="cursor-pointer self-start"
-              onClick={async () => {
-                await handleDeleteDateClickInverted(clickedInfo, router, setStatusTimeEntriesState, setToast)
-                setStatusInput(statusOptions[0].value)
-                toggleModal(statusModalSlug)
-              }}
-            >
-              Delete
-            </Button>
+            {clickedInfo?.event &&
+              <Button
+                variant="outline"
+                className="cursor-pointer self-start"
+                onClick={async () => {
+                  await handleDeleteDateClickInverted(clickedInfo, router, setStatusTimeEntriesState, setToast)
+                  setStatusInput(statusOptions[0].value)
+                  toggleModal(statusModalSlug)
+                }}
+              >
+                Delete
+              </Button>
+            }
           </div>
         </div>
       </Modal>

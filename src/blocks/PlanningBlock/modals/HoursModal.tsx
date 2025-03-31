@@ -75,17 +75,19 @@ export const HoursModal: React.FC<Props> = ({
             >
               Save
             </Button>
-            <Button
-              variant="outline"
-              className="cursor-pointer self-start"
-              onClick={async () => {
-                await handleDeleteDateClick(clickedInfo, router, setTimeEntriesState, setToast)
-                setHoursInput('')
-                toggleModal(hoursModalSlug)
-              }}
-            >
-              Delete
-            </Button>
+            {clickedInfo?.event &&
+              <Button
+                variant="outline"
+                className="cursor-pointer self-start"
+                onClick={async () => {
+                  await handleDeleteDateClick(clickedInfo, router, setTimeEntriesState, setToast)
+                  setHoursInput('')
+                  toggleModal(hoursModalSlug)
+                }}
+              >
+                Delete
+              </Button>
+            }
           </div>
         </div>
       </Modal>
