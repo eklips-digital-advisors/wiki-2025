@@ -35,13 +35,6 @@ export const generateInvertedResources = (users: User[], projects: Project[]) =>
       projectImage: '',
       type: 'default'
     },
-    {
-      id: 'eklips-internal',
-      title: 'Eklips - Internal',
-      users: [],
-      projectImage: '',
-      type: 'default'
-    },
   ]
 
   return [...resources, ...staticProjects]
