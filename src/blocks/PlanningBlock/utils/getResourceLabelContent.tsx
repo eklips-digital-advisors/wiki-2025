@@ -83,7 +83,7 @@ export const getResourceLabelContent = ({
               }}
             >
               <Tooltip content="Add project" position="left">
-                <PackagePlus className="w-[20px] h-[20px] stroke-emerald-400 hover:stroke-emerald-300" />
+                <PackagePlus className="w-[20px] h-[20px] stroke-zinc-500 hover:stroke-emerald-400" />
               </Tooltip>
             </div>
           )}

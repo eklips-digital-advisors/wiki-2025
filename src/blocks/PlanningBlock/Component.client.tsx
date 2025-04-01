@@ -8,7 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import './index.scss'
 import '@payloadcms/ui/css'
 import { useModal } from '@faceless-ui/modal'
-import { ArrowRightLeft, PackagePlus } from 'lucide-react'
+import { ArrowDownNarrowWide, ArrowRightLeft, PackagePlus, ToggleLeft, ToggleRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Tooltip from '@/components/Tooltip'
 import { onCalendarDateClick } from '@/blocks/PlanningBlock/utils/onCalendarDateClick'
@@ -54,6 +54,7 @@ export const PlanningComponentClient: React.FC<{
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
   const [isInverted, setIsInverted] = useState(false)
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 
   useEffect(() => {
     getFrontendUser().then(setLoggedUser)
@@ -63,9 +64,9 @@ export const PlanningComponentClient: React.FC<{
   const userSummaryEvents = useMemo(() => createUserWeeklySummaryEvents(userWeeklyLoads), [userWeeklyLoads])
   const resources = useMemo(() => {
     return isInverted
-      ? generateInvertedResources(usersState, projectsState)
+      ? generateInvertedResources(usersState, projectsState, statusTimeEntriesState, sortDirection)
       : generateResources(usersState)
-  }, [usersState, projectsState, isInverted])
+  }, [usersState, projectsState, isInverted, statusTimeEntriesState, sortDirection])
 
   const handleCalendarClick = async (info: any) => {
     if (!loggedUser) {
@@ -178,30 +179,42 @@ export const PlanningComponentClient: React.FC<{
             </span>
             <div className="flex gap-2">
               {isInverted && (
-                <span
-                  title="Add project"
-                  className="text-xs cursor-pointer flex items-center ml-2"
-                  onClick={() => {
-                    if (!loggedUser) {
-                      setToast({ message: 'Please log in first', type: 'error' })
-                      return
-                    }
-
-                    // setSelectedResource(resource)
-                    toggleModal(invertedProjectSlug)
-                  }}
-                >
-                  <Tooltip content="Add project" position="left">
-                    <PackagePlus className="w-[20px] h-[20px] stroke-emerald-400 hover:stroke-emerald-300" />
-                  </Tooltip>
-                </span>
+                <>
+                  <span
+                    className="text-xs cursor-pointer flex items-center"
+                    onClick={() => setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))}
+                  >
+                    <Tooltip content="Sort based on launch date" position="left">
+                      <ArrowDownNarrowWide
+                        className={`w-[20px] h-[20px] hover:stroke-emerald-400 transition-transform duration-200 ${sortDirection === 'desc' ? 'rotate-180 stroke-emerald-500' : 'rotate-0 stroke-zinc-500'}`}
+                      />
+                    </Tooltip>
+                  </span>
+                  <span
+                    className="text-xs cursor-pointer flex items-center mr-2"
+                    onClick={() => {
+                      if (!loggedUser) {
+                        setToast({ message: 'Please log in first', type: 'error' })
+                        return
+                      }
+                      toggleModal(invertedProjectSlug)
+                    }}
+                  >
+                    <Tooltip content="Add project" position="left">
+                      <PackagePlus className="w-[20px] h-[20px] stroke-zinc-500 hover:stroke-emerald-400" />
+                    </Tooltip>
+                  </span>
+                </>
               )}
               <Tooltip content="Switch people/projects" position="left">
                 <button
                   onClick={() => setIsInverted(prev => !prev)}
                   className="bg-none p-0 border-0 cursor-pointer"
                 >
-                  <ArrowRightLeft className={`${isInverted ? 'rotate-90 stroke-emerald-600 hover:stroke-emerald-500' : 'stroke-zinc-800 hover:stroke-zinc-700'} transition-transform w-[20px] h-[20px]`} />
+                  {!isInverted
+                    ? <ToggleLeft className={`stroke-zinc-800 transition-transform w-[24px] h-[24px]`} />
+                    : <ToggleRight className={`stroke-emerald-500 transition-transform w-[24px] h-[24px]`} />
+                  }
                 </button>
               </Tooltip>
             </div>

@@ -1,12 +1,30 @@
 import { Project, User } from '@/payload-types'
 
-export const generateInvertedResources = (users: User[], projects: Project[]) => {
-  console.log('users', users)
-  console.log('projects', projects)
-
-  const resources = projects
+export const generateInvertedResources = (
+  users: User[],
+  projects: Project[],
+  statusTimeEntries: any[],
+  sortDirection: 'asc' | 'desc'
+) => {
+  const projectsWithLaunchDate = projects
     .filter((project) => project.showInProjectView)
-    .flatMap((project) => {
+    .map((project) => {
+      const launchStatus = statusTimeEntries.find(
+        (entry) => entry.project.id === project.id && entry.status === 'launch'
+      )
+
+      return {
+        ...project,
+        launchDate: launchStatus ? new Date(launchStatus.start).getTime() : Infinity,
+      }
+    })
+    .sort((a, b) => {
+      return sortDirection === 'asc'
+        ? a.launchDate - b.launchDate
+        : b.launchDate - a.launchDate
+    })
+
+  const resources = projectsWithLaunchDate.flatMap((project) => {
       const projectResource = {
         id: `${project.id}`,
         title: project.title || '',
