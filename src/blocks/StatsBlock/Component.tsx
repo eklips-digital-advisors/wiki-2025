@@ -1,6 +1,4 @@
 import React from 'react'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
 import { getSingleCloudflareItemStatsTotal } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemStatsTotal'
 import { StatsBlockClient } from '@/blocks/StatsBlock/Component.client'
 
@@ -15,13 +13,40 @@ type StatsBlockProps = {
 }
 
 export const StatsBlock: React.FC<StatsBlockProps> = async ({titleHeading}) => {
-  const payload = await getPayload({ config: configPromise })
   const buildTime: string = new Date().toLocaleString('et-ET', { timeZone: "Europe/Tallinn" })
 
-  const sites = await payload.find({
-    collection: 'sites',
-    limit: -1,
-  });
+  async function getAllCloudflareZones() {
+    const allZones = []
+    let page = 1
+    const perPage = 50 // max is 50
+    let totalPages = 1
+  
+    while (page <= totalPages) {
+      const response = await fetch(`https://api.cloudflare.com/client/v4/zones?page=${page}&per_page=${perPage}`, {
+        headers: {
+          Authorization: `Bearer ${process.env.CLOUDFLARE_EKLIPS}`,
+          'Content-Type': 'application/json',
+        },
+      })
+  
+      const json = await response.json()
+  
+      if (!json.success) {
+        throw new Error('Failed to fetch zones: ' + JSON.stringify(json.errors))
+      }
+  
+      allZones.push(...json.result)
+  
+      if (page === 1) {
+        totalPages = json.result_info.total_pages
+      }
+  
+      page++
+    }
+  
+    return allZones
+  }
+  const zones = await getAllCloudflareZones()
 
   const combinedStats: DayStat[] = Array.from({ length: 10 }, () => ({
     date: '',
@@ -31,8 +56,8 @@ export const StatsBlock: React.FC<StatsBlockProps> = async ({titleHeading}) => {
   
   const cfStat = (
     await Promise.all(
-      sites?.docs.map(async site => {
-        const cfId = site?.integrations?.cloudflare
+      zones.map(async site => {
+        const cfId = site?.id
         if (cfId) {
           return await getSingleCloudflareItemStatsTotal(cfId)
         }

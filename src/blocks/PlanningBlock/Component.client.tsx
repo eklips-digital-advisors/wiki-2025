@@ -8,7 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import './index.scss'
 import '@payloadcms/ui/css'
 import { useModal } from '@faceless-ui/modal'
-import { ArrowRightLeft } from 'lucide-react'
+import { ArrowRightLeft, PackagePlus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Tooltip from '@/components/Tooltip'
 import { onCalendarDateClick } from '@/blocks/PlanningBlock/utils/onCalendarDateClick'
@@ -173,6 +173,25 @@ export const PlanningComponentClient: React.FC<{
             <span className="inline-flex gap-2 items-center">
               <span className="font-medium text-lg">{`${isInverted ? 'Projects' : 'People'}`}</span>
               <span className="text-xs leading-3 rounded-2xl bg-zinc-100 p-1">{`${isInverted ? resources?.filter((item: any) => item.projectImage || item.projectImage === "").length : usersState?.length}`}</span>
+              {isInverted && (
+                <span
+                  title="Add project"
+                  className="text-xs cursor-pointer flex items-center ml-2"
+                  onClick={() => {
+                    if (!loggedUser) {
+                      setToast({ message: 'Please log in first', type: 'error' })
+                      return
+                    }
+
+                    // setSelectedResource(resource)
+                    // toggleModal(modalSlug)
+                  }}
+                >
+                  <Tooltip content="Add project" position="top">
+                    <PackagePlus className="w-[20px] h-[20px] stroke-emerald-400 hover:stroke-emerald-300" />
+                  </Tooltip>
+                </span>
+              )}
             </span>
             <Tooltip content="Switch people/projects" position="left">
               <button

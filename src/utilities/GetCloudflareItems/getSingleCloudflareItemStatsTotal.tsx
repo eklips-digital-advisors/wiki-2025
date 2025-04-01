@@ -25,7 +25,7 @@ export async function getSingleCloudflareItemStatsTotal(id: string | number) {
 
       const startTime = start.toISOString()
       const endTime = end.toISOString()
-
+      
       const graphqlQuery = {
         query: `
           {
@@ -56,15 +56,17 @@ export async function getSingleCloudflareItemStatsTotal(id: string | number) {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }
 
-      const dayStats = data?.data?.viewer?.zones?.[0]?.daily || []
-      const totalRequests = dayStats.reduce((sum: any, hour: any) => sum + (hour?.sum?.requests || 0), 0)
-      const totalBytes = dayStats.reduce((sum: any, hour: any) => sum + (hour?.sum?.bytes || 0), 0)
+      if (data?.data && data?.data?.viewer?.zones?.[0]?.daily) {
+        const dayStats = data?.data?.viewer?.zones?.[0]?.daily || []
+        const totalRequests = dayStats.reduce((sum: any, hour: any) => sum + (hour?.sum?.requests || 0), 0)
+        const totalBytes = dayStats.reduce((sum: any, hour: any) => sum + (hour?.sum?.bytes || 0), 0)
 
-      dailyStats.push({
-        date: start.toISOString().split('T')[0], // YYYY-MM-DD
-        requests: totalRequests,
-        bandwidth: totalBytes
-      })
+        dailyStats.push({
+          date: start.toISOString().split('T')[0], // YYYY-MM-DD
+          requests: totalRequests,
+          bandwidth: totalBytes
+        })
+      }
     }
 
     // Optional: reverse to get chronological order (oldest first)
