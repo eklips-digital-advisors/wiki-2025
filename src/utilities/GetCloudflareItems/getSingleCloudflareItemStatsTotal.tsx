@@ -31,7 +31,7 @@ export async function getSingleCloudflareItemStatsTotal(id: string | number) {
           {
             viewer {
               zones(filter: {zoneTag: "${id}"}) {
-                daily: httpRequests1hGroups(limit: 24, filter: {datetime_geq: "${startTime}", datetime_lt: "${endTime}"}) {
+                daily: httpRequests1hGroups(limit: 1, filter: {datetime_geq: "${startTime}", datetime_lt: "${endTime}"}) {
                   sum {
                     requests
                     bytes

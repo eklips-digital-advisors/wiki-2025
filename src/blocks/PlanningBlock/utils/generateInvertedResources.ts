@@ -1,31 +1,36 @@
 import { Project, User } from '@/payload-types'
 
 export const generateInvertedResources = (users: User[], projects: Project[]) => {
-  const resources = projects.flatMap((project) => {
-    const projectUsers = users
-      .filter((user: any) => user.projects?.some((p: any) => p.id === project.id))
-      .map((user: any) => ({
-        id: `user-${user.id}-${project.id}`,
-        title: user.name || '',
-        parentId: `${project.id}`,
-        profileImage: user?.media?.url || '',
-        position: user?.position || '',
-      }))
+  console.log('users', users)
+  console.log('projects', projects)
 
-    // Only return project if it has users
-    if (projectUsers.length === 0) {
-      return [] // Skip project with no users
-    }
+  const resources = projects
+    .filter((project) => project.showInProjectView)
+    .flatMap((project) => {
+      const projectResource = {
+        id: `${project.id}`,
+        title: project.title || '',
+        projectId: project.id,
+        projectImage: project.image || '',
+        isProject: true,
+      }
 
-    const projectResource = {
-      id: `${project.id}`,
-      title: project.title || '',
-      users: [],
-      projectImage: project.image || '',
-    }
+      const userResources = Array.isArray(users)
+        ? users
+          .filter((user: any) => user.projects?.some((p: any) => p.id === project.id))
+          .map((user: any) => ({
+            id: `user-${user.id}-${project.id}`,
+            title: user.name || '',
+            parentId: project.id,
+            userId: user.id,
+            profileImage: user?.media?.url || '',
+            position: user?.position || '',
+            isProject: false,
+          }))
+        : []
 
-    return [projectResource, ...projectUsers]
-  })
+      return [projectResource, ...userResources]
+    })
 
   const staticProjects = [
     {
@@ -33,7 +38,7 @@ export const generateInvertedResources = (users: User[], projects: Project[]) =>
       title: 'Eklips - Vacation',
       users: [],
       projectImage: '',
-      type: 'default'
+      type: 'default',
     },
   ]
 

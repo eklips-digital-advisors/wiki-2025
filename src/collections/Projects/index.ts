@@ -52,6 +52,14 @@ export const Projects: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'showInProjectView',
+      type: 'checkbox',
+    },
+    {
+      name: 'launchDate',
+      type: 'date',
+    },
+    {
       name: 'users',
       type: 'join',
       collection: 'users',

@@ -27,6 +27,7 @@ import { getResourceLabelContent } from '@/blocks/PlanningBlock/utils/getResourc
 import { getEventBg } from '@/blocks/PlanningBlock/utils/getEventBg'
 import { handleResizeClick } from '@/blocks/PlanningBlock/utils/handleResizeClick'
 import { handleResizeClickInverted } from '@/blocks/PlanningBlock/utils/handleResizeClickInverted'
+import { InvertedProjectModal } from '@/blocks/PlanningBlock/modals/InvertedProjectModal'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -37,12 +38,13 @@ export const PlanningComponentClient: React.FC<{
 }> = ({ users, projects, timeEntries, statusTimeEntries, teamworkEvents }) => {
   const router = useRouter()
   const [usersState, setUsersState] = useState<User[]>(users)
-  const [projectsState] = useState<Project[]>(projects)
+  const [projectsState, setProjectsState] = useState<Project[]>(projects)
   const [timeEntriesState, setTimeEntriesState] = useState<TimeEntry[]>(timeEntries)
   const [statusTimeEntriesState, setStatusTimeEntriesState] = useState<StatusTimeEntry[]>(statusTimeEntries)
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
   const [selectedResource, setSelectedResource] = useState<any | null>(null)
   const modalSlug = 'project-modal-selection'
+  const invertedProjectSlug = 'inverted-project-modal'
   const { toggleModal } = useModal()
   const [hoursInput, setHoursInput] = useState('')
   const [statusInput, setStatusInput] = useState(statusOptions[0].value)
@@ -173,6 +175,8 @@ export const PlanningComponentClient: React.FC<{
             <span className="inline-flex gap-2 items-center">
               <span className="font-medium text-lg">{`${isInverted ? 'Projects' : 'People'}`}</span>
               <span className="text-xs leading-3 rounded-2xl bg-zinc-100 p-1">{`${isInverted ? resources?.filter((item: any) => item.projectImage || item.projectImage === "").length : usersState?.length}`}</span>
+            </span>
+            <div className="flex gap-2">
               {isInverted && (
                 <span
                   title="Add project"
@@ -184,23 +188,23 @@ export const PlanningComponentClient: React.FC<{
                     }
 
                     // setSelectedResource(resource)
-                    // toggleModal(modalSlug)
+                    toggleModal(invertedProjectSlug)
                   }}
                 >
-                  <Tooltip content="Add project" position="top">
+                  <Tooltip content="Add project" position="left">
                     <PackagePlus className="w-[20px] h-[20px] stroke-emerald-400 hover:stroke-emerald-300" />
                   </Tooltip>
                 </span>
               )}
-            </span>
-            <Tooltip content="Switch people/projects" position="left">
-              <button
-                onClick={() => setIsInverted(prev => !prev)}
-                className="bg-none p-0 border-0 cursor-pointer"
-              >
-                <ArrowRightLeft className={`${isInverted ? 'rotate-90 stroke-emerald-600 hover:stroke-emerald-500' : 'stroke-zinc-800 hover:stroke-zinc-700'} transition-transform w-[20px] h-[20px]`} />
-              </button>
-            </Tooltip>
+              <Tooltip content="Switch people/projects" position="left">
+                <button
+                  onClick={() => setIsInverted(prev => !prev)}
+                  className="bg-none p-0 border-0 cursor-pointer"
+                >
+                  <ArrowRightLeft className={`${isInverted ? 'rotate-90 stroke-emerald-600 hover:stroke-emerald-500' : 'stroke-zinc-800 hover:stroke-zinc-700'} transition-transform w-[20px] h-[20px]`} />
+                </button>
+              </Tooltip>
+            </div>
           </div>
         )}
         events={events}
@@ -282,12 +286,19 @@ export const PlanningComponentClient: React.FC<{
           setUsersState,
           router,
           setToast,
+          setProjectsState
         })}
       />
 
       <ProjectModal
         modalSlug={modalSlug} selectedResource={selectedResource} projectsState={projectsState} selectedProjectId={selectedProjectId}
         setSelectedProjectId={setSelectedProjectId} setSelectedResource={setSelectedResource} setUsersState={setUsersState}
+        router={router} setToast={setToast} toggleModal={toggleModal} loggedUser={loggedUser}
+      />
+
+      <InvertedProjectModal
+        modalSlug={invertedProjectSlug} projectsState={projectsState} selectedProjectId={selectedProjectId}
+        setSelectedProjectId={setSelectedProjectId} setProjectsState={setProjectsState}
         router={router} setToast={setToast} toggleModal={toggleModal} loggedUser={loggedUser}
       />
 

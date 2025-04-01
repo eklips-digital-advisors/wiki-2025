@@ -6,6 +6,7 @@ import { PackagePlus, CircleX } from 'lucide-react'
 import { getLabel } from '@/utilities/getLabel'
 import { positionOptions } from '@/collections/Users/positionOptions'
 import { handleRemoveProject } from '@/blocks/PlanningBlock/utils/handleRemoveProject'
+import { handleRemoveProjectInverted } from '@/blocks/PlanningBlock/utils/handleRemoveProjectInverted'
 
 type Props = {
   isInverted: boolean
@@ -16,6 +17,7 @@ type Props = {
   setUsersState: any
   router: any
   setToast: (val: { message: string; type: 'success' | 'error' }) => void
+  setProjectsState: any
 }
 
 export const getResourceLabelContent = ({
@@ -27,6 +29,7 @@ export const getResourceLabelContent = ({
   setUsersState,
   router,
   setToast,
+  setProjectsState
 }: Props) => {
   const ResourceLabelContent = (arg: any) => {
     const resource = arg.resource
@@ -51,6 +54,20 @@ export const getResourceLabelContent = ({
               </span>
             </span>
           </div>
+          {!resource?._resource?.extendedProps?.type && isInverted && (
+            <Button
+              className="p-0 cursor-pointer"
+              variant="link"
+              title="Remove project"
+              onClick={() =>
+                handleRemoveProjectInverted(resource, setProjectsState, router, setToast, loggedUser)
+              }
+            >
+              <Tooltip content="Remove project" position="left">
+                <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
+              </Tooltip>
+            </Button>
+          )}
           {!isInverted && (
             <div
               title="Add project"
