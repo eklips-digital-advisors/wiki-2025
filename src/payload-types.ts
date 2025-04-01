@@ -149,6 +149,7 @@ export interface Page {
     | ArchiveBlock
     | EmbedBlock
     | PlanningBlock
+    | StatsBlock
   )[];
   publishedAt?: string | null;
   slug?: string | null;
@@ -544,6 +545,17 @@ export interface PlanningBlock {
   blockType: 'planning';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock".
+ */
+export interface StatsBlock {
+  title?: string | null;
+  titleHeading?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'stats';
+}
+/**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -803,6 +815,7 @@ export interface PagesSelect<T extends boolean = true> {
         archive?: T | ArchiveBlockSelect<T>;
         embedBlock?: T | EmbedBlockSelect<T>;
         planning?: T | PlanningBlockSelect<T>;
+        stats?: T | StatsBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
@@ -917,6 +930,16 @@ export interface EmbedBlockSelect<T extends boolean = true> {
  */
 export interface PlanningBlockSelect<T extends boolean = true> {
   title?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock_select".
+ */
+export interface StatsBlockSelect<T extends boolean = true> {
+  title?: T;
+  titleHeading?: T;
   id?: T;
   blockName?: T;
 }

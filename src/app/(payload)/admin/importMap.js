@@ -29,6 +29,7 @@ import { AdminLabel as AdminLabel_65870e975164d8f9606e9c0570c4baed } from '@/blo
 import { AdminLabel as AdminLabel_8a89170dcab2ba62d0d62b99eaec6de8 } from '@/blocks/PasswordGeneratorBlock/AdminLabel'
 import { EmbedBlockAdmin as EmbedBlockAdmin_6988fc001331360694f061bda37d898b } from '@/blocks/EmbedBlock/AdminComponent'
 import { AdminLabel as AdminLabel_f939e3ea3f230ca39884e14ff5832336 } from '@/blocks/PlanningBlock/AdminLabel'
+import { AdminLabel as AdminLabel_4e572d05dacfc74e129b0b0e48d3e354 } from '@/blocks/StatsBlock/AdminLabel'
 import { TableFeatureClient as TableFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { AdminTitle as AdminTitle_d86fe82692f841f091ff1293b9d12447 } from '@/collections/Projects/AdminTitle'
@@ -74,6 +75,7 @@ export const importMap = {
   "@/blocks/PasswordGeneratorBlock/AdminLabel#AdminLabel": AdminLabel_8a89170dcab2ba62d0d62b99eaec6de8,
   "@/blocks/EmbedBlock/AdminComponent#EmbedBlockAdmin": EmbedBlockAdmin_6988fc001331360694f061bda37d898b,
   "@/blocks/PlanningBlock/AdminLabel#AdminLabel": AdminLabel_f939e3ea3f230ca39884e14ff5832336,
+  "@/blocks/StatsBlock/AdminLabel#AdminLabel": AdminLabel_4e572d05dacfc74e129b0b0e48d3e354,
   "@payloadcms/richtext-lexical/client#TableFeatureClient": TableFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/collections/Projects/AdminTitle#AdminTitle": AdminTitle_d86fe82692f841f091ff1293b9d12447,
