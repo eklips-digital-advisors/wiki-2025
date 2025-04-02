@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { statsBlockTypeOptions } from '@/blocks/StatsBlock/typeOptions'
 
 export const Stats: Block = {
   slug: 'stats',
@@ -14,9 +15,21 @@ export const Stats: Block = {
       }
     },
     {
-      type: 'text',
-      name: 'titleHeading',
-      label: 'Title',
+      type: 'array',
+      name: 'statBlocks',
+      label: 'Blocks',
+      fields: [
+        {
+          type: 'text',
+          name: 'titleHeading',
+          label: 'Title',
+        },
+        {
+          type: 'select',
+          name: 'type',
+          options: statsBlockTypeOptions
+        }
+      ]
     }
   ],
 }

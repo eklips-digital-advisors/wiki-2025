@@ -35,8 +35,11 @@ type StatsChartProps = {
   }
 }
 
-export const StatsChart = ({ siteChartData }: StatsChartProps) => {
+export const TotalBandwidthAndRequests = ({ siteChartData }: StatsChartProps) => {
   const data: any = siteChartData
+  console.log('data', data)
+
+  if (!data) return
 
   return (
     <Line
@@ -91,8 +94,7 @@ export const StatsChart = ({ siteChartData }: StatsChartProps) => {
         },
         plugins: {
           title: {
-            display: true,
-            text: `Last 10 Days`,
+            display: false,
           },
           legend: {
             display: true,
@@ -109,4 +111,4 @@ export const StatsChart = ({ siteChartData }: StatsChartProps) => {
   )
 }
 
-export default StatsChart
+export default TotalBandwidthAndRequests

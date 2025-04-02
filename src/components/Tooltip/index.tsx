@@ -1,4 +1,4 @@
-import { useState, ReactNode } from "react";
+import { useState, ReactNode, useRef, useEffect } from "react";
 
 type TooltipProps = {
   children: ReactNode;
@@ -12,6 +12,26 @@ export default function Tooltip({
   position = "top",
 }: TooltipProps) {
   const [show, setShow] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setShow(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setShow(false);
+    }, 100);
+  };
+
+  // 🧹 Hide tooltip on unmount or re-render
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      setShow(false);
+    };
+  }, []);
 
   const positionStyles: Record<string, string> = {
     top: "bottom-full left-1/2 -translate-x-1/2 mb-2",
@@ -23,13 +43,15 @@ export default function Tooltip({
   return (
     <div
       className="relative inline-flex items-center"
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {children}
       {show && (
         <div
           className={`absolute z-50 px-2 py-1 text-sm text-white bg-black rounded-md whitespace-nowrap ${positionStyles[position]}`}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
           {content}
         </div>

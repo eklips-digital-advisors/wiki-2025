@@ -552,7 +552,13 @@ export interface PlanningBlock {
  */
 export interface StatsBlock {
   title?: string | null;
-  titleHeading?: string | null;
+  statBlocks?:
+    | {
+        titleHeading?: string | null;
+        type?: ('totalBandwidthAndRequests' | 'numberOfSites') | null;
+        id?: string | null;
+      }[]
+    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'stats';
@@ -941,7 +947,13 @@ export interface PlanningBlockSelect<T extends boolean = true> {
  */
 export interface StatsBlockSelect<T extends boolean = true> {
   title?: T;
-  titleHeading?: T;
+  statBlocks?:
+    | T
+    | {
+        titleHeading?: T;
+        type?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }

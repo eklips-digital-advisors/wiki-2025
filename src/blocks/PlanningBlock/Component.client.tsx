@@ -222,7 +222,16 @@ export const PlanningComponentClient: React.FC<{
         )}
         events={events}
         eventDidMount={(info) => {
-          const tooltipText = info.event.extendedProps.titleAttr || info.event.title;
+          const { start, end, title } = info.event;
+
+          // Format dates
+          const startDate = start?.toLocaleDateString('et-ET', { timeZone: 'Europe/Tallinn' });
+          const endDate = end ? end.toLocaleDateString('et-ET', { timeZone: 'Europe/Tallinn' }) : null;
+
+          // Build tooltip text
+          const tooltipText = `${title}\nStart: ${startDate}${endDate ? `\nEnd: ${endDate}` : ''}`;
+
+          // Set tooltip
           info.el.setAttribute('title', tooltipText);
         }}
         eventContent={(arg) => {

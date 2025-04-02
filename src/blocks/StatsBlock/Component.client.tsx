@@ -1,33 +1,36 @@
 'use client'
-import StatsChart from '@/blocks/StatsBlock/StatsChart'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { LoaderCircle } from 'lucide-react'
+import TotalBandwidthAndRequests from '@/blocks/StatsBlock/TotalBandwidthAndRequests'
+import TotalNumberOfSites from '@/blocks/StatsBlock/TotalNumberOfSites'
+import {usePathname} from "next/navigation";
+import { revalidatePathOnClient } from '@/utilities/revalidatePathOnClient'
 
 export const StatsBlockClient = ({
-  combinedStats,
+  totalBandwidthAndRequestsStats,
+  totalNumberOfSitesStats,
   buildTime,
-  titleHeading
+  statBlocks,
 }: {
-  combinedStats: any
+  totalBandwidthAndRequestsStats: any
+  totalNumberOfSitesStats: any
   buildTime: string
-  titleHeading: string
+  statBlocks: string[]
 }) => {
+  const pathname = usePathname()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [pullText, setPullText] = useState('Pull new data')
   const revalidate = async () => {
     setLoading(true)
     setPullText('Pulling, please wait...')
-    await fetch('/next/revalidate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ path: '/statistics' }), // Pass the path dynamically
-    });
-    router.refresh()
+
+    const success = await revalidatePathOnClient(pathname)
+    if (success) {
+      router.refresh()
+    }
   }
 
   useEffect(() => {
@@ -35,9 +38,13 @@ export const StatsBlockClient = ({
     setPullText('Pull new data')
   }, [buildTime])
 
+  const blockComponents = {
+    totalBandwidthAndRequests: TotalBandwidthAndRequests,
+    numberOfSites: TotalNumberOfSites,
+  }
+
   return (
-    <div className="w-2/3 prose">
-      <h2>{titleHeading}</h2>
+    <div className="prose">
       <div className="text-sm flex flex-wrap items-center gap-4">
         <Button
           variant="link"
@@ -52,7 +59,36 @@ export const StatsBlockClient = ({
           <p className="text-zinc-500">Last update: {buildTime}</p>
         )}
       </div>
-      <StatsChart siteChartData={combinedStats} />
+      <div className="grid gap-6 md:grid-cols-2">
+        {statBlocks?.length && statBlocks.map((block: any, index: number) => {
+          const { type } = block
+
+          if (type && type in blockComponents) {
+            // @ts-ignore
+            const Block = blockComponents[type]
+
+            if (Block) {
+              let extraProps = {}
+
+              if (type === 'numberOfSites') {
+                extraProps = { nrOfSitesData: totalNumberOfSitesStats }
+              }
+
+              if (type === 'totalBandwidthAndRequests') {
+                extraProps = { siteChartData: totalBandwidthAndRequestsStats }
+              }
+
+              return (
+                <div className="" key={index}>
+                  <h2 className="mb-6">{block?.titleHeading}</h2>
+                  <Block {...block} {...extraProps} />
+                </div>
+              )
+            }
+          }
+          return null
+        })}
+      </div>
     </div>
   )
 }
