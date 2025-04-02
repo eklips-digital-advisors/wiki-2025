@@ -37,7 +37,6 @@ type StatsChartProps = {
 
 export const TotalBandwidthAndRequests = ({ siteChartData }: StatsChartProps) => {
   const data: any = siteChartData
-  console.log('data', data)
 
   if (!data) return
 
