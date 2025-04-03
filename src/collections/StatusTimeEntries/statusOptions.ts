@@ -4,6 +4,10 @@ export const statusOptions = [
     value: 'planning',
   },
   {
+    label: 'Design',
+    value: 'design',
+  },
+  {
     label: 'Development',
     value: 'development',
   },

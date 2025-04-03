@@ -407,7 +407,7 @@ export interface StatusTimeEntry {
   id: string;
   start?: string | null;
   end?: string | null;
-  status?: ('planning' | 'development' | 'test-content' | 'launch') | null;
+  status?: ('planning' | 'design' | 'development' | 'test-content' | 'launch') | null;
   project: string | Project;
   updatedAt: string;
   createdAt: string;

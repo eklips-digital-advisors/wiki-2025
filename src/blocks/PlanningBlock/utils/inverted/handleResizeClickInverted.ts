@@ -5,7 +5,8 @@ export const handleResizeClickInverted = async (
   router: any,
   setStatusTimeEntriesState: any,
   loggedUser: any,
-  setToast: any
+  setToast: any,
+  setTimeEntriesState: any
 ) => {
   if (!loggedUser) {
     setToast({ message: 'Please log in first', type: 'error' })
@@ -14,11 +15,7 @@ export const handleResizeClickInverted = async (
 
   // Normalize for both dateClick and eventClick
   const isEventClick = !!info.event
-
-  if (isEventClick && info.event.getResources?.()?.[0]?._resource.parentId) {
-    setToast({ message: 'Update time on users on users view', type: 'error' })
-    return
-  }
+  const isChild = !!info.event.getResources?.()?.[0]?._resource.parentId
 
   if (isEventClick && info.event?.extendedProps?.type) {
     setToast({ message: 'Cannot edit teamwork events', type: 'error' })
@@ -37,8 +34,10 @@ export const handleResizeClickInverted = async (
 
   if (!eventId || !start) return
 
+  const endpoint = isChild ? `time-entries` : `status-time-entries`
+
   try {
-    const res = await fetch(`${getClientSideURL()}/api/status-time-entries/${eventId}`, {
+    const res = await fetch(`${getClientSideURL()}/api/${endpoint}/${eventId}`, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -48,7 +47,7 @@ export const handleResizeClickInverted = async (
     if (existingEntry && existingEntry.id) {
       // Update the existing entry
       const updateRes = await fetch(
-        `${getClientSideURL()}/api/status-time-entries/${existingEntry.id}`,
+        `${getClientSideURL()}/api/${endpoint}/${existingEntry.id}`,
         {
           method: 'PATCH',
           credentials: 'include',
@@ -62,8 +61,13 @@ export const handleResizeClickInverted = async (
       const updated = await updateRes.json()
       const newTimeEntryState = updated?.doc
 
-      if (newTimeEntryState) {
+      if (newTimeEntryState && !isChild) {
         setStatusTimeEntriesState((prev: any) =>
+          prev.map((entry: any) => (entry.id === newTimeEntryState.id ? newTimeEntryState : entry)),
+        )
+      }
+      if (newTimeEntryState && isChild) {
+        setTimeEntriesState((prev: any) =>
           prev.map((entry: any) => (entry.id === newTimeEntryState.id ? newTimeEntryState : entry)),
         )
       }

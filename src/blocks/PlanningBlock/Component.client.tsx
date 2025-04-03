@@ -264,14 +264,14 @@ export const PlanningComponentClient: React.FC<{
         select={handleCalendarClick}
         eventDrop={async (info) => {
           if (isInverted) {
-            await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast)
+            await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast, setTimeEntriesState)
           } else {
             await handleResizeClick(info, router, setTimeEntriesState, loggedUser, setToast)
           }
         }}
         eventResize={async (info) => {
           if (isInverted) {
-            await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast)
+            await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast, setTimeEntriesState)
           } else {
             await handleResizeClick(info, router, setTimeEntriesState, loggedUser, setToast)
           }
