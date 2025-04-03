@@ -252,7 +252,7 @@ export const PlanningComponentClient: React.FC<{
           }
 
           return (
-            <div className={`flex items-center justify-center ${getEventBg(arg, isInverted)}`}>
+            <div className={`flex items-center justify-center rounded-md ${getEventBg(arg, isInverted)}`}>
               <span className={`${isInverted ? 'text-[14px]' : 'text-[16px]'} z-10 truncate`}>{arg.event.title}</span>
             </div>
           )
