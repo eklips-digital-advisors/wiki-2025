@@ -1,16 +1,16 @@
 import type { CollectionConfig } from 'payload'
 
-import { isAdminOrSelf } from '@/access/isAdminOrSelf'
 import { anyone } from '@/access/anyone'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
+import { authenticated } from '@/access/authenticated'
 
 export const StatusTimeEntries: CollectionConfig = {
   slug: 'status-time-entries',
   access: {
-    create: isAdminOrSelf,
-    delete: isAdminOrSelf,
+    create: authenticated,
+    delete: authenticated,
     read: anyone,
-    update: isAdminOrSelf,
+    update: authenticated,
   },
   admin: {
     useAsTitle: 'start',

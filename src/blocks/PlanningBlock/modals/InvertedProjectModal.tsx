@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { SelectInput } from '@payloadcms/ui'
 import { CircleX } from 'lucide-react'
 import { Project, User } from '@/payload-types'
-import { handleAddProjectInverted } from '@/blocks/PlanningBlock/utils/handleAddProjectInverted'
+import { handleAddProjectInverted } from '@/blocks/PlanningBlock/utils/inverted/handleAddProjectInverted'
 
 type Props = {
   modalSlug: string

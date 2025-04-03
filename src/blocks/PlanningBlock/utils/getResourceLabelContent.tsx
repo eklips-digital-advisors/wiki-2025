@@ -5,8 +5,8 @@ import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
 import { PackagePlus, CircleX } from 'lucide-react'
 import { getLabel } from '@/utilities/getLabel'
 import { positionOptions } from '@/collections/Users/positionOptions'
-import { handleRemoveProject } from '@/blocks/PlanningBlock/utils/handleRemoveProject'
-import { handleRemoveProjectInverted } from '@/blocks/PlanningBlock/utils/handleRemoveProjectInverted'
+import { handleRemoveProject } from '@/blocks/PlanningBlock/utils/regular/handleRemoveProject'
+import { handleRemoveProjectInverted } from '@/blocks/PlanningBlock/utils/inverted/handleRemoveProjectInverted'
 
 type Props = {
   isInverted: boolean

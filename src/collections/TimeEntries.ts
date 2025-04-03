@@ -2,15 +2,14 @@ import type { CollectionConfig } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
-import { isAdminOrSelf } from '@/access/isAdminOrSelf'
 
 export const TimeEntries: CollectionConfig = {
   slug: 'time-entries',
   access: {
-    create: isAdminOrSelf,
-    delete: isAdminOrSelf,
+    create: authenticated,
+    delete: authenticated,
     read: anyone,
-    update: isAdminOrSelf,
+    update: authenticated,
   },
   admin: {
     useAsTitle: 'start',

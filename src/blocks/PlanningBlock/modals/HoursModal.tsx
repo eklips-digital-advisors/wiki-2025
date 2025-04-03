@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import { Modal, ModalToggler, ModalContainer } from '@faceless-ui/modal'
 import { Button } from '@/components/ui/button'
 import { CircleX } from 'lucide-react'
-import { handleSaveDateClick } from '@/blocks/PlanningBlock/utils/handleSaveDateClick'
-import { handleDeleteDateClick } from '@/blocks/PlanningBlock/utils/handleDeleteDateClick'
+import { handleSaveDateClick } from '@/blocks/PlanningBlock/utils/regular/handleSaveDateClick'
+import { handleDeleteDateClick } from '@/blocks/PlanningBlock/utils/regular/handleDeleteDateClick'
 import { useModal } from '@faceless-ui/modal'
 
 type Props = {

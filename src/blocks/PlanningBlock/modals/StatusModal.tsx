@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button'
 import { SelectInput } from '@payloadcms/ui'
 import { CircleX } from 'lucide-react'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
-import { handleSaveDateClickInverted } from '@/blocks/PlanningBlock/utils/handleSaveDateClickInverted'
-import { handleDeleteDateClickInverted } from '@/blocks/PlanningBlock/utils/handleDeleteDateClickInverted'
+import { handleSaveDateClickInverted } from '@/blocks/PlanningBlock/utils/inverted/handleSaveDateClickInverted'
+import { handleDeleteDateClickInverted } from '@/blocks/PlanningBlock/utils/inverted/handleDeleteDateClickInverted'
 
 type Props = {
   statusModalSlug: string

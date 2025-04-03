@@ -8,25 +8,25 @@ import interactionPlugin from '@fullcalendar/interaction'
 import './index.scss'
 import '@payloadcms/ui/css'
 import { useModal } from '@faceless-ui/modal'
-import { ArrowDownNarrowWide, ArrowRightLeft, PackagePlus, ToggleLeft, ToggleRight } from 'lucide-react'
+import { ArrowDownNarrowWide, PackagePlus, ToggleLeft, ToggleRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Tooltip from '@/components/Tooltip'
-import { onCalendarDateClick } from '@/blocks/PlanningBlock/utils/onCalendarDateClick'
+import { onCalendarDateClick } from '@/blocks/PlanningBlock/utils/regular/onCalendarDateClick'
 import { Toast } from '@/components/Toast'
 import { getFrontendUser } from '@/utilities/getFrontendUser'
-import { calculateUserWeeklyLoads, createUserWeeklySummaryEvents } from '@/blocks/PlanningBlock/utils/calculateUserLoads'
-import { generateResources } from '@/blocks/PlanningBlock/utils/generateResources'
+import { calculateUserWeeklyLoads, createUserWeeklySummaryEvents } from '@/blocks/PlanningBlock/utils/regular/calculateUserLoads'
+import { generateResources } from '@/blocks/PlanningBlock/utils/regular/generateResources'
 import { getLabel } from '@/utilities/getLabel'
-import { generateInvertedResources } from '@/blocks/PlanningBlock/utils/generateInvertedResources'
-import { onCalendarDateClickInverted } from '@/blocks/PlanningBlock/utils/onCalendarDateClickInverted'
+import { generateInvertedResources } from '@/blocks/PlanningBlock/utils/inverted/generateInvertedResources'
+import { onCalendarDateClickInverted } from '@/blocks/PlanningBlock/utils/inverted/onCalendarDateClickInverted'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
 import { StatusModal } from '@/blocks/PlanningBlock/modals/StatusModal'
 import { HoursModal } from '@/blocks/PlanningBlock/modals/HoursModal'
 import { ProjectModal } from '@/blocks/PlanningBlock/modals/ProjectModal'
 import { getResourceLabelContent } from '@/blocks/PlanningBlock/utils/getResourceLabelContent'
 import { getEventBg } from '@/blocks/PlanningBlock/utils/getEventBg'
-import { handleResizeClick } from '@/blocks/PlanningBlock/utils/handleResizeClick'
-import { handleResizeClickInverted } from '@/blocks/PlanningBlock/utils/handleResizeClickInverted'
+import { handleResizeClick } from '@/blocks/PlanningBlock/utils/regular/handleResizeClick'
+import { handleResizeClickInverted } from '@/blocks/PlanningBlock/utils/inverted/handleResizeClickInverted'
 import { InvertedProjectModal } from '@/blocks/PlanningBlock/modals/InvertedProjectModal'
 
 export const PlanningComponentClient: React.FC<{
@@ -253,7 +253,7 @@ export const PlanningComponentClient: React.FC<{
 
           return (
             <div className={`flex items-center justify-center ${getEventBg(arg, isInverted)}`}>
-              <span className={`${isInverted ? 'text-[14px]' : 'text-[16px]'} z-10`}>{arg.event.title}</span>
+              <span className={`${isInverted ? 'text-[14px]' : 'text-[16px]'} z-10 truncate`}>{arg.event.title}</span>
             </div>
           )
         }}
