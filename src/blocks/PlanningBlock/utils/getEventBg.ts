@@ -6,7 +6,7 @@ export const getEventBg = (arg: any, isInverted: boolean) => {
   } else if (arg?.event?.extendedProps?.type?.includes('default')) {
     return `default bg-indigo-200 hover:bg-indigo-300`
   } else if (isInverted && !arg.event.getResources()?.[0]?._resource?.parentId) {
-    return `${getStatusBg(arg.event.title)} fc-event-regular h-[40px] inverted`
+    return `${getStatusBg(arg.event.title)} fc-event-regular h-[40px] inverted mr-[2px] ml-[4px]`
   } else {
     return `fc-event-regular h-[26px] bg-emerald-900 hover:bg-emerald-800 text-white`
   }
