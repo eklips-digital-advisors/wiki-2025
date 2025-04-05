@@ -7,12 +7,6 @@ export const handleResizeClick = async (
   loggedUser: any,
   setToast: any
 ) => {
-  if (!loggedUser) {
-    setToast({ message: 'Please log in first', type: 'error' })
-    return
-  }
-
-  // Normalize for both dateClick and eventClick
   const isEventClick = !!info.event
 
   const start = isEventClick

@@ -1,7 +1,7 @@
 import { getClientSideURL } from '@/utilities/getURL'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
 
-export const onCalendarDateClickInverted = async ({
+export const onCalendarProjectDateClickInverted = async ({
   info,
   setClickedInfo,
   setStatusInput,
@@ -21,38 +21,9 @@ export const onCalendarDateClickInverted = async ({
   setClickedInfo(info)
 
   const isEventClick = !!info.event
-  const isResourceClick = !!info.resource
 
-  const start = isEventClick ? info.event.start : info.start
-
-  const projectId = isEventClick
-    ? info.event.getResources?.()?.[0]?._resource?.id
-    : info.resource?.id
-
-  if (loggedUser.role !== 'admin') {
-    setToast({ message: 'Cannot update other user unless you are admin', type: 'error' })
-    return
-  }
-
-  if (isResourceClick && info.resource?._resource?.parentId) {
-    setToast({ message: 'Log time on users on users view', type: 'error' })
-    return
-  }
-
-  if (isEventClick && info.event.getResources?.()?.[0]?._resource.parentId) {
-    setToast({ message: 'Update time on users on users view', type: 'error' })
-    return
-  }
-
-  if (isEventClick && info.event?.extendedProps?.type) {
-    setToast({ message: 'Cannot edit teamwork events', type: 'error' })
-    return
-  }
-
-  if (!projectId)
-    setToast({ message: 'Cannot add time to user, please add to project', type: 'error' })
-
-  if (!projectId || !start) {
+  if (isEventClick && info.event?.extendedProps?.type || info?.resource?._resource?.id === 'eklips-vacation') {
+    setToast({ message: 'Cannot edit teamwork vacations', type: 'error' })
     return
   }
   

@@ -8,12 +8,6 @@ export const handleResizeClickInverted = async (
   setToast: any,
   setTimeEntriesState: any
 ) => {
-  if (!loggedUser) {
-    setToast({ message: 'Please log in first', type: 'error' })
-    return
-  }
-
-  // Normalize for both dateClick and eventClick
   const isEventClick = !!info.event
   const isChild = !!info.event.getResources?.()?.[0]?._resource.parentId
 

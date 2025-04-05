@@ -14,11 +14,6 @@ export const handleRemoveProjectInverted = async (
 
   const projectId = resource?.extendedProps?.projectId
 
-  if (loggedUser.role !== 'admin') {
-    setToast({ message: 'Cannot update other user unless you are admin', type: 'error' })
-    return
-  }
-
   if (!projectId || !resource) return
 
   try {

@@ -26,11 +26,6 @@ export const handleAddProjectInverted = async ({
     return
   }
 
-  if (loggedUser.role !== 'admin') {
-    setToast({ message: 'Cannot update other user unless you are admin', type: 'error' })
-    return
-  }
-
   const alreadyExists = projectsState.some(
     (project: any) => project.id === selectedProjectId && project.showInProjectView
   )

@@ -1,6 +1,6 @@
 import { getClientSideURL } from '@/utilities/getURL'
 
-export const handleSaveDateClickInverted = async (
+export const handleProjectSaveDateClickInverted = async (
   info: any,
   router: any,
   status: string | null,

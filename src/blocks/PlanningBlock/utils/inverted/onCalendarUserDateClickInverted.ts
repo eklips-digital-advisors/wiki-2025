@@ -1,13 +1,13 @@
 import { getClientSideURL } from '@/utilities/getURL'
 
-export const onCalendarDateClick = async ({
+export const onCalendarUserDateClickInverted = async ({
   info,
   setClickedInfo,
   setHoursInput,
   toggleModal,
   modalSlug,
   setToast,
-  loggedUser
+  loggedUser,
 }: {
   info: any
   setClickedInfo: (info: any) => void
@@ -19,18 +19,6 @@ export const onCalendarDateClick = async ({
 }) => {
   setClickedInfo(info)
 
-  const isEventClick = !!info.event
-  
-  const projectId = isEventClick
-    ? info.event.getResources()?.[0]?.extendedProps?.projectId
-    : info?.resource?.extendedProps?.projectId
-
-  if (!projectId) setToast({ message: 'Cannot add time to user, please add to project', type: 'error' })
-
-  if (!projectId) {
-    return
-  }
-  
   const eventId = info?.event?.id?.split?.('-')?.[0]?.trim()
 
   if (eventId) {

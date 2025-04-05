@@ -1,22 +1,22 @@
 import { getClientSideURL } from '@/utilities/getURL'
 
-export const handleDeleteDateClickInverted = async (
+export const handleUserDeleteDateClickInverted = async (
   info: any,
   router: any,
-  setStatusTimeEntriesState: any,
+  setTimeEntriesState: any,
   setToast: any
 ) => {
   // Normalize for both dateClick and eventClick
   const isEventClick = !!info.event
-  const eventId = info?.event?.id
+  const eventId = info?.event?.id?.split?.('-')?.[0]?.trim()
 
-  if (!isEventClick || !eventId) {
-    setToast({ message: 'Entry not deleted, no status entry id, does status entry exist?', type: 'error' })
+  if (!eventId || !isEventClick) {
+    setToast({ message: 'Entry not deleted, no event id, does event exist?', type: 'error' })
     return
   }
 
   try {
-    const res = await fetch(`${getClientSideURL()}/api/status-time-entries/${eventId}`, {
+    const res = await fetch(`${getClientSideURL()}/api/time-entries/${eventId}`, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -25,14 +25,14 @@ export const handleDeleteDateClickInverted = async (
 
     if (!existingEntry?.id) return
 
-    await fetch(`${getClientSideURL()}/api/status-time-entries/${existingEntry.id}`, {
+    await fetch(`${getClientSideURL()}/api/time-entries/${existingEntry.id}`, {
       method: 'DELETE',
       credentials: 'include',
     })
 
-    setStatusTimeEntriesState((prev: any) => prev.filter((entry: any) => entry.id !== existingEntry.id))
+    setTimeEntriesState((prev: any) => prev.filter((entry: any) => entry.id !== existingEntry.id))
 
-    setToast({ message: 'Status Entry deleted', type: 'success' })
+    setToast({ message: 'Entry deleted', type: 'success' })
 
     await fetch('/next/revalidate', {
       method: 'POST',

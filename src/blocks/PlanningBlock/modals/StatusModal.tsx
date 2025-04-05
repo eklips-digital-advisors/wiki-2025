@@ -4,8 +4,12 @@ import { Button } from '@/components/ui/button'
 import { SelectInput } from '@payloadcms/ui'
 import { CircleX } from 'lucide-react'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
-import { handleSaveDateClickInverted } from '@/blocks/PlanningBlock/utils/inverted/handleSaveDateClickInverted'
-import { handleDeleteDateClickInverted } from '@/blocks/PlanningBlock/utils/inverted/handleDeleteDateClickInverted'
+import {
+  handleProjectSaveDateClickInverted
+} from '@/blocks/PlanningBlock/utils/inverted/handleProjectSaveDateClickInverted'
+import {
+  handleProjectDeleteDateClickInverted
+} from '@/blocks/PlanningBlock/utils/inverted/handleProjectDeleteDateClickInverted'
 
 type Props = {
   statusModalSlug: string
@@ -57,7 +61,7 @@ export const StatusModal: React.FC<Props> = ({
               variant="default"
               className="cursor-pointer self-start"
               onClick={async () => {
-                await handleSaveDateClickInverted(clickedInfo, router, statusInput, setStatusTimeEntriesState)
+                await handleProjectSaveDateClickInverted(clickedInfo, router, statusInput, setStatusTimeEntriesState)
                 setToast({ message: 'Status saved', type: 'success' })
                 setStatusInput(statusOptions[0].value)
                 toggleModal(statusModalSlug)
@@ -70,7 +74,7 @@ export const StatusModal: React.FC<Props> = ({
                 variant="outline"
                 className="cursor-pointer self-start"
                 onClick={async () => {
-                  await handleDeleteDateClickInverted(clickedInfo, router, setStatusTimeEntriesState, setToast)
+                  await handleProjectDeleteDateClickInverted(clickedInfo, router, setStatusTimeEntriesState, setToast)
                   setStatusInput(statusOptions[0].value)
                   toggleModal(statusModalSlug)
                 }}

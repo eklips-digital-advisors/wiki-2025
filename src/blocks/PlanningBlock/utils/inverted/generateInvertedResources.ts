@@ -44,6 +44,7 @@ export const generateInvertedResources = (
             profileImage: user?.media?.url || '',
             position: user?.position || '',
             isProject: false,
+            projectId: project.id,
           }))
         : []
 

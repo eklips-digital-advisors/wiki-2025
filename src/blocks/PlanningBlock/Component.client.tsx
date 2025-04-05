@@ -8,17 +8,16 @@ import interactionPlugin from '@fullcalendar/interaction'
 import './index.scss'
 import '@payloadcms/ui/css'
 import { useModal } from '@faceless-ui/modal'
-import { ArrowDownNarrowWide, PackagePlus, ToggleLeft, ToggleRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import Tooltip from '@/components/Tooltip'
 import { onCalendarDateClick } from '@/blocks/PlanningBlock/utils/regular/onCalendarDateClick'
 import { Toast } from '@/components/Toast'
 import { getFrontendUser } from '@/utilities/getFrontendUser'
 import { calculateUserWeeklyLoads, createUserWeeklySummaryEvents } from '@/blocks/PlanningBlock/utils/regular/calculateUserLoads'
 import { generateResources } from '@/blocks/PlanningBlock/utils/regular/generateResources'
-import { getLabel } from '@/utilities/getLabel'
 import { generateInvertedResources } from '@/blocks/PlanningBlock/utils/inverted/generateInvertedResources'
-import { onCalendarDateClickInverted } from '@/blocks/PlanningBlock/utils/inverted/onCalendarDateClickInverted'
+import {
+  onCalendarProjectDateClickInverted,
+} from '@/blocks/PlanningBlock/utils/inverted/onCalendarProjectDateClickInverted'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
 import { StatusModal } from '@/blocks/PlanningBlock/modals/StatusModal'
 import { HoursModal } from '@/blocks/PlanningBlock/modals/HoursModal'
@@ -28,6 +27,15 @@ import { getEventBg } from '@/blocks/PlanningBlock/utils/getEventBg'
 import { handleResizeClick } from '@/blocks/PlanningBlock/utils/regular/handleResizeClick'
 import { handleResizeClickInverted } from '@/blocks/PlanningBlock/utils/inverted/handleResizeClickInverted'
 import { InvertedProjectModal } from '@/blocks/PlanningBlock/modals/InvertedProjectModal'
+import { onCalendarUserDateClickInverted } from '@/blocks/PlanningBlock/utils/inverted/onCalendarUserDateClickInverted'
+import { InvertedHoursModal } from '@/blocks/PlanningBlock/modals/InvertedHoursModal'
+import {
+  getInvertedEvents,
+  getProjectEventsInverted,
+  getTeamworkEventsForInverted,
+} from '@/blocks/PlanningBlock/utils/inverted/eventsInverted'
+import { getProjectEvents } from '@/blocks/PlanningBlock/utils/regular/events'
+import { ResourceAreaHeaderContent } from '@/blocks/PlanningBlock/ResourceAreaHeaderContent'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -50,6 +58,7 @@ export const PlanningComponentClient: React.FC<{
   const [statusInput, setStatusInput] = useState(statusOptions[0].value)
   const [clickedInfo, setClickedInfo] = useState<any>(null)
   const hoursModalSlug = 'hours-entry-modal'
+  const invertedHoursModalSlug = 'inverted-hours-entry-modal'
   const statusModalSlug = 'status-entry-modal'
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
@@ -74,85 +83,32 @@ export const PlanningComponentClient: React.FC<{
       return
     }
 
-    await (
-      !isInverted
-        ? onCalendarDateClick({
-          info,
-          setClickedInfo,
-          setHoursInput,
-          toggleModal,
-          modalSlug: hoursModalSlug,
-          setToast,
-          loggedUser,
+    if (isInverted) {
+      const resourceId = info.resource?.id ?? info.event?.getResources?.()[0]?.id
+      const isUserClick = resourceId?.startsWith('user-')
+
+      if (isUserClick) {
+        await onCalendarUserDateClickInverted({ info, setClickedInfo, setHoursInput, toggleModal, modalSlug: invertedHoursModalSlug,
+          setToast, loggedUser,
         })
-        : onCalendarDateClickInverted({
-          info,
-          setClickedInfo,
-          setStatusInput,
-          toggleModal,
-          modalSlug: statusModalSlug,
-          setToast,
-          loggedUser,
+      } else {
+        await onCalendarProjectDateClickInverted({ info, setClickedInfo, setStatusInput, toggleModal, modalSlug: statusModalSlug,
+          setToast, loggedUser,
         })
-    );
+      }
+    } else {
+      await onCalendarDateClick({ info, setClickedInfo, setHoursInput, toggleModal, modalSlug: hoursModalSlug, setToast, loggedUser, })
+    }
   }
 
-  const projectEvents = (timeEntriesState || []).flatMap((entry: any) => {
-    const startDate = new Date(entry.start)
-    const endDate = new Date(entry.end)
-
-    return {
-      id: `${entry.id}-${entry.user.id}`,
-      resourceId: `project-${entry.project.id}-${entry.user.id}`,
-      title: `${entry.hours}h`,
-      start: startDate.toISOString(),
-      end: endDate.toISOString(),
-    }
-  })
-
-  const invertedEvents = (statusTimeEntriesState || []).flatMap((entry: any) => {
-    const startDate = new Date(entry.start)
-    const endDate = new Date(entry.end)
-
-    return {
-      id: `${entry.id}`,
-      resourceId: `${entry.project.id}`,
-      title: `${getLabel(entry.status, statusOptions)}`,
-      start: startDate.toISOString(),
-      end: endDate.toISOString(),
-    }
-  })
-  
-  const projectEventsInverted = (timeEntriesState || []).flatMap((entry: any) => {
-    const startDate = new Date(entry.start)
-    const endDate = new Date(entry.end)
-
-    return {
-      id: `${entry.id}-${entry.user.id}`,
-      resourceId: `user-${entry.user.id}-${entry.project.id}`,
-      title: `${entry.hours}h`,
-      start: startDate.toISOString(),
-      end: endDate.toISOString(),
-    }
-  })
-
-  const teamworkEventsForInverted = (teamworkEvents || []).flatMap((entry: any) => {
-    const startDate = new Date(entry.start)
-    const endDate = new Date(entry.end)
-
-    return {
-      id: `${entry.id}`,
-      resourceId: entry.title.toLowerCase().includes('vacation') ? 'eklips-vacation' : 'eklips-internal',
-      title: entry.title || 'Untitled Event',
-      start: startDate.toISOString(),
-      end: endDate.toISOString(),
-      type: entry.title.toLowerCase().includes('vacation') ? 'vacation default' : 'default',
-    }
-  })
+  const projectEvents = useMemo(() => getProjectEvents(timeEntriesState), [timeEntriesState])
+  const invertedEvents = useMemo(() => getInvertedEvents(statusTimeEntriesState), [statusTimeEntriesState])
+  const projectEventsInverted = useMemo(() => getProjectEventsInverted(timeEntriesState), [timeEntriesState])
+  const teamworkEventsForInverted = useMemo(() => getTeamworkEventsForInverted(teamworkEvents), [teamworkEvents])
 
   const events = useMemo(() => {
     return isInverted ? [...invertedEvents, ...projectEventsInverted, ...teamworkEventsForInverted] : [...projectEvents, ...userSummaryEvents]
-  }, [isInverted, invertedEvents, projectEvents, userSummaryEvents])
+  }, [isInverted, invertedEvents, projectEvents, userSummaryEvents, projectEventsInverted, teamworkEventsForInverted])
 
   return (
     <>
@@ -172,66 +128,18 @@ export const PlanningComponentClient: React.FC<{
         resourcesInitiallyExpanded={false}
         resourceOrder="position"
         resourceAreaHeaderContent={() => (
-          <div className="flex justify-between gap-2 items-center w-full">
-            <span className="inline-flex gap-2 items-center">
-              <span className="font-medium text-lg">{`${isInverted ? 'Projects' : 'People'}`}</span>
-              <span className="text-xs leading-3 rounded-2xl bg-zinc-100 p-1">{`${isInverted ? resources?.filter((item: any) => item.projectImage || item.projectImage === "").length : usersState?.length}`}</span>
-            </span>
-            <div className="flex gap-2">
-              {isInverted && (
-                <>
-                  <span
-                    className="text-xs cursor-pointer flex items-center"
-                    onClick={() => setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))}
-                  >
-                    <Tooltip content="Sort based on launch date" position="left">
-                      <ArrowDownNarrowWide
-                        className={`w-[20px] h-[20px] hover:stroke-emerald-400 transition-transform duration-200 ${sortDirection === 'desc' ? 'rotate-180 stroke-emerald-500' : 'rotate-0 stroke-zinc-500'}`}
-                      />
-                    </Tooltip>
-                  </span>
-                  <span
-                    className="text-xs cursor-pointer flex items-center mr-2"
-                    onClick={() => {
-                      if (!loggedUser) {
-                        setToast({ message: 'Please log in first', type: 'error' })
-                        return
-                      }
-                      toggleModal(invertedProjectSlug)
-                    }}
-                  >
-                    <Tooltip content="Add project" position="left">
-                      <PackagePlus className="w-[20px] h-[20px] stroke-zinc-500 hover:stroke-emerald-400" />
-                    </Tooltip>
-                  </span>
-                </>
-              )}
-              <Tooltip content="Switch people/projects" position="left">
-                <button
-                  onClick={() => setIsInverted(prev => !prev)}
-                  className="bg-none p-0 border-0 cursor-pointer"
-                >
-                  {!isInverted
-                    ? <ToggleLeft className={`stroke-zinc-800 transition-transform w-[24px] h-[24px]`} />
-                    : <ToggleRight className={`stroke-emerald-500 transition-transform w-[24px] h-[24px]`} />
-                  }
-                </button>
-              </Tooltip>
-            </div>
-          </div>
+          <ResourceAreaHeaderContent isInverted={isInverted} setIsInverted={setIsInverted} sortDirection={sortDirection}
+            setSortDirection={setSortDirection} resources={resources} usersState={usersState} loggedUser={loggedUser} setToast={setToast}
+            toggleModal={toggleModal} invertedProjectSlug={invertedProjectSlug}
+          />
         )}
         events={events}
         eventDidMount={(info) => {
           const { start, end, title } = info.event;
-
-          // Format dates
           const startDate = start?.toLocaleDateString('et-ET', { timeZone: 'Europe/Tallinn' });
           const endDate = end ? end.toLocaleDateString('et-ET', { timeZone: 'Europe/Tallinn' }) : null;
-
-          // Build tooltip text
           const tooltipText = `${title}\nStart: ${startDate}${endDate ? `\nEnd: ${endDate}` : ''}`;
 
-          // Set tooltip
           info.el.setAttribute('title', tooltipText);
         }}
         eventContent={(arg) => {
@@ -263,6 +171,11 @@ export const PlanningComponentClient: React.FC<{
         selectable={true}
         select={handleCalendarClick}
         eventDrop={async (info) => {
+          if (!loggedUser) {
+            setToast({ message: 'Please log in first', type: 'error' })
+            return
+          }
+
           if (isInverted) {
             await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast, setTimeEntriesState)
           } else {
@@ -270,6 +183,11 @@ export const PlanningComponentClient: React.FC<{
           }
         }}
         eventResize={async (info) => {
+          if (!loggedUser) {
+            setToast({ message: 'Please log in first', type: 'error' })
+            return
+          }
+
           if (isInverted) {
             await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast, setTimeEntriesState)
           } else {
@@ -299,16 +217,8 @@ export const PlanningComponentClient: React.FC<{
           resourceTimelineThreeMonths: '3 months',
           resourceTimelineSixMonths: '6 months',
         }}
-        resourceLabelContent={getResourceLabelContent({
-          isInverted,
-          loggedUser,
-          setSelectedResource,
-          toggleModal,
-          modalSlug,
-          setUsersState,
-          router,
-          setToast,
-          setProjectsState
+        resourceLabelContent={getResourceLabelContent({ isInverted, loggedUser, setSelectedResource, toggleModal,
+          modalSlug, setUsersState, router, setToast, setProjectsState
         })}
       />
 
@@ -322,6 +232,11 @@ export const PlanningComponentClient: React.FC<{
         modalSlug={invertedProjectSlug} projectsState={projectsState} selectedProjectId={selectedProjectId}
         setSelectedProjectId={setSelectedProjectId} setProjectsState={setProjectsState}
         router={router} setToast={setToast} toggleModal={toggleModal} loggedUser={loggedUser}
+      />
+
+      <InvertedHoursModal
+        hoursModalSlug={invertedHoursModalSlug} hoursInput={hoursInput} setHoursInput={setHoursInput} clickedInfo={clickedInfo}
+        router={router} setTimeEntriesState={setTimeEntriesState} setToast={setToast} toggleModal={toggleModal}
       />
 
       <HoursModal
