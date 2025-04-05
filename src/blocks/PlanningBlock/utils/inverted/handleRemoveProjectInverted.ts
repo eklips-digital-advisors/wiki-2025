@@ -8,7 +8,7 @@ export const handleRemoveProjectInverted = async (
   loggedUser: any
 ) => {
   if (!loggedUser) {
-    setToast({ message: 'Please log in first', type: 'error' })
+    setToast({ message: 'Please log in', type: 'error' })
     return
   }
 

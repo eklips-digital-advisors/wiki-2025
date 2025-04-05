@@ -26,7 +26,7 @@ export const Toast = ({
       }`}
     >
       <span>{message}</span>
-      <button onClick={onClose} className="ml-auto">
+      <button onClick={onClose} className="ml-auto cursor-pointer">
         <X className="w-4 h-4" />
       </button>
     </div>

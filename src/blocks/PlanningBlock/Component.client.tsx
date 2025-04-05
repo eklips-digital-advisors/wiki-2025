@@ -101,6 +101,14 @@ export const PlanningComponentClient: React.FC<{
     }
   }
 
+  const allowFn = () => {
+    if (!loggedUser) {
+      setToast({ message: 'Please log in', type: 'error' })
+      return false
+    }
+    return true
+  }
+
   const projectEvents = useMemo(() => getProjectEvents(timeEntriesState), [timeEntriesState])
   const invertedEvents = useMemo(() => getInvertedEvents(statusTimeEntriesState), [statusTimeEntriesState])
   const projectEventsInverted = useMemo(() => getProjectEventsInverted(timeEntriesState), [timeEntriesState])
@@ -170,12 +178,9 @@ export const PlanningComponentClient: React.FC<{
         eventOverlap={false}
         selectable={true}
         select={handleCalendarClick}
+        eventAllow={allowFn}
+        selectAllow={allowFn}
         eventDrop={async (info) => {
-          if (!loggedUser) {
-            setToast({ message: 'Please log in first', type: 'error' })
-            return
-          }
-
           if (isInverted) {
             await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast, setTimeEntriesState)
           } else {
@@ -183,11 +188,6 @@ export const PlanningComponentClient: React.FC<{
           }
         }}
         eventResize={async (info) => {
-          if (!loggedUser) {
-            setToast({ message: 'Please log in first', type: 'error' })
-            return
-          }
-
           if (isInverted) {
             await handleResizeClickInverted(info, router, setStatusTimeEntriesState, loggedUser, setToast, setTimeEntriesState)
           } else {

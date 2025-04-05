@@ -74,7 +74,7 @@ export const getResourceLabelContent = ({
               className="text-xs cursor-pointer flex items-center"
               onClick={() => {
                 if (!loggedUser) {
-                  setToast({ message: 'Please log in first', type: 'error' })
+                  setToast({ message: 'Please log in', type: 'error' })
                   return
                 }
 
