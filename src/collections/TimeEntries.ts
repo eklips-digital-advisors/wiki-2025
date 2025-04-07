@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { isAdminLevel } from '@/access/isAdmin'
 
 export const TimeEntries: CollectionConfig = {
   slug: 'time-entries',
@@ -13,6 +14,9 @@ export const TimeEntries: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'start',
+    hidden: ({ user }: { user: any }) => {
+      return !isAdminLevel(user)
+    },
   },
   // defaultPopulate: {
   //   date: true,

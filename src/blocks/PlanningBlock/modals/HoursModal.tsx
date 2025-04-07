@@ -58,7 +58,9 @@ export const HoursModal: React.FC<Props> = ({
             onChange={(e) => setHoursInput(e.target.value)}
           />
           <div className="inline-flex gap-2 flex-wrap">
+            <Button variant="link" className="cursor-pointer p-0" onClick={() => setHoursInput('4')}>+4h</Button>
             <Button variant="link" className="cursor-pointer p-0" onClick={() => setHoursInput('8')}>+8h</Button>
+            <Button variant="link" className="cursor-pointer p-0" onClick={() => setHoursInput('20')}>+20h</Button>
             <Button variant="link" className="cursor-pointer p-0" onClick={() => setHoursInput('40')}>+40h</Button>
           </div>
           <div className="flex gap-2 items-center flex-wrap">

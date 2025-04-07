@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '@/access/authenticated'
-import { isAdmin, isAdminLevel } from '@/access/isAdmin'
-import { isAdminOrSelf } from '@/access/isAdminOrSelf'
+import { isAdmin, isAdminLevel, isAdminOrEditorLevel } from '@/access/isAdmin'
+import { isAdminOrSelfOrEditor } from '@/access/isAdminOrSelf'
 import { revalidatePlanning } from '@/blocks/PlanningBlock/hooks/revalidatePlanning'
 import { positionOptions } from '@/collections/Users/positionOptions'
 
@@ -12,7 +12,7 @@ export const Users: CollectionConfig = {
     create: isAdmin,
     delete: isAdmin,
     read: authenticated,
-    update: isAdminOrSelf,
+    update: isAdminOrSelfOrEditor,
   },
   admin: {
     defaultColumns: ['name', 'email'],
@@ -27,7 +27,7 @@ export const Users: CollectionConfig = {
       name: 'role',
       type: 'select',
       defaultValue: 'user',
-      options: ['user', 'admin'],
+      options: ['user', 'editor', 'admin'],
       access: {
         update: ({ req }) => {
           return isAdminLevel(req.user)
@@ -64,7 +64,7 @@ export const Users: CollectionConfig = {
       },
       access: {
         update: ({ req }) => {
-          return isAdminLevel(req.user)
+          return isAdminOrEditorLevel(req.user)
         },
       },
     }

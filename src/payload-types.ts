@@ -282,7 +282,7 @@ export interface Category {
  */
 export interface User {
   id: string;
-  role?: ('user' | 'admin') | null;
+  role?: ('user' | 'editor' | 'admin') | null;
   name?: string | null;
   media?: (string | null) | Media;
   position?: ('frontend' | 'backend' | 'designer' | 'pm' | 'qa' | 'sm' | 'other') | null;
@@ -408,6 +408,7 @@ export interface StatusTimeEntry {
   start?: string | null;
   end?: string | null;
   status?: ('planning' | 'design' | 'development' | 'test-content' | 'launch') | null;
+  comment?: string | null;
   project: string | Project;
   updatedAt: string;
   createdAt: string;
@@ -1108,6 +1109,7 @@ export interface StatusTimeEntriesSelect<T extends boolean = true> {
   start?: T;
   end?: T;
   status?: T;
+  comment?: T;
   project?: T;
   updatedAt?: T;
   createdAt?: T;

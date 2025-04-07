@@ -28,8 +28,8 @@ export const handleAddProject = async ({
   const existingProjects = selectedResource?.extendedProps?.projects || []
   const projectExists = existingProjects.some((project: any) => project.id === selectedProjectId)
 
-  if (loggedUser?.id !== selectedResource.id && loggedUser.role !== 'admin') {
-    setToast({ message: 'Cannot update other user unless you are admin', type: 'error' })
+  if (loggedUser?.id !== selectedResource.id && loggedUser.role !== 'admin' && loggedUser.role !== 'editor') {
+    setToast({ message: 'Cannot update other user unless you are admin or editor', type: 'error' })
     return
   }
 
