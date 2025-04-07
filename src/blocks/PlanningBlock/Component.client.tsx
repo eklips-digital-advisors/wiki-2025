@@ -36,6 +36,7 @@ import {
 } from '@/blocks/PlanningBlock/utils/inverted/eventsInverted'
 import { getProjectEvents } from '@/blocks/PlanningBlock/utils/regular/events'
 import { ResourceAreaHeaderContent } from '@/blocks/PlanningBlock/ResourceAreaHeaderContent'
+import { MessageSquare } from 'lucide-react'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -145,9 +146,13 @@ export const PlanningComponentClient: React.FC<{
         events={events}
         eventDidMount={(info) => {
           const { start, end, title } = info.event;
+          const comment = info?.event?.extendedProps?.comment || null;
           const startDate = start?.toLocaleDateString('et-ET', { timeZone: 'Europe/Tallinn' });
           const endDate = end ? end.toLocaleDateString('et-ET', { timeZone: 'Europe/Tallinn' }) : null;
-          const tooltipText = `${title}\nStart: ${startDate}${endDate ? `\nEnd: ${endDate}` : ''}`;
+          let tooltipText = `${title}\nStart: ${startDate}${endDate ? `\nEnd: ${endDate}` : ''}`;
+          if (comment) {
+            tooltipText += `\nComment: ${comment}`;
+          }
 
           info.el.setAttribute('title', tooltipText);
         }}
@@ -170,7 +175,12 @@ export const PlanningComponentClient: React.FC<{
 
           return (
             <div className={`flex items-center justify-center rounded-md ${getEventBg(arg, isInverted)}`}>
-              <span className={`${isInverted ? 'text-[14px]' : 'text-[16px]'} z-10 truncate`}>{arg.event.title}</span>
+              <span className={`${isInverted ? 'text-[14px]' : 'text-[16px]'} z-10 truncate`}>
+                {arg.event.title}
+              </span>
+              {isInverted && arg?.event?.extendedProps?.comment &&
+                <MessageSquare className="w-3 h-3 absolute right-[1px] top-[1px] stroke-zinc-600" />
+              }
             </div>
           )
         }}

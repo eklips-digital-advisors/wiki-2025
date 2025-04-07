@@ -13,6 +13,7 @@ export const getInvertedEvents = (statusTimeEntriesState: StatusTimeEntry[] = []
       title: `${getLabel(entry.status, statusOptions)}`,
       start: startDate.toISOString(),
       end: endDate.toISOString(),
+      comment: entry?.comment || null,
     }
   })
 
