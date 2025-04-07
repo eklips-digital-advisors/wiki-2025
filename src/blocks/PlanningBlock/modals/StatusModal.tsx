@@ -50,7 +50,7 @@ export const StatusModal: React.FC<Props> = ({
         <div className="flex flex-col gap-6">
           <h2 className="text-xl font-semibold">Update status</h2>
           <SelectInput
-            className="modal-select shadow shadow-zinc-200"
+            className="modal-select"
             path="addStatus"
             name="addStatus"
             value={statusInput}
@@ -61,10 +61,11 @@ export const StatusModal: React.FC<Props> = ({
             onChange={(e) => setStatusInput((e as any)?.value)}
           />
           <div>
-            <h3 className="mb-2">Comment</h3>
+            <h3 className="mb-2 font-semibold">Comment</h3>
             <TextareaInput
-              className="shadow shadow-zinc-200"
+              className="border border-zinc-100"
               path="addStatusComment"
+              rows={3}
               value={statusComment}
               onChange={(e) => setStatusComment(e.target.value)}
             />
