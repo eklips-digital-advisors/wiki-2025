@@ -4,6 +4,7 @@ export const handleProjectSaveDateClickInverted = async (
   info: any,
   router: any,
   status: string | null,
+  statusComment: string | null,
   setStatusTimeEntriesState: any
 ) => {
   // Normalize for both dateClick and eventClick
@@ -45,7 +46,7 @@ export const handleProjectSaveDateClickInverted = async (
             method: 'PATCH',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: status }),
+            body: JSON.stringify({ status: status, comment: statusComment }),
           }
         )
         const updated = await updateRes.json()
@@ -66,6 +67,7 @@ export const handleProjectSaveDateClickInverted = async (
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           status: status,
+          comment: statusComment,
           start: start,
           end: end,
           project: projectId,

@@ -56,6 +56,7 @@ export const PlanningComponentClient: React.FC<{
   const { toggleModal } = useModal()
   const [hoursInput, setHoursInput] = useState('')
   const [statusInput, setStatusInput] = useState(statusOptions[0].value)
+  const [statusComment, setStatusComment] = useState('')
   const [clickedInfo, setClickedInfo] = useState<any>(null)
   const hoursModalSlug = 'hours-entry-modal'
   const invertedHoursModalSlug = 'inverted-hours-entry-modal'
@@ -92,8 +93,8 @@ export const PlanningComponentClient: React.FC<{
           setToast, loggedUser,
         })
       } else {
-        await onCalendarProjectDateClickInverted({ info, setClickedInfo, setStatusInput, toggleModal, modalSlug: statusModalSlug,
-          setToast, loggedUser,
+        await onCalendarProjectDateClickInverted({ info, setClickedInfo, setStatusInput, setStatusComment,
+          toggleModal, modalSlug: statusModalSlug, setToast, loggedUser,
         })
       }
     } else {
@@ -245,8 +246,9 @@ export const PlanningComponentClient: React.FC<{
       />
 
       <StatusModal
-        statusModalSlug={statusModalSlug} statusInput={statusInput} setStatusInput={setStatusInput} clickedInfo={clickedInfo}
-        router={router} setStatusTimeEntriesState={setStatusTimeEntriesState} setToast={setToast} toggleModal={toggleModal}
+        statusModalSlug={statusModalSlug} statusInput={statusInput} setStatusInput={setStatusInput} statusComment={statusComment}
+        setStatusComment={setStatusComment} clickedInfo={clickedInfo} router={router}
+        setStatusTimeEntriesState={setStatusTimeEntriesState} setToast={setToast} toggleModal={toggleModal}
       />
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}

@@ -21,6 +21,14 @@ export const Projects: CollectionConfig = {
   // },
   fields: [
     {
+      name: 'title',
+      type: 'text',
+      admin: {
+        // hidden: true
+        description: 'Set manually if no project in TW'
+      }
+    },
+    {
       name: 'setTitle',
       type: 'ui',
       admin: {
@@ -31,17 +39,11 @@ export const Projects: CollectionConfig = {
       }
     },
     {
-      name: 'title',
-      type: 'text',
-      admin: {
-        hidden: true
-      }
-    },
-    {
       name: 'projectTeamwork',
       type: 'text',
       // required: true,
       admin: {
+        condition: (_, siblingData) => !siblingData.title,
         components: {
           Field: '@/utilities/GetTeamwork/getProjects#GetProjects',
         },
@@ -54,10 +56,6 @@ export const Projects: CollectionConfig = {
     {
       name: 'showInProjectView',
       type: 'checkbox',
-    },
-    {
-      name: 'launchDate',
-      type: 'date',
     },
     {
       name: 'users',

@@ -5,6 +5,7 @@ export const onCalendarProjectDateClickInverted = async ({
   info,
   setClickedInfo,
   setStatusInput,
+  setStatusComment,
   toggleModal,
   modalSlug,
   setToast,
@@ -13,6 +14,7 @@ export const onCalendarProjectDateClickInverted = async ({
   info: any
   setClickedInfo: (info: any) => void
   setStatusInput: (val: string) => void
+  setStatusComment: (val: string) => void
   toggleModal: (slug: string) => void
   modalSlug: string
   setToast: (toast: any) => void
@@ -42,8 +44,15 @@ export const onCalendarProjectDateClickInverted = async ({
     } else {
       setStatusInput(statusOptions[0].value)
     }
+
+    if (existingEntry?.comment) {
+      setStatusComment(existingEntry.comment)
+    } else {
+      setStatusComment('')
+    }
   } else {
     setStatusInput(statusOptions[0].value)
+    setStatusComment('')
   }
 
   toggleModal(modalSlug)

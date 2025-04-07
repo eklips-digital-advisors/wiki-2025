@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, ModalToggler, ModalContainer } from '@faceless-ui/modal'
 import { Button } from '@/components/ui/button'
-import { SelectInput } from '@payloadcms/ui'
+import { SelectInput, TextareaInput } from '@payloadcms/ui'
 import { CircleX } from 'lucide-react'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
 import {
@@ -15,6 +15,8 @@ type Props = {
   statusModalSlug: string
   statusInput: string
   setStatusInput: (val: string) => void
+  statusComment: string
+  setStatusComment: (val: string) => void
   clickedInfo: any
   router: any
   setStatusTimeEntriesState: any
@@ -26,6 +28,8 @@ export const StatusModal: React.FC<Props> = ({
   statusModalSlug,
   statusInput,
   setStatusInput,
+  statusComment,
+  setStatusComment,
   clickedInfo,
   router,
   setStatusTimeEntriesState,
@@ -46,7 +50,7 @@ export const StatusModal: React.FC<Props> = ({
         <div className="flex flex-col gap-6">
           <h2 className="text-xl font-semibold">Update status</h2>
           <SelectInput
-            className="modal-select"
+            className="modal-select shadow shadow-zinc-200"
             path="addStatus"
             name="addStatus"
             value={statusInput}
@@ -56,12 +60,23 @@ export const StatusModal: React.FC<Props> = ({
             }))}
             onChange={(e) => setStatusInput((e as any)?.value)}
           />
+          <div>
+            <h3 className="mb-2">Comment</h3>
+            <TextareaInput
+              className="shadow shadow-zinc-200"
+              path="addStatusComment"
+              value={statusComment}
+              onChange={(e) => setStatusComment(e.target.value)}
+            />
+          </div>
           <div className="flex gap-2 items-center flex-wrap">
             <Button
               variant="default"
               className="cursor-pointer self-start"
               onClick={async () => {
-                await handleProjectSaveDateClickInverted(clickedInfo, router, statusInput, setStatusTimeEntriesState)
+                await handleProjectSaveDateClickInverted(clickedInfo, router, statusInput, statusComment,
+                  setStatusTimeEntriesState
+                )
                 setToast({ message: 'Status saved', type: 'success' })
                 setStatusInput(statusOptions[0].value)
                 toggleModal(statusModalSlug)

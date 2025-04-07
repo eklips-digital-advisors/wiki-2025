@@ -365,11 +365,13 @@ export interface Media {
  */
 export interface Project {
   id: string;
+  /**
+   * Set manually if no project in TW
+   */
   title?: string | null;
   projectTeamwork?: string | null;
   image?: string | null;
   showInProjectView?: boolean | null;
-  launchDate?: string | null;
   users?: {
     docs?: (string | User)[] | null;
     hasNextPage?: boolean | null;
@@ -1081,7 +1083,6 @@ export interface ProjectsSelect<T extends boolean = true> {
   projectTeamwork?: T;
   image?: T;
   showInProjectView?: T;
-  launchDate?: T;
   users?: T;
   timeEntries?: T;
   statusTimeEntries?: T;
