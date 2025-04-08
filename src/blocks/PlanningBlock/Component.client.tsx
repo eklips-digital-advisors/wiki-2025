@@ -36,7 +36,8 @@ import {
 } from '@/blocks/PlanningBlock/utils/inverted/eventsInverted'
 import { getProjectEvents } from '@/blocks/PlanningBlock/utils/regular/events'
 import { ResourceAreaHeaderContent } from '@/blocks/PlanningBlock/ResourceAreaHeaderContent'
-import { MessageSquare } from 'lucide-react'
+import { Info } from 'lucide-react'
+import Tooltip from '@/components/Tooltip'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -179,7 +180,11 @@ export const PlanningComponentClient: React.FC<{
                 {arg.event.title}
               </span>
               {isInverted && arg?.event?.extendedProps?.comment &&
-                <MessageSquare className="w-3 h-3 absolute right-[1px] top-[1px] stroke-zinc-600" />
+                <div className="absolute right-[4px] top-0">
+                  <Tooltip content={arg?.event?.extendedProps?.comment} position="left">
+                    <Info className="w-3 h-3 stroke-zinc-800" />
+                  </Tooltip>
+                </div>
               }
             </div>
           )

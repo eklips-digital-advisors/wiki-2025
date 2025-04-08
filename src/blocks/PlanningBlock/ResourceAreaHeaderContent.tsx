@@ -32,7 +32,7 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
     <div className="flex justify-between gap-2 items-center w-full">
       <span className="inline-flex gap-2 items-center">
         <span className="font-medium text-lg">{`${isInverted ? 'Projects' : 'People'}`}</span>
-        <span className="text-xs leading-3 rounded-2xl bg-zinc-100 p-1">{`${isInverted ? resources?.filter((item: any) => item.projectImage || item.projectImage === '').length : usersState?.length}`}</span>
+        <span className="text-xs leading-3 rounded-2xl bg-zinc-100 p-1">{`${isInverted ? resources?.filter((item: any) => item.projectImage || item.projectImage === '').length - 1 : usersState?.length}`}</span>
       </span>
       <div className="flex gap-2">
         {isInverted && (
