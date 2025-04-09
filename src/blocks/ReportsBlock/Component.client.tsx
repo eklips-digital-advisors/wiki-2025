@@ -24,7 +24,7 @@ export const ReportsBlockClient = () => {
           <Link
             key={index}
             target={`_blank`}
-            className="border border-zinc-200 hover:border-emerald-300 rounded-md py-2 px-4 flex gap-4 items-center"
+            className="border border-zinc-200 leading-4 hover:border-emerald-300 rounded-md py-1 px-4 flex gap-2 h-[56px] items-center"
             href={`/reports/${folder}/index.html`}
           >
             <Folder className="w-5 h-5 stroke-emerald-600" />
