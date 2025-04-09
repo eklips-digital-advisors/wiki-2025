@@ -150,10 +150,12 @@ export interface Page {
     | EmbedBlock
     | PlanningBlock
     | StatsBlock
+    | ReportsBlock
   )[];
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
+  hideTitle?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -567,6 +569,16 @@ export interface StatsBlock {
   blockType: 'stats';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReportsBlock".
+ */
+export interface ReportsBlock {
+  title?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'reports';
+}
+/**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -827,10 +839,12 @@ export interface PagesSelect<T extends boolean = true> {
         embedBlock?: T | EmbedBlockSelect<T>;
         planning?: T | PlanningBlockSelect<T>;
         stats?: T | StatsBlockSelect<T>;
+        reports?: T | ReportsBlockSelect<T>;
       };
   publishedAt?: T;
   slug?: T;
   slugLock?: T;
+  hideTitle?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -957,6 +971,15 @@ export interface StatsBlockSelect<T extends boolean = true> {
         type?: T;
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReportsBlock_select".
+ */
+export interface ReportsBlockSelect<T extends boolean = true> {
+  title?: T;
   id?: T;
   blockName?: T;
 }

@@ -6,6 +6,7 @@ import { Archive } from '../../blocks/ArchiveBlock/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { Sites } from '../../blocks/SitesBlock/config'
 import { Stats } from '../../blocks/StatsBlock/config'
+import { Reports } from '../../blocks/ReportsBlock/config'
 import { Planning } from '../../blocks/PlanningBlock/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { PasswordGeneratorBlock } from '../../blocks/PasswordGeneratorBlock/config'
@@ -66,7 +67,9 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, MediaBlock, Sites, Content, PasswordGeneratorBlock, Archive, EmbedBlock, Planning, Stats],
+              blocks: [CallToAction, MediaBlock, Sites, Content, PasswordGeneratorBlock, Archive, EmbedBlock, Planning, Stats,
+                Reports
+              ],
               required: true,
               admin: {
                 initCollapsed: false,
@@ -85,6 +88,13 @@ export const Pages: CollectionConfig<'pages'> = {
       },
     },
     ...slugField(),
+    {
+      name: 'hideTitle',
+      type: 'checkbox',
+      admin: {
+        position: 'sidebar',
+      },
+    },
   ],
   hooks: {
     afterChange: [revalidatePage],

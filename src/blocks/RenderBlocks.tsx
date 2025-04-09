@@ -6,6 +6,7 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { SitesBlock } from '@/blocks/SitesBlock/Component'
 import { StatsBlock } from '@/blocks/StatsBlock/Component'
+import { ReportsBlock } from '@/blocks/ReportsBlock/Component'
 import { PlanningBlock } from '@/blocks/PlanningBlock/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { PasswordGeneratorBlock } from '@/blocks/PasswordGeneratorBlock/Component'
@@ -18,6 +19,7 @@ const blockComponents = {
   mediaBlock: MediaBlock,
   sites: SitesBlock,
   stats: StatsBlock,
+  reports: ReportsBlock,
   planning: PlanningBlock,
   content: ContentBlock,
   passwordGeneratorBlock: PasswordGeneratorBlock,

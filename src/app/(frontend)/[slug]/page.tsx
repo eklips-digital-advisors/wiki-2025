@@ -58,6 +58,11 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   return (
     <article className="pt-16 pb-24">
+        {page?.title && !page?.hideTitle &&
+          <div className="title-container prose mb-6">
+            <h1>{page?.title}</h1>
+          </div>
+        }
       {draft && <LivePreviewListener />}
 
       <RenderBlocks blocks={layout} />
