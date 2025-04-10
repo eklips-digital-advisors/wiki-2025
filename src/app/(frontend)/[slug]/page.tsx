@@ -10,7 +10,8 @@ import type { Page as PageType } from '@/payload-types'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { getUser } from '@/utilities/getUser'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -43,6 +44,11 @@ type Args = {
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
+  const { user } = await getUser()
+  if (!user) {
+    redirect('/login')
+  }
+
   const { isEnabled: draft } = await draftMode()
   const { slug = 'home' } = await paramsPromise
 

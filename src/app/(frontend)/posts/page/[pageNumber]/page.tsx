@@ -6,7 +6,8 @@ import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { getUser } from '@/utilities/getUser'
 
 export const revalidate = 600
 
@@ -17,8 +18,12 @@ type Args = {
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
+  const { user, payload } = await getUser()
+  if (!user) {
+    redirect('/login')
+  }
+
   const { pageNumber } = await paramsPromise
-  const payload = await getPayload({ config: configPromise })
 
   const sanitizedPageNumber = Number(pageNumber)
 

@@ -36,7 +36,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
           }}
         />
 
-        <div className="w-full">
+        <div className="w-full mt-[36px]">
           <HeroPattern />
           <div className="h-full lg:ml-72 xl:ml-80">
             <Header />

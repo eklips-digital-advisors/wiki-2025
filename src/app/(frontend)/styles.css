@@ -54,10 +54,6 @@
   }
 }
 
-.pill-container {
-  top: 56px;
-}
-
 body:has(.admin-bar:not(.hidden)) {
   .header-top,
   header.contents {

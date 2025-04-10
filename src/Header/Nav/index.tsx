@@ -1,38 +1,13 @@
 import Link from 'next/link'
 import { SearchIcon } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { CMSLink } from '@/components/Link'
 import type { Header as HeaderType } from '@/payload-types'
-import { Button } from '@/components/ui/button'
 import {usePathname} from "next/navigation";
-
-interface UserData {
-  user: string
-}
 
 export const HeaderTop: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
-  const [userData, setUserData] = useState<UserData | null>(null);
   const pathname = usePathname()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        setUserData(result);
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error("Fetch error:", error.message);
-        }
-      }
-    };
-
-    fetchData();
-  }, []); // Empty dependency array ensures it runs only once when component mounts
 
   const getCurrentClass = (label: string) => {
     if (label === pathname.replace(/^\/+/, '')) {
@@ -55,7 +30,6 @@ export const HeaderTop: React.FC<{ data: HeaderType }> = ({ data }) => {
             return <CMSLink key={i} {...link} appearance="link" className={`${getCurrentClass(link?.label.toLowerCase())}`} />
           })}
         </nav>
-        {!userData?.user && <Button><Link href="/admin">Sign in</Link></Button>}
       </div>
     </div>
   )
