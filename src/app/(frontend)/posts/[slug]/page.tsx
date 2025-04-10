@@ -6,9 +6,8 @@ import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { formatDateTime } from '@/utilities/formatDateTime'
-import { getUser } from '@/utilities/getUser'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -37,11 +36,6 @@ type Args = {
 }
 
 export default async function Post({ params: paramsPromise }: Args) {
-  const { user } = await getUser()
-  if (!user) {
-    redirect('/login')
-  }
-
   const { isEnabled: draft } = await draftMode()
   const { slug = '' } = await paramsPromise
   const post = await queryPostBySlug({ slug })

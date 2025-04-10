@@ -6,8 +6,6 @@ import { getPayload } from 'payload'
 import React from 'react'
 import { Search } from '@/search/Component'
 import { CardPostData } from '@/components/Card'
-import { getUser } from '@/utilities/getUser'
-import { redirect } from 'next/navigation'
 
 type Args = {
   searchParams: Promise<{
@@ -15,12 +13,8 @@ type Args = {
   }>
 }
 export default async function Page({ searchParams: searchParamsPromise }: Args) {
-  const { user, payload } = await getUser()
-  if (!user) {
-    redirect('/login')
-  }
-
   const { q: query } = await searchParamsPromise
+  const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
     collection: 'search',

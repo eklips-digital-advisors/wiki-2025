@@ -3,18 +3,15 @@ import type { Metadata } from 'next/types'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
 import React from 'react'
-import { getUser } from '@/utilities/getUser'
-import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
 
 export default async function Page() {
-  const { user, payload } = await getUser()
-  if (!user) {
-    redirect('/login')
-  }
+  const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
     collection: 'posts',
