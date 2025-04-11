@@ -8,8 +8,13 @@ export const exportToExcel = (sites: any[]) => {
   const formattedData = sites.map((item: any) => {
     const row: any = {};
     allColumns.forEach((col) => {
-      console.log('item', item, col.key)
-      row[col.label] = item[col.key] !== undefined ? item[col.key] : "-"; // Default to "-" if value is missing
+      let value = item[col.key] ?? "";
+
+      if (value !== "-" && typeof value !== "string") {
+        value = typeof value === "object" ? JSON.stringify(value) : value;
+      }
+
+      row[col.label] = value;
     });
     return row;
   });

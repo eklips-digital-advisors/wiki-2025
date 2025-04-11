@@ -409,7 +409,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     {site?.cookieProvider}
                   </td>
                 )}
-                {selectedColumns.includes('wcag') && (
+                {selectedColumns.includes('wcagLevel') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
                     <strong className="block leading-4">{getLabel(site?.wcagLevel, wcagOptions)}</strong>
                     <span className="leading-4">{site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}</span>
