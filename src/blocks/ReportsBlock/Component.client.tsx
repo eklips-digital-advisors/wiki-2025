@@ -9,7 +9,7 @@ export const ReportsBlockClient = () => {
 
   useEffect(() => {
     const getReports = async () => {
-      const res = await fetch('/next/reports', { cache: 'no-store' }) // disable cache
+      const res = await fetch('/next/cypress-reports', { cache: 'no-store' }) // disable cache
       const data = await res.json()
       setFolders(data.folders)
     }
@@ -25,7 +25,7 @@ export const ReportsBlockClient = () => {
             key={index}
             target={`_blank`}
             className="border border-zinc-200 leading-4 hover:border-emerald-300 rounded-md py-1 px-4 flex gap-2 h-[56px] items-center"
-            href={`/reports/${folder}/index.html`}
+            href={`/cypress-reports/${folder}/index.html`}
           >
             <Folder className="w-5 h-5 stroke-emerald-600" />
             {folder}

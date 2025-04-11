@@ -5,7 +5,7 @@ import path from 'path'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const reportsPath = path.join(process.cwd(), 'public', 'reports')
+  const reportsPath = path.join(process.cwd(), 'public', 'cypress-reports')
 
   try {
     const entries = readdirSync(reportsPath, { withFileTypes: true })

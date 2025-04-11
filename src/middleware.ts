@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server'
 
-const publicRoutes = ['/', '/login', '/admin']
+const publicRoutes = ['/', '/login', '/admin', '/cypress-reports']
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl

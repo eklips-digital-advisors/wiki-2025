@@ -32,6 +32,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
             },
             editProps: {
               target: '_self',
+            },
+            logoutProps: {
+              target: '_self',
             }
           }}
         />
