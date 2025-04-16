@@ -31,6 +31,7 @@ export const generateInvertedResources = (
         projectId: project.id,
         projectImage: project.image || '',
         isProject: true,
+        type: project?.projectTeamwork ? '' : 'non-teamwork-project',
       }
 
       const userResources = Array.isArray(users)

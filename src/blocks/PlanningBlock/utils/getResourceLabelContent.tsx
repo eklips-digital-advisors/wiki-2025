@@ -37,7 +37,7 @@ export const getResourceLabelContent = ({
 
     if (!resource._resource.parentId) {
       return (
-        <div className={`flex justify-between gap-2 items-center ${type ? 'default-resource' : ''}`}>
+        <div className={`flex justify-between gap-2 items-center ${type ? type : ''}`}>
           <div className="flex gap-2 items-center ml-2">
             <ProfileImage
               name={resource._resource?.title}

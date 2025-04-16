@@ -56,6 +56,11 @@
   }
 
   thead {
+    background-color: #fff;
+    position: sticky;
+    top: 92px;
+    z-index: 2;
+
     .fc-datagrid-cell-cushion {
       padding-block: 14px;
       width: 100%;
@@ -77,6 +82,10 @@
 
     &:has(.default) {
       background-color: var(--color-zinc-100);
+    }
+
+    &:has(.non-teamwork-project) {
+      background-color: var(--color-zinc-200);
     }
   }
 
@@ -152,8 +161,25 @@
   }
 
   .fc-resource {
-    &:has(.default-resource) {
+    &:has(.default) {
       background-color: var(--color-zinc-100);
+    }
+
+    &:has(.non-teamwork-project) {
+      background-color: var(--color-zinc-200);
+    }
+
+    &:has(.backend),
+    &:has(.frontend) {
+      background-color: var(--color-emerald-50);
+    }
+
+    &:has(.pm) {
+      background-color: var(--color-indigo-50);
+    }
+
+    &:has(.designer) {
+      background-color: var(--color-amber-50);
     }
   }
 }
