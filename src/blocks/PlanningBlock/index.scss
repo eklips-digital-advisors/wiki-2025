@@ -166,20 +166,7 @@
     }
 
     &:has(.non-teamwork-project) {
-      background-color: var(--color-zinc-200);
-    }
-
-    &:has(.backend),
-    &:has(.frontend) {
-      background-color: var(--color-emerald-50);
-    }
-
-    &:has(.pm) {
-      background-color: var(--color-indigo-50);
-    }
-
-    &:has(.designer) {
-      background-color: var(--color-amber-50);
+      background-color: var(--color-zinc-100);
     }
   }
 }

@@ -28,6 +28,7 @@ export const getProjectEventsInverted = (timeEntriesState: TimeEntry[] = []) =>
       title: `${entry.hours}h`,
       start: startDate.toISOString(),
       end: endDate.toISOString(),
+      type: entry.user.position || '',
     }
   })
 

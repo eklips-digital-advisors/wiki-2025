@@ -169,14 +169,14 @@ export const PlanningComponentClient: React.FC<{
                     style={{ height: `${heightPercentSummary}%` }}
                   />
                 </span>
-                <span className="text-[16px] z-10">{arg.event.title}</span>
+                <span className="text-[16px] z-10 font-medium">{arg.event.title}</span>
               </div>
             )
           }
 
           return (
             <div className={`flex items-center justify-center rounded-md ${getEventBg(arg, isInverted)}`}>
-              <span className={`${isInverted ? 'text-[14px]' : 'text-[16px]'} z-10 truncate`}>
+              <span className={`${!arg.event.getResources()?.[0]?._resource?.extendedProps?.isProject ? 'text-[12px]' : 'text-[14px]'} z-10 truncate`}>
                 {arg.event.title}
               </span>
               {isInverted && arg?.event?.extendedProps?.comment &&
