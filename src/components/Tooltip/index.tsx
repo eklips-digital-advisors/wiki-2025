@@ -20,11 +20,11 @@ export default function Tooltip({
 
   return (
     <div
-      className="group relative inline-flex items-center"
+      className="tailwind-tooltip group relative inline-flex items-center"
     >
       {children}
       <div
-        className={`opacity-0 invisible group-hover:visible group-hover:opacity-100 absolute z-50 px-2 py-1 text-sm text-white bg-black rounded-md whitespace-nowrap ${positionStyles[position]}`}
+        className={`w-60 opacity-0 invisible group-hover:visible group-hover:opacity-100 absolute z-50 px-2 py-1 text-sm text-white bg-black rounded-md ${positionStyles[position]}`}
       >
         {content}
       </div>

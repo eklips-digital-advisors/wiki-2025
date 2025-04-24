@@ -67,7 +67,8 @@ export const createUserWeeklySummaryEvents = (userWeeklyLoads: UserWeeklyLoads) 
     Object.entries(weekLoads).map(([weekStartDate, hours]) => {
       const heightPercentSummary = Math.min((hours / 40) * 100, 100) // Assuming 40h/week load
       const isOverloadedSummary = hours > 40
-      const bgColorSummary = isOverloadedSummary ? 'bg-rose-200' : 'bg-emerald-200'
+      const bgColorSummary = isOverloadedSummary ? '' +
+        'bg-rose-200' : 'overload-success'
 
       const start = new Date(weekStartDate)
       const end = new Date(start)

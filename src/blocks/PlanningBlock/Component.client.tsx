@@ -37,7 +37,6 @@ import {
 import { getProjectEvents } from '@/blocks/PlanningBlock/utils/regular/events'
 import { ResourceAreaHeaderContent } from '@/blocks/PlanningBlock/ResourceAreaHeaderContent'
 import { Info } from 'lucide-react'
-import Tooltip from '@/components/Tooltip'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -157,6 +156,26 @@ export const PlanningComponentClient: React.FC<{
 
           info.el.setAttribute('title', tooltipText);
         }}
+        resourceLabelDidMount={(arg) => {
+          const resourceType = arg.resource.extendedProps?.type;
+          const resourceId = arg?.resource?.id;
+          const timelineRow = document.querySelector(`.fc-timeline-body td[data-resource-id="${resourceId}"]`) as HTMLElement;
+
+          if (!isInverted) {
+            const position = arg?.resource?.extendedProps?.position
+            if (position?.includes('pm') && timelineRow) {
+              timelineRow.style.setProperty('--overload-success', '#c6d2ff');
+            } else if (position?.includes('designer') && timelineRow) {
+              timelineRow.style.setProperty('--overload-success', '#fee685');
+            }
+          }
+
+          if (isInverted && resourceType === 'non-teamwork-project') {
+            if (timelineRow) {
+              timelineRow.classList.add('non-teamwork-project');
+            }
+          }
+        }}
         eventContent={(arg) => {
           const { isSummary, bgColorSummary, heightPercentSummary } = arg.event.extendedProps
 
@@ -180,10 +199,8 @@ export const PlanningComponentClient: React.FC<{
                 {arg.event.title}
               </span>
               {isInverted && arg?.event?.extendedProps?.comment &&
-                <div className="absolute right-[4px] top-0">
-                  <Tooltip content={arg?.event?.extendedProps?.comment} position="left">
-                    <Info className="w-3 h-3 stroke-zinc-800" />
-                  </Tooltip>
+                <div className="absolute right-[4px] top-[2px]">
+                  <Info className="w-3 h-3 stroke-zinc-800" />
                 </div>
               }
             </div>

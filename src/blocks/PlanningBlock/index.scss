@@ -165,9 +165,14 @@
       background-color: var(--color-zinc-100);
     }
 
-    &:has(.non-teamwork-project) {
+    &:has(.non-teamwork-project),
+    &.non-teamwork-project {
       background-color: var(--color-zinc-100);
     }
+  }
+
+  .overload-success {
+    background-color: var(--overload-success, var(--color-emerald-200));
   }
 }
 
