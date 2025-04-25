@@ -37,6 +37,7 @@ import {
 import { getProjectEvents } from '@/blocks/PlanningBlock/utils/regular/events'
 import { ResourceAreaHeaderContent } from '@/blocks/PlanningBlock/ResourceAreaHeaderContent'
 import { Info } from 'lucide-react'
+import { RoleFilterModal } from '@/blocks/PlanningBlock/modals/RoleFilterModal'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -66,18 +67,29 @@ export const PlanningComponentClient: React.FC<{
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
   const [isInverted, setIsInverted] = useState(false)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+
+  const allRoles = useMemo(() => {
+    const roles = usersState.map((user) => user.position).filter(Boolean) as string[];
+    return Array.from(new Set(roles));
+  }, [usersState]);
 
   useEffect(() => {
     getFrontendUser().then(setLoggedUser)
-  }, []);
+    setSelectedRoles(allRoles);
+  }, [allRoles]);
+
+  const filteredUsers = useMemo(() => {
+    return usersState.filter((user) => selectedRoles.includes(user.position ?? ''));
+  }, [usersState, selectedRoles]);
 
   const userWeeklyLoads = useMemo(() => calculateUserWeeklyLoads(timeEntriesState), [timeEntriesState])
   const userSummaryEvents = useMemo(() => createUserWeeklySummaryEvents(userWeeklyLoads), [userWeeklyLoads])
   const resources = useMemo(() => {
     return isInverted
       ? generateInvertedResources(usersState, projectsState, statusTimeEntriesState, sortDirection)
-      : generateResources(usersState)
-  }, [usersState, projectsState, isInverted, statusTimeEntriesState, sortDirection])
+      : generateResources(filteredUsers)
+  }, [usersState, filteredUsers, projectsState, isInverted, statusTimeEntriesState, sortDirection])
 
   const handleCalendarClick = async (info: any) => {
     if (!loggedUser) {
@@ -139,8 +151,8 @@ export const PlanningComponentClient: React.FC<{
         resourceOrder="position"
         resourceAreaHeaderContent={() => (
           <ResourceAreaHeaderContent isInverted={isInverted} setIsInverted={setIsInverted} sortDirection={sortDirection}
-            setSortDirection={setSortDirection} resources={resources} usersState={usersState} loggedUser={loggedUser} setToast={setToast}
-            toggleModal={toggleModal} invertedProjectSlug={invertedProjectSlug}
+            setSortDirection={setSortDirection} resources={resources} usersState={usersState} loggedUser={loggedUser}
+            setToast={setToast} toggleModal={toggleModal} invertedProjectSlug={invertedProjectSlug}
           />
         )}
         events={events}
@@ -281,6 +293,13 @@ export const PlanningComponentClient: React.FC<{
         statusModalSlug={statusModalSlug} statusInput={statusInput} setStatusInput={setStatusInput} statusComment={statusComment}
         setStatusComment={setStatusComment} clickedInfo={clickedInfo} router={router}
         setStatusTimeEntriesState={setStatusTimeEntriesState} setToast={setToast} toggleModal={toggleModal}
+      />
+
+      <RoleFilterModal
+        modalSlug="role-filter-modal"
+        allRoles={allRoles}
+        selectedRoles={selectedRoles}
+        setSelectedRoles={setSelectedRoles}
       />
 
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}

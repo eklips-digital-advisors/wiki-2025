@@ -1,5 +1,5 @@
 import Tooltip from '@/components/Tooltip'
-import { ArrowDownNarrowWide, PackagePlus, ToggleLeft, ToggleRight } from 'lucide-react'
+import { ArrowDownNarrowWide, PackagePlus, ToggleLeft, ToggleRight, UserCheck } from 'lucide-react'
 import React from 'react'
 import { User } from '@/payload-types'
 
@@ -28,13 +28,15 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
   toggleModal,
   invertedProjectSlug,
 }) => {
+  const roleModalSlug = 'role-filter-modal'
+
   return (
     <div className="flex justify-between gap-2 items-center w-full">
       <span className="inline-flex gap-2 items-center">
         <span className="font-medium text-lg">{`${isInverted ? 'Projects' : 'People'}`}</span>
         <span className="text-xs leading-3 rounded-2xl bg-zinc-100 p-1">{`${isInverted ? resources?.filter((item: any) => item.projectImage || item.projectImage === '').length - 1 : usersState?.length}`}</span>
       </span>
-      <div className="flex gap-2">
+      <div className="flex gap-3 items-center">
         {isInverted && (
           <>
             <span
@@ -62,6 +64,16 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
               </Tooltip>
             </span>
           </>
+        )}
+        {!isInverted && (
+          <button
+            onClick={() => toggleModal(roleModalSlug)}
+            className="bg-none p-0 border-0 cursor-pointer flex items-center"
+          >
+            <Tooltip content="Filter users" position="left">
+              <UserCheck className="stroke-zinc-500 hover:stroke-emerald-400 w-[20px] h-[20px]" />
+            </Tooltip>
+          </button>
         )}
         <Tooltip content="Switch people/projects" position="left">
           <button
