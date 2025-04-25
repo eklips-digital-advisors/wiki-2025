@@ -2,6 +2,8 @@ import React from 'react'
 import { Modal, ModalToggler, ModalContainer } from '@faceless-ui/modal'
 import { CircleX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { getLabel } from '@/utilities/getLabel'
+import { positionOptions } from '@/collections/Users/positionOptions'
 
 type Props = {
   modalSlug: string
@@ -78,7 +80,7 @@ export const RoleFilterModal: React.FC<Props> = ({
                   </div>
                 </div>
                 <label htmlFor={role} className="text-sm/6 font-medium text-gray-900">
-                  {role}
+                  {getLabel(role, positionOptions)}
                 </label>
               </div>
             ))}
