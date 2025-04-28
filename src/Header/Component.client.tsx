@@ -23,10 +23,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ pages, sidebarPosts 
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
 
   useEffect(() => {
-    setIsSidebarVisible(true)
-
     if (pathname.includes('/planning') || pathname.includes('/sites')) {
       setIsSidebarVisible(false)
+    } else {
+      setIsSidebarVisible(true)
     }
   }, [pathname])
 
