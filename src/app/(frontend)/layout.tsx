@@ -41,7 +41,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
         <div className="w-full mt-[36px]">
           <HeroPattern />
-          <div className="h-full lg:ml-72 xl:ml-80">
+          <div className="main-wrapper h-full lg:ml-72 xl:ml-80">
             <Header />
             <div className="relative flex h-full flex-col px-4 lg:pt-14 sm:px-6 lg:px-8">
               <main className="flex-auto">

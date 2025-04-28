@@ -24,7 +24,7 @@ export default function Tooltip({
     >
       {children}
       <div
-        className={`w-60 opacity-0 invisible group-hover:visible group-hover:opacity-100 absolute z-50 px-2 py-1 text-sm text-white bg-black rounded-md ${positionStyles[position]}`}
+        className={`max-w-60 opacity-0 invisible group-hover:visible group-hover:opacity-100 absolute z-50 px-2 py-1 text-sm text-white bg-black rounded-md ${positionStyles[position]}`}
       >
         {content}
       </div>

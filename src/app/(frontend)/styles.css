@@ -81,4 +81,24 @@ header {
     @apply bg-zinc-400/60;
     border-radius: 4px;
   }
+
+  &.sidebar-hidden {
+    > div {
+      @apply lg:w-16 px-4;
+    }
+
+    .sidebar {
+      @apply lg:hidden;
+    }
+
+    .header-top {
+      @apply lg:left-16;
+    }
+  }
+}
+
+.main-wrapper {
+  &:has(.sidebar-hidden) {
+    @apply lg:ml-16;
+  }
 }
