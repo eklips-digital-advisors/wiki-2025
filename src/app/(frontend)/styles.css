@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@source inline("text-emerald-{100..900}");
+
 @layer base {
   h1,
   h2,
