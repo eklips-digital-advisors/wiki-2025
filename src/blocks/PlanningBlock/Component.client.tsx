@@ -170,6 +170,7 @@ export const PlanningComponentClient: React.FC<{
         }}
         resourceLabelDidMount={(arg) => {
           const resourceType = arg.resource.extendedProps?.type;
+          const projectType = arg?.resource?._resource?.extendedProps?.projectType;
           const resourceId = arg?.resource?.id;
           const timelineRow = document.querySelector(`.fc-timeline-body td[data-resource-id="${resourceId}"]`) as HTMLElement;
 
@@ -185,6 +186,12 @@ export const PlanningComponentClient: React.FC<{
           if (isInverted && resourceType === 'non-teamwork-project') {
             if (timelineRow) {
               timelineRow.classList.add('non-teamwork-project');
+            }
+          }
+
+          if (projectType === 'vacation') {
+            if (timelineRow) {
+              timelineRow.classList.add('vacation');
             }
           }
         }}

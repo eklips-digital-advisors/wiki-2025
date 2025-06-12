@@ -169,6 +169,11 @@
     &.non-teamwork-project {
       background-color: var(--color-zinc-100);
     }
+
+    &:has(.vacation),
+    &.vacation {
+      background-color: var(--color-zinc-100);
+    }
   }
 
   .overload-success {

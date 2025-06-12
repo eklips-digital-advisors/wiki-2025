@@ -11,12 +11,6 @@ export const handleResizeClickInverted = async (
   const isEventClick = !!info.event
   const isChild = !!info.event.getResources?.()?.[0]?._resource.parentId
 
-  if (isEventClick && info.event?.extendedProps?.type) {
-    setToast({ message: 'Cannot edit teamwork vacations', type: 'error' })
-    info.revert()
-    return
-  }
-
   const start = isEventClick
     ? info.event.start
     : info.start;

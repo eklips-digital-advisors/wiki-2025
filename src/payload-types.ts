@@ -431,8 +431,10 @@ export interface Project {
    * Set manually if no project in TW
    */
   title?: string | null;
+  comment?: string | null;
   image?: string | null;
   showInProjectView?: boolean | null;
+  type?: 'vacation' | null;
   users?: {
     docs?: (string | User)[];
     hasNextPage?: boolean;
@@ -1205,8 +1207,10 @@ export interface UsersSelect<T extends boolean = true> {
 export interface ProjectsSelect<T extends boolean = true> {
   projectTeamwork?: T;
   title?: T;
+  comment?: T;
   image?: T;
   showInProjectView?: T;
+  type?: T;
   users?: T;
   timeEntries?: T;
   statusTimeEntries?: T;
@@ -1490,9 +1494,7 @@ export interface TaskCreateCollectionExport {
     userCollection?: string | null;
     exportsCollection?: string | null;
   };
-  output: {
-    success?: boolean | null;
-  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

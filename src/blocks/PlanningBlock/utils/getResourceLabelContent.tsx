@@ -34,6 +34,7 @@ export const getResourceLabelContent = ({
   const ResourceLabelContent = (arg: any) => {
     const resource = arg.resource
     const type = resource._resource?.extendedProps?.type
+    const projectType = resource._resource?.extendedProps?.projectType
 
     if (!resource._resource.parentId) {
       return (
@@ -92,7 +93,7 @@ export const getResourceLabelContent = ({
     }
 
     return (
-      <div className="flex justify-between gap-2">
+      <div className={`flex justify-between gap-2 ${projectType ? projectType : ''}`}>
         <div className="flex gap-2 items-center ml-2">
           {resource.title}
           <ProfileImage

@@ -3,7 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { anyone } from '@/access/anyone'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
 import { authenticated } from '@/access/authenticated'
-import { isAdmin, isAdminLevel } from '@/access/isAdmin'
+import { isAdminLevel } from '@/access/isAdmin'
 
 export const StatusTimeEntries: CollectionConfig = {
   slug: 'status-time-entries',

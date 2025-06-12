@@ -49,12 +49,26 @@ export const Projects: CollectionConfig = {
       }
     },
     {
+      name: 'comment',
+      type: 'text',
+    },
+    {
       name: 'image',
       type: 'text',
     },
     {
       name: 'showInProjectView',
       type: 'checkbox',
+    },
+    {
+      name: 'type',
+      type: 'select',
+      options: [
+        {
+          label: 'Vacation',
+          value: 'vacation',
+        },
+      ]
     },
     {
       name: 'users',
