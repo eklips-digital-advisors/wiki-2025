@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import Tooltip from '@/components/Tooltip'
 import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
-import { PackagePlus, CircleX } from 'lucide-react'
+import { PackagePlus, CircleX, Info } from 'lucide-react'
 import { getLabel } from '@/utilities/getLabel'
 import { positionOptions } from '@/collections/Users/positionOptions'
 import { handleRemoveProject } from '@/blocks/PlanningBlock/utils/regular/handleRemoveProject'
@@ -17,7 +17,8 @@ type Props = {
   setUsersState: any
   router: any
   setToast: (val: { message: string; type: 'success' | 'error' }) => void
-  setProjectsState: any
+  setProjectsState: any,
+  setProjectComment: (val: string) => void,
 }
 
 export const getResourceLabelContent = ({
@@ -29,12 +30,14 @@ export const getResourceLabelContent = ({
   setUsersState,
   router,
   setToast,
-  setProjectsState
+  setProjectsState,
+  setProjectComment
 }: Props) => {
   const ResourceLabelContent = (arg: any) => {
     const resource = arg.resource
     const type = resource._resource?.extendedProps?.type
     const projectType = resource._resource?.extendedProps?.projectType
+    const comment = resource._resource?.extendedProps?.comment
 
     if (!resource._resource.parentId) {
       return (
@@ -55,19 +58,40 @@ export const getResourceLabelContent = ({
               </span>
             </span>
           </div>
-          {!resource?._resource?.extendedProps?.type && isInverted && (
-            <Button
-              className="p-0 cursor-pointer"
-              variant="link"
-              title="Remove project"
-              onClick={() =>
-                handleRemoveProjectInverted(resource, setProjectsState, router, setToast, loggedUser)
-              }
-            >
-              <Tooltip content="Remove project" position="left">
-                <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
-              </Tooltip>
-            </Button>
+          {resource?._resource?.extendedProps?.isProject && isInverted && (
+            <div className={`flex gap-2 items-center`}>
+              <Button
+                className="p-0 cursor-pointer"
+                variant="link"
+                title={resource._resource?.extendedProps?.comment || 'Add comment'}
+                onClick={() => {
+                  if (!loggedUser) {
+                    setToast({ message: 'Please log in', type: 'error' })
+                    return
+                  }
+
+                  setProjectComment(comment || '')
+                  setSelectedResource(resource)
+                  toggleModal('project-comment-modal')
+                }}
+              >
+                <Tooltip content={resource._resource?.extendedProps?.comment || 'Add comment'} position="left">
+                  <Info className={`w-[20px] h-[20px]  ${resource._resource?.extendedProps?.comment ? 'stroke-zinc-400 hover:stroke-zinc-300' : 'stroke-zinc-200 hover:stroke-zinc-100'}`} />
+                </Tooltip>
+              </Button>
+              <Button
+                className="p-0 cursor-pointer"
+                variant="link"
+                title="Remove project"
+                onClick={() =>
+                  handleRemoveProjectInverted(resource, setProjectsState, router, setToast, loggedUser)
+                }
+              >
+                <Tooltip content="Remove project" position="left">
+                  <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
+                </Tooltip>
+              </Button>
+            </div>
           )}
           {!isInverted && (
             <div
@@ -107,18 +131,39 @@ export const getResourceLabelContent = ({
           />
         </div>
         {resource.title && !isInverted && (
-          <Button
-            className="p-0 cursor-pointer"
-            variant="link"
-            title="Remove project"
-            onClick={() =>
-              handleRemoveProject(resource, setUsersState, router, setToast, loggedUser)
-            }
-          >
-            <Tooltip content="Remove project" position="left">
-              <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
-            </Tooltip>
-          </Button>
+          <div className={`flex gap-2 items-center`}>
+            <Button
+              className="p-0 cursor-pointer"
+              variant="link"
+              title={resource._resource?.extendedProps?.comment || 'Add comment'}
+              onClick={() => {
+                if (!loggedUser) {
+                  setToast({ message: 'Please log in', type: 'error' })
+                  return
+                }
+
+                setProjectComment(comment || '')
+                setSelectedResource(resource)
+                toggleModal('project-comment-modal')
+              }}
+            >
+              <Tooltip content={resource._resource?.extendedProps?.comment || 'Add comment'} position="left">
+                <Info className={`w-[20px] h-[20px]  ${resource._resource?.extendedProps?.comment ? 'stroke-zinc-400 hover:stroke-zinc-300' : 'stroke-zinc-200 hover:stroke-zinc-100'}`} />
+              </Tooltip>
+            </Button>
+            <Button
+              className="p-0 cursor-pointer"
+              variant="link"
+              title="Remove project"
+              onClick={() =>
+                handleRemoveProject(resource, setUsersState, router, setToast, loggedUser)
+              }
+            >
+              <Tooltip content="Remove project" position="left">
+                <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
+              </Tooltip>
+            </Button>
+          </div>
         )}
       </div>
     )

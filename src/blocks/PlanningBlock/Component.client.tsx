@@ -38,6 +38,7 @@ import { getProjectEvents } from '@/blocks/PlanningBlock/utils/regular/events'
 import { ResourceAreaHeaderContent } from '@/blocks/PlanningBlock/ResourceAreaHeaderContent'
 import { Info } from 'lucide-react'
 import { RoleFilterModal } from '@/blocks/PlanningBlock/modals/RoleFilterModal'
+import { ProjectCommentModal } from '@/blocks/PlanningBlock/modals/ProjectCommentModal'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -59,10 +60,12 @@ export const PlanningComponentClient: React.FC<{
   const [hoursInput, setHoursInput] = useState('')
   const [statusInput, setStatusInput] = useState(statusOptions[0].value)
   const [statusComment, setStatusComment] = useState('')
+  const [projectComment, setProjectComment] = useState('')
   const [clickedInfo, setClickedInfo] = useState<any>(null)
   const hoursModalSlug = 'hours-entry-modal'
   const invertedHoursModalSlug = 'inverted-hours-entry-modal'
   const statusModalSlug = 'status-entry-modal'
+  const projectCommentModalSlug = 'project-comment-modal'
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
   const [isInverted, setIsInverted] = useState(false)
@@ -270,7 +273,7 @@ export const PlanningComponentClient: React.FC<{
           resourceTimelineSixMonths: '6 months',
         }}
         resourceLabelContent={getResourceLabelContent({ isInverted, loggedUser, setSelectedResource, toggleModal,
-          modalSlug, setUsersState, router, setToast, setProjectsState
+          modalSlug, setUsersState, router, setToast, setProjectsState, setProjectComment
         })}
       />
 
@@ -278,6 +281,12 @@ export const PlanningComponentClient: React.FC<{
         modalSlug={modalSlug} selectedResource={selectedResource} projectsState={projectsState} selectedProjectId={selectedProjectId}
         setSelectedProjectId={setSelectedProjectId} setSelectedResource={setSelectedResource} setUsersState={setUsersState}
         router={router} setToast={setToast} toggleModal={toggleModal} loggedUser={loggedUser}
+      />
+
+      <ProjectCommentModal
+        modalSlug={projectCommentModalSlug} selectedResource={selectedResource} setUsersState={setUsersState}
+        router={router} setToast={setToast} toggleModal={toggleModal} loggedUser={loggedUser} projectComment={projectComment}
+        setProjectComment={setProjectComment} setProjectsState={setProjectsState}
       />
 
       <InvertedProjectModal
