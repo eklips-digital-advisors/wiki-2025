@@ -19,7 +19,7 @@ export const Users: CollectionConfig = {
     useAsTitle: 'name',
   },
   auth: {
-    tokenExpiration: 28800 // 8 hours
+    tokenExpiration: 60 * 60 * 24 * 7 // 1 week
   },
   fields: [
     {
