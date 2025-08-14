@@ -10,6 +10,8 @@ export const populateAuthors: CollectionAfterReadHook = async ({ doc, req, req: 
     const authorDocs: User[] = []
 
     for (const author of doc.authors) {
+      if (!author.id) continue
+
       const authorDoc = await payload.findByID({
         id: typeof author === 'object' ? author?.id : author,
         collection: 'users',

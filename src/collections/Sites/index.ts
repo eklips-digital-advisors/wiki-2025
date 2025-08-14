@@ -98,6 +98,11 @@ export const Sites: CollectionConfig<'sites'> = {
         {
           type: 'date',
           name: 'wcagUpdated',
+          admin: {
+            date: {
+              displayFormat: 'dd.MM.yyyy',
+            },
+          },
         },
         {
           name: 'wcagLevel',
@@ -110,6 +115,11 @@ export const Sites: CollectionConfig<'sites'> = {
       type: 'date',
       name: 'bsScan',
       label: 'BS Scan',
+      admin: {
+        date: {
+          displayFormat: 'dd.MM.yyyy',
+        },
+      },
     },
     {
       name: 'phpVersion',
