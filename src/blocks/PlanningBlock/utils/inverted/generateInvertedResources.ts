@@ -47,6 +47,7 @@ export const generateInvertedResources = (
             position: user?.position || '',
             isProject: false,
             projectId: project.id,
+            projectType: project?.type,
           }))
         : []
 

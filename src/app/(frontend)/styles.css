@@ -2,6 +2,16 @@
 
 @source inline("text-emerald-{100..900}");
 
+@utility bg-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    theme(colors.slate.100) 0px,
+    theme(colors.slate.100) 10px,
+    theme(colors.slate.200) 10px,
+    theme(colors.slate.200) 20px
+  );
+}
+
 @layer base {
   h1,
   h2,
