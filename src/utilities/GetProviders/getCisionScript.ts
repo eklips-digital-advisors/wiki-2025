@@ -7,11 +7,14 @@ export async function getCisionScript(url: string) {
 
     const html = await response.text()
 
-    // Check for Cision script
-    return (
+    if (
       html.includes('target-ticker-cision') ||
-        html.includes('publish.ne.cision.com')
-    )
+      html.includes('publish.ne.cision.com')
+    ) {
+      return 'cision'
+    }
+
+    return ''
   } catch (error) {
     console.error(`Error checking Cision script on ${url}:`, error)
     return false

@@ -33,7 +33,7 @@ export interface SiteItem {
   slugLock?: boolean | null
   updatedAt: string
   pingdom: string
-  pressReleases: { cision: boolean; mfn: boolean }
+  pressReleases: string[]
   speedTestScan: string
   dataProvider: { cisionBlocks: boolean; dataBlocks: boolean }
   repository: object

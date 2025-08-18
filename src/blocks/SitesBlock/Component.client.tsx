@@ -145,10 +145,10 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         <Button
           variant="link"
           size="sm"
-          className="cursor-pointer p-0 underline inline-flex gap-1 items-center"
+          className={`cursor-pointer pr-0 underline inline-flex gap-1 items-center relative ${!loading ? 'pl-0' : 'pl-5'}`}
           onClick={revalidate}
         >
-          {loading && <LoaderCircle className="w-4 h-4 animate-spin" />}
+          {loading && <LoaderCircle className="w-4 h-4 animate-spin absolute left-0 top-1/2 -translate-y-1/2" />}
           {pullText}
         </Button>
         {buildTime && (
@@ -372,16 +372,19 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                   </td>
                 )}
                 {selectedColumns.includes('pressReleases') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     <span className="flex gap-1 flex-wrap">
-                      {site?.pressReleases.cision && (
+                      {(Array.isArray(site?.pressReleases) && site.pressReleases.includes('cision')) ? (
                         <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">
                           Cision
                         </span>
-                      )}
-                      {site?.pressReleases.mfn && (
-                        <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">MFN</span>
-                      )}
+                      ) : null}
+
+                      {(Array.isArray(site?.pressReleases) && site.pressReleases.includes('mfn')) ? (
+                        <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">
+                          MFN
+                        </span>
+                      ) : null}
                     </span>
                   </td>
                 )}

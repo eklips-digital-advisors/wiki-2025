@@ -119,3 +119,14 @@ export const hostingOptions = [
     value: 'azure',
   },
 ]
+
+export const pressReleasesOptions = [
+  {
+    label: 'Cision',
+    value: 'cision',
+  },
+  {
+    label: 'Mfn',
+    value: 'mfn',
+  },
+]

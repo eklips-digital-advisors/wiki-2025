@@ -71,8 +71,8 @@ export const SitesBlock: React.FC = async () => {
 
           const hasGoogleAnalytics = siteUrl ? await checkGoogleAnalytics(siteUrl) : '';
           const cookieProvider = siteUrl ? await getCookiebot(siteUrl) : '';
-          const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : false;
-          const hasCisionScript = siteUrl ? await getCisionScript(siteUrl) : false;
+          const hasMfnScript = siteUrl ? await getMfnScript(siteUrl) : '';
+          const hasCisionScript = siteUrl ? await getCisionScript(siteUrl) : '';
           const hasDataBlocks = siteUrl ? await getDataBlocks(siteUrl) : false;
           const hasCisionBlocks = siteUrl ? await getCisionBlocks(siteUrl) : false;
           const siteIntgrationRepository= site?.integrations?.repository
@@ -142,7 +142,7 @@ export const SitesBlock: React.FC = async () => {
             twoFa: twoFaExists,
             hiddenLogin: hiddenLoginExists,
             framework: site?.framework ? site?.framework : isCwaas,
-            pressReleases: {cision: hasCisionScript, mfn: hasMfnScript},
+            pressReleases: site?.pressReleases && site?.pressReleases.length ? site?.pressReleases : [hasCisionScript, hasMfnScript],
             dataProvider: {cisionBlocks: hasCisionBlocks, dataBlocks: hasDataBlocks},
             lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : '',
             pingdomLink: singlePingdom?.hostname ? `https://my.pingdom.com/app/reports/uptime#check=${singlePingdom.id}` : null,

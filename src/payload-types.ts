@@ -186,6 +186,7 @@ export interface Site {
   bsScan?: string | null;
   phpVersion?: ('7.4' | '8.2' | '8.3' | '8.4') | null;
   framework?: ('cwaas' | 'eklips_v1' | 'eklips_v2') | null;
+  pressReleases?: ('cision' | 'mfn')[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -918,6 +919,7 @@ export interface SitesSelect<T extends boolean = true> {
   bsScan?: T;
   phpVersion?: T;
   framework?: T;
+  pressReleases?: T;
   publishedAt?: T;
   slug?: T;
   slugLock?: T;

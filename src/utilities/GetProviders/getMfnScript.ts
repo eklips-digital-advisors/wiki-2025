@@ -7,10 +7,11 @@ export async function getMfnScript(url: string) {
 
     const html = await response.text()
 
-    // Check for MFN script
-    return (
-      html.includes('box-mfn/js/mfn.js')
-    )
+    if (html.includes('box-mfn/js/mfn.js')) {
+      return 'mfn'
+    }
+
+    return ''
   } catch (error) {
     console.error(`Error checking MFN script on ${url}:`, error)
     return false

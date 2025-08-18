@@ -8,6 +8,7 @@ import {
   frameworkOptions,
   hostingOptions,
   phpVersionOptions,
+  pressReleasesOptions,
   serverOptions,
   siteServiceOptions,
   wcagOptions,
@@ -132,6 +133,13 @@ export const Sites: CollectionConfig<'sites'> = {
       type: 'select',
       label: 'Framework (will override auto value)',
       options: frameworkOptions,
+    },
+    {
+      name: 'pressReleases',
+      type: 'select',
+      label: 'Press releases (will override auto value)',
+      options: pressReleasesOptions,
+      hasMany: true,
     },
     {
       name: 'publishedAt',
