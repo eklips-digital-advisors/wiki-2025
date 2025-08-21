@@ -38,10 +38,13 @@ export const getResourceLabelContent = ({
     const type = resource._resource?.extendedProps?.type
     const projectType = resource._resource?.extendedProps?.projectType
     const comment = resource._resource?.extendedProps?.comment
+    const isProject = resource?._resource?.extendedProps?.isProject
+    const showInProjectView = resource?._resource?.extendedProps?.showInProjectView
+    const isArchived = !showInProjectView && isProject
 
     if (!resource._resource.parentId) {
       return (
-        <div className={`flex justify-between gap-2 items-center ${type ? type : ''}`}>
+        <div className={`flex justify-between gap-2 items-center ${type ? type : ''} ${isArchived ? 'archived' : ''}`}>
           <div className="flex gap-2 items-center ml-2">
             <ProfileImage
               name={resource._resource?.title}
@@ -117,7 +120,7 @@ export const getResourceLabelContent = ({
     }
 
     return (
-      <div className={`flex justify-between gap-2 ${projectType ? projectType : ''}`}>
+      <div className={`flex justify-between gap-2 ${projectType ? projectType : ''} ${isArchived ? 'archived' : ''}`}>
         <div className="flex gap-2 items-center ml-2">
           {resource.title}
           <ProfileImage

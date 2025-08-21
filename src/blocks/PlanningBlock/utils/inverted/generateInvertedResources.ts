@@ -4,10 +4,11 @@ export const generateInvertedResources = (
   users: User[],
   projects: Project[],
   statusTimeEntries: any[],
-  sortDirection: 'asc' | 'desc'
+  sortDirection: 'asc' | 'desc',
+  invertedShowAllProjects: boolean
 ) => {
   const projectsWithLaunchDate = projects
-    .filter((project) => project.showInProjectView)
+    .filter((project) => invertedShowAllProjects || project.showInProjectView)
     .map((project) => {
       const launchStatus = statusTimeEntries.find(
         (entry) => entry.project.id === project.id && entry.status === 'launch'
@@ -33,6 +34,7 @@ export const generateInvertedResources = (
         isProject: true,
         type: project?.projectTeamwork ? '' : 'non-teamwork-project',
         comment: project.comment || '',
+        showInProjectView: project.showInProjectView,
       }
 
       const userResources = Array.isArray(users)

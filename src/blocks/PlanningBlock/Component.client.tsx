@@ -71,6 +71,7 @@ export const PlanningComponentClient: React.FC<{
   const [isInverted, setIsInverted] = useState(false)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [invertedShowAllProjects, setInvertedShowAllProjects] = useState(false)
 
   const allRoles = useMemo(() => {
     const roles = usersState.map((user) => user.position).filter(Boolean) as string[];
@@ -90,9 +91,9 @@ export const PlanningComponentClient: React.FC<{
   const userSummaryEvents = useMemo(() => createUserWeeklySummaryEvents(userWeeklyLoads), [userWeeklyLoads])
   const resources = useMemo(() => {
     return isInverted
-      ? generateInvertedResources(usersState, projectsState, statusTimeEntriesState, sortDirection)
+      ? generateInvertedResources(usersState, projectsState, statusTimeEntriesState, sortDirection, invertedShowAllProjects)
       : generateResources(filteredUsers)
-  }, [usersState, filteredUsers, projectsState, isInverted, statusTimeEntriesState, sortDirection])
+  }, [usersState, filteredUsers, projectsState, isInverted, statusTimeEntriesState, sortDirection, invertedShowAllProjects])
 
   const handleCalendarClick = async (info: any) => {
     if (!loggedUser) {
@@ -156,6 +157,7 @@ export const PlanningComponentClient: React.FC<{
           <ResourceAreaHeaderContent isInverted={isInverted} setIsInverted={setIsInverted} sortDirection={sortDirection}
             setSortDirection={setSortDirection} resources={resources} usersState={usersState} loggedUser={loggedUser}
             setToast={setToast} toggleModal={toggleModal} invertedProjectSlug={invertedProjectSlug}
+            invertedShowAllProjects={invertedShowAllProjects} setInvertedShowAllProjects={setInvertedShowAllProjects}
           />
         )}
         events={events}
@@ -174,6 +176,8 @@ export const PlanningComponentClient: React.FC<{
         resourceLabelDidMount={(arg) => {
           const resourceType = arg.resource.extendedProps?.type;
           const projectType = arg?.resource?._resource?.extendedProps?.projectType;
+          const showInProjectView = arg?.resource?._resource?.extendedProps?.showInProjectView;
+          const isProject = arg?.resource?._resource?.extendedProps?.isProject;
           const resourceId = arg?.resource?.id;
           const timelineRow = document.querySelector(`.fc-timeline-body td[data-resource-id="${resourceId}"]`) as HTMLElement;
 
@@ -189,6 +193,12 @@ export const PlanningComponentClient: React.FC<{
           if (isInverted && resourceType === 'non-teamwork-project') {
             if (timelineRow) {
               timelineRow.classList.add('non-teamwork-project');
+            }
+          }
+
+          if (isProject && !showInProjectView) {
+            if (timelineRow) {
+              timelineRow.classList.add('archived');
             }
           }
 

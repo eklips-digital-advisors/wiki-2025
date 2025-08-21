@@ -1,5 +1,12 @@
 import Tooltip from '@/components/Tooltip'
-import { ArrowDownNarrowWide, PackagePlus, ToggleLeft, ToggleRight, UserCheck } from 'lucide-react'
+import {
+  ArrowDownNarrowWide,
+  ListCheck,
+  PackagePlus,
+  ToggleLeft,
+  ToggleRight,
+  UserCheck,
+} from 'lucide-react'
 import React from 'react'
 import { User } from '@/payload-types'
 
@@ -13,7 +20,9 @@ interface Props {
   loggedUser: User | null
   setToast: (toast: { message: string; type: 'success' | 'error' }) => void
   toggleModal: (slug: string) => void
-  invertedProjectSlug: string
+  invertedProjectSlug: string,
+  invertedShowAllProjects: boolean,
+  setInvertedShowAllProjects: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const ResourceAreaHeaderContent: React.FC<Props> = ({
@@ -27,6 +36,8 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
   setToast,
   toggleModal,
   invertedProjectSlug,
+  invertedShowAllProjects,
+  setInvertedShowAllProjects
 }) => {
   const roleModalSlug = 'role-filter-modal'
 
@@ -39,6 +50,14 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
       <div className="flex gap-3 items-center">
         {isInverted && (
           <>
+            <span
+              className="text-xs cursor-pointer flex items-center"
+              onClick={() => setInvertedShowAllProjects((prev) => !prev)}
+            >
+              <Tooltip content="Show archived projects" position="left">
+                <ListCheck className={`w-[20px] h-[20px] hover:stroke-emerald-400 transition-transform duration-200 ${invertedShowAllProjects ? 'stroke-emerald-500' : 'stroke-zinc-500'}`} />
+              </Tooltip>
+            </span>
             <span
               className="text-xs cursor-pointer flex items-center"
               onClick={() => setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
