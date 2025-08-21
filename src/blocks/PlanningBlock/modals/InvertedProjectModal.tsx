@@ -51,6 +51,7 @@ export const InvertedProjectModal: React.FC<Props> = ({
               value: project.id,
             }))}
             onChange={(e) => setSelectedProjectId((e as any)?.value)}
+            value={selectedProjectId ?? undefined}
           />
           <Button
             variant="default"
