@@ -196,7 +196,7 @@ export const PlanningComponentClient: React.FC<{
             }
           }
 
-          if (isProject && !showInProjectView) {
+          if (isProject && !showInProjectView && isInverted) {
             if (timelineRow) {
               timelineRow.classList.add('archived');
             }

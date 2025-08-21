@@ -120,7 +120,7 @@ export const getResourceLabelContent = ({
     }
 
     return (
-      <div className={`flex justify-between gap-2 ${projectType ? projectType : ''} ${isArchived ? 'archived' : ''}`}>
+      <div className={`flex justify-between gap-2 ${projectType ? projectType : ''}`}>
         <div className="flex gap-2 items-center ml-2">
           {resource.title}
           <ProfileImage
