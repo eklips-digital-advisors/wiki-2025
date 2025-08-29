@@ -137,7 +137,7 @@ export const Sites: CollectionConfig<'sites'> = {
     {
       name: 'pressReleases',
       type: 'select',
-      label: 'Press releases (will override auto value)',
+      label: 'Press releases',
       options: pressReleasesOptions,
       hasMany: true,
     },
