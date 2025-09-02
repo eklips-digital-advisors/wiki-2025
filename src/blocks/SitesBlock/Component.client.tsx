@@ -385,6 +385,12 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                           MFN
                         </span>
                       ) : null}
+
+                      {(Array.isArray(site?.pressReleases) && site.pressReleases.includes('bequoted')) ? (
+                        <span className="px-1 py-[0.5] text-xs inline-block bg-indigo-100">
+                          BeQuoted
+                        </span>
+                      ) : null}
                     </span>
                   </td>
                 )}

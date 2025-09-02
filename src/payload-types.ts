@@ -186,7 +186,7 @@ export interface Site {
   bsScan?: string | null;
   phpVersion?: ('7.4' | '8.2' | '8.3' | '8.4') | null;
   framework?: ('cwaas' | 'eklips_v1' | 'eklips_v2') | null;
-  pressReleases?: ('cision' | 'mfn')[] | null;
+  pressReleases?: ('cision' | 'mfn' | 'bequoted')[] | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
