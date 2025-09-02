@@ -129,4 +129,8 @@ export const pressReleasesOptions = [
     label: 'Mfn',
     value: 'mfn',
   },
+  {
+    label: 'BeQuoted',
+    value: 'bequoted',
+  },
 ]
