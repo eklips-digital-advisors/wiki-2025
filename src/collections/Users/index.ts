@@ -17,6 +17,7 @@ export const Users: CollectionConfig = {
   admin: {
     defaultColumns: ['name', 'email'],
     useAsTitle: 'name',
+    group: 'Globals',
   },
   auth: {
     tokenExpiration: 60 * 60 * 24 * 7 // 1 week

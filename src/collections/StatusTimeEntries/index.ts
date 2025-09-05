@@ -15,6 +15,7 @@ export const StatusTimeEntries: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'start',
+    group: 'Planning',
     hidden: ({ user }: { user: any }) => {
       return !isAdminLevel(user)
     },

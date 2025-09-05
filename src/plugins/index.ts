@@ -14,6 +14,9 @@ export const plugins: Plugin[] = [
     collections: ['posts'],
     beforeSync: beforeSyncWithSearch,
     searchOverrides: {
+      admin: {
+        group: 'Globals',
+      },
       fields: ({ defaultFields }) => {
         return [...defaultFields, ...searchFields]
       },

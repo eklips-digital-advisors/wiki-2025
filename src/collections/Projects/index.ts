@@ -13,6 +13,7 @@ export const Projects: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
+    group: 'Planning',
   },
   // defaultPopulate: {
   //   title: true,
