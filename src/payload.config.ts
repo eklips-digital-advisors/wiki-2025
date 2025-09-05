@@ -19,6 +19,7 @@ import { plugins } from '@/plugins'
 import { Sidebar } from '@/Sidebar/config'
 import { getServerSideURL } from '@/utilities/getURL'
 import { StatusTimeEntries } from '@/collections/StatusTimeEntries'
+import { SiteMaps } from '@/collections/SiteMaps'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -41,7 +42,7 @@ export default buildConfig({
       }
     }
   },
-  collections: [Sites, Pages, Posts, Categories, Media, Users, Projects, TimeEntries, StatusTimeEntries],
+  collections: [Sites, Pages, Posts, Categories, Media, Users, Projects, TimeEntries, StatusTimeEntries, SiteMaps],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Sidebar],
   editor: lexicalEditor(),

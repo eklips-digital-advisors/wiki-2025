@@ -76,6 +76,7 @@ export interface Config {
     projects: Project;
     'time-entries': TimeEntry;
     'status-time-entries': StatusTimeEntry;
+    'site-maps': SiteMap;
     search: Search;
     exports: Export;
     'payload-jobs': PayloadJob;
@@ -100,6 +101,7 @@ export interface Config {
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'time-entries': TimeEntriesSelect<false> | TimeEntriesSelect<true>;
     'status-time-entries': StatusTimeEntriesSelect<false> | StatusTimeEntriesSelect<true>;
+    'site-maps': SiteMapsSelect<false> | SiteMapsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     exports: ExportsSelect<false> | ExportsSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -644,6 +646,28 @@ export interface ReportsBlock {
   blockType: 'reports';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-maps".
+ */
+export interface SiteMap {
+  id: string;
+  title: string;
+  /**
+   * Build your page tree. Use "+ Main page" or select a node and "+ Child".
+   */
+  graph?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -842,6 +866,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'status-time-entries';
         value: string | StatusTimeEntry;
+      } | null)
+    | ({
+        relationTo: 'site-maps';
+        value: string | SiteMap;
       } | null)
     | ({
         relationTo: 'search';
@@ -1242,6 +1270,16 @@ export interface StatusTimeEntriesSelect<T extends boolean = true> {
   status?: T;
   comment?: T;
   project?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-maps_select".
+ */
+export interface SiteMapsSelect<T extends boolean = true> {
+  title?: T;
+  graph?: T;
   updatedAt?: T;
   createdAt?: T;
 }

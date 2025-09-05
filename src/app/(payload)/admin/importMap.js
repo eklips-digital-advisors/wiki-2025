@@ -38,6 +38,7 @@ import { TableFeatureClient as TableFeatureClient_e70f5e05f09f93e00b997edb1ef0c8
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { AdminTitle as AdminTitle_d86fe82692f841f091ff1293b9d12447 } from '@/collections/Projects/AdminTitle'
 import { GetProjects as GetProjects_696c81dbd9287d762bd8b8fa4f95e8ec } from '@/utilities/GetTeamwork/getProjects'
+import { GetAdminComponent as GetAdminComponent_6870da119b36b0aecdef55f689e04225 } from '@/collections/SiteMaps/component/getAdminComponent'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { SortBy as SortBy_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
@@ -94,6 +95,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/collections/Projects/AdminTitle#AdminTitle": AdminTitle_d86fe82692f841f091ff1293b9d12447,
   "@/utilities/GetTeamwork/getProjects#GetProjects": GetProjects_696c81dbd9287d762bd8b8fa4f95e8ec,
+  "@/collections/SiteMaps/component/getAdminComponent#GetAdminComponent": GetAdminComponent_6870da119b36b0aecdef55f689e04225,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-import-export/rsc#SortBy": SortBy_cdf7e044479f899a31f804427d568b36,

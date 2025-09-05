@@ -58,7 +58,7 @@ export const handleAddProject = async ({
     const data = await req.json()
     const newUserState = data?.doc
     console.log('added', data?.doc)
-    setToast({ message: `Project added`, type: 'success' })
+    setToast({ message: `Project added for ${selectedResource?.title}`, type: 'success' })
     if (data?.doc) {
       setUsersState((prev) =>
         prev.map((user) => (user.id === newUserState.id ? newUserState : user)),
