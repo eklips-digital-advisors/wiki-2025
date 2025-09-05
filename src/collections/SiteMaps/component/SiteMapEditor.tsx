@@ -391,10 +391,10 @@ const SitemapNode: React.FC<NodeProps<SiteNodeData>> = ({ id, data, selected }) 
         <div
           style={{
             position: 'absolute',
-            inset: -3,
-            borderRadius: 14,
-            border: '2px solid #ef4444',
+            inset: 0,
+            borderRadius: 12,
             pointerEvents: 'none',
+            background: 'rgba(239, 68, 68, 0.05)',
           }}
         />
       )}
@@ -460,6 +460,7 @@ const Inner: React.FC = () => {
     };
     commit({ nodes: [...graph.nodes, parent], edges: graph.edges });
     setSelectedId(id);
+     setPendingFocusId(id);
   }, [graph, commit]);
 
   const addSiblingRight = useCallback(
@@ -594,10 +595,29 @@ const Inner: React.FC = () => {
     };
   }, [built, graph.nodes, addSiblingRight, addChildBottom, deleteWithSubtree]);
 
-  const { fitView } = useReactFlow();
+  const { fitView, setCenter } = useReactFlow();
+  const [pendingFocusId, setPendingFocusId] = useState<string | null>(null);
+
   useEffect(() => {
-    if (rfNodes.length) fitView({ padding: 0.2, duration: 300 });
-  }, [rfNodes.length, fitView]);
+    // only auto-fit when there are nodes AND we are not about to focus a specific one
+    if (rfNodes.length && !pendingFocusId) {
+      fitView({ padding: 0.2, duration: 300 });
+    }
+  }, [rfNodes.length, pendingFocusId, fitView]);
+
+  useEffect(() => {
+    if (!pendingFocusId) return;
+    // find the RF node with positions already computed
+    const n = rfNodes.find((nn) => nn.id === pendingFocusId);
+    if (!n) return;
+
+    // center to the middle of the node (improves visual alignment)
+    const x = n.position.x + NODE_W / 2;
+    const y = n.position.y + NODE_H / 2;
+
+    setCenter(x, y, { zoom: 1, duration: 400 });
+    setPendingFocusId(null);
+  }, [pendingFocusId, rfNodes, setCenter]);
 
   const selectedNode = useMemo(
     () => graph.nodes.find((n) => n.id === selectedId) || null,
