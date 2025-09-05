@@ -512,7 +512,7 @@ const Inner: React.FC = () => {
       } else {
         const baseRow = firstChildRow(kids, parent.row + 1);
         const c = maxCol(kids, baseRow);
-        let startCol = c === null ? parent.col : c + 1;
+        const startCol = c === null ? parent.col : c + 1;
         row = baseRow;
         col = startCol;
         while (isOccupied(graph.nodes, idx, root, row, col)) col += 1;
