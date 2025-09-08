@@ -22,120 +22,29 @@ import { useField } from '@payloadcms/ui';
 import { nanoid } from 'nanoid';
 import { Plus, Trash2 } from 'lucide-react'
 import { Graph, SiteEdge, SiteNode, SiteNodeData } from '@/collections/SiteMaps/component/type'
+import {
+  btnBase,
+  cardBase,
+  inspectorWrap,
+  labelStyle,
+  panelWrap,
+  pillBtn,
+  selectStyle,
+  textareaStyle,
+  textInput,
+} from '@/collections/SiteMaps/component/css'
 
-const TEMPLATE_OPTIONS = ['Default', 'Landing', 'Contact', 'Blog Index', 'Case Study'];
+const TEMPLATE_OPTIONS = ['Default', 'Archive', 'Home', 'Image bank', 'Reports', 'Section'];
 
 /* ===============================
    Layout constants
 ================================= */
 const NODE_W = 180;
 const NODE_H = 72;
-const H_SPACING = 32;
+const H_SPACING = 48;
 const V_SPACING = 48;
 const GROUP_GAP_X = 140;
 const CANVAS_MIN_HEIGHT = 660;
-
-/* ===============================
-   Small UI primitives
-================================= */
-const btnBase: React.CSSProperties = {
-  appearance: 'none',
-  border: '1px solid #d4d4d8',
-  borderRadius: 999,
-  background: 'rgba(255,255,255,0.95)',
-  padding: 6,
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-  boxShadow: '0 1px 1px rgba(0,0,0,0.06)',
-};
-
-const pillBtn: React.CSSProperties = {
-  ...btnBase,
-  borderRadius: 8,
-  padding: '2px 10px',
-  fontSize: 12,
-  fontWeight: 600,
-};
-
-const panelWrap: React.CSSProperties = {
-  display: 'flex',
-  gap: 8,
-  background: 'rgba(255,255,255,0.9)',
-  border: '1px solid #e5e7eb',
-  borderRadius: 10,
-  padding: 8,
-  boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-};
-
-const inspectorWrap: React.CSSProperties = {
-  minWidth: 280,
-  maxWidth: 340,
-  background: 'rgba(255,255,255,0.98)',
-  border: '1px solid #e5e7eb',
-  borderRadius: 10,
-  padding: 12,
-  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-};
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  fontSize: 12,
-  fontWeight: 600,
-  color: '#111827',
-  marginBottom: 6,
-};
-
-const textInput: React.CSSProperties = {
-  width: '100%',
-  height: 34,
-  border: '1px solid #d4d4d8',
-  borderRadius: 8,
-  padding: '0 8px',
-  fontSize: 13,
-  outline: 'none',
-};
-
-const textareaStyle: React.CSSProperties = {
-  width: '100%',
-  minHeight: 90,
-  border: '1px solid #d4d4d8',
-  borderRadius: 8,
-  padding: 8,
-  fontSize: 13,
-  outline: 'none',
-  resize: 'vertical',
-};
-
-const selectStyle: React.CSSProperties = {
-  width: '100%',
-  height: 34,
-  border: '1px solid #d4d4d8',
-  borderRadius: 8,
-  padding: '0 8px',
-  fontSize: 13,
-  outline: 'none',
-  background: 'white',
-};
-
-const cardBase = (isRoot: boolean): React.CSSProperties => ({
-  width: NODE_W,
-  height: NODE_H,
-  background: isRoot ? '#eef4ff' : '#ffffff',
-  borderRadius: 12,
-  border: '1px solid #e5e7eb',
-  boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
-  position: 'relative',
-  padding: 10,
-  pointerEvents: 'all',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: 13,
-  fontWeight: 600,
-  textAlign: 'center',
-});
 
 const defaultEdgeOptions: DefaultEdgeOptions = {
   type: 'smoothstep',
@@ -190,37 +99,61 @@ function maxCol(children: SiteNode[], row: number) {
   return onRow.length ? Math.max(...onRow.map((c) => c.col)) : null;
 }
 
-function computePositions(graph: Graph) {
+function computePositions(graph: Graph, layout: 'TD' | 'LR') {
   const idx = new Map(graph.nodes.map((n) => [n.id, n]));
   const roots = graph.nodes.filter((n) => !n.parentId).map((r) => r.id);
 
+  // group by root
   const groups = roots.map((rootId) => {
     const nodes = graph.nodes.filter((n) => getRootId(n.id, idx) === rootId);
-    const byRow = new Map<number, SiteNode[]>();
-    nodes.forEach((n) => {
-      if (!byRow.has(n.row)) byRow.set(n.row, []);
-      byRow.get(n.row)!.push(n);
+
+    // width in columns (max col + 1), height in rows (max row + 1)
+    const widthCols =
+      nodes.length ? Math.max(...nodes.map((n) => n.col)) + 1 : 1;
+    const heightRows =
+      nodes.length ? Math.max(...nodes.map((n) => n.row)) + 1 : 1;
+
+    return { rootId, nodes, widthCols, heightRows };
+  });
+
+  const groupOffsetX = new Map<string, number>();
+  const groupOffsetY = new Map<string, number>();
+
+  if (layout === 'TD') {
+    // stack groups horizontally
+    let offX = 0;
+    groups.forEach((g) => {
+      const pxWidth = g.widthCols * NODE_W + (g.widthCols - 1) * H_SPACING;
+      groupOffsetX.set(g.rootId, offX);
+      groupOffsetY.set(g.rootId, 0);
+      offX += pxWidth + GROUP_GAP_X;
     });
-    let maxCols = 1;
-    for (const arr of byRow.values()) {
-      const max = Math.max(...arr.map((n) => n.col));
-      maxCols = Math.max(maxCols, max + 1);
-    }
-    return { rootId, nodes, widthCols: maxCols };
-  });
+  } else {
+    // stack groups vertically
+    let offY = 0;
+    groups.forEach((g) => {
+      const pxHeight = g.widthCols /* columns become vertical span */
+        * NODE_H + (g.widthCols - 1) * V_SPACING;
+      groupOffsetX.set(g.rootId, 0);
+      groupOffsetY.set(g.rootId, offY);
+      offY += pxHeight + GROUP_GAP_X; // reuse gap
+    });
+  }
 
-  const groupOffsets = new Map<string, number>();
-  let offsetX = 0;
-  groups.forEach((g) => {
-    groupOffsets.set(g.rootId, offsetX);
-    const pxWidth = g.widthCols * NODE_W + (g.widthCols - 1) * H_SPACING;
-    offsetX += pxWidth + GROUP_GAP_X;
-  });
-
-  const rfNodes: RFNode<SiteNodeData>[] = graph.nodes.map((n) => {
+  const rfNodes: RFNode<SiteNodeData & { layout: 'TD' | 'LR' }>[] = graph.nodes.map((n) => {
     const root = getRootId(n.id, idx);
-    const x = (groupOffsets.get(root) || 0) + n.col * (NODE_W + H_SPACING);
-    const y = n.row * (NODE_H + V_SPACING);
+
+    const baseX = groupOffsetX.get(root) || 0;
+    const baseY = groupOffsetY.get(root) || 0;
+
+    const x = layout === 'TD'
+      ? baseX + n.col * (NODE_W + H_SPACING)
+      : baseX + n.row * (NODE_W + H_SPACING); // rows go along X in LR
+
+    const y = layout === 'TD'
+      ? baseY + n.row * (NODE_H + V_SPACING)
+      : baseY + n.col * (NODE_H + V_SPACING); // cols go along Y in LR
+
     const isRoot = !n.parentId;
 
     return {
@@ -233,6 +166,7 @@ function computePositions(graph: Graph) {
         description: n.description,
         template: n.template,
         isRoot,
+        layout, // <-- pass to node
         onDelete: () => {},
         onAddRight: undefined,
         onAddBottom: () => {},
@@ -256,6 +190,7 @@ function computePositions(graph: Graph) {
 
   return { nodes: rfNodes, edges: rfEdges };
 }
+
 
 type ExportNode = {
   id: string;
@@ -322,49 +257,47 @@ function downloadJSON(obj: unknown, filename = 'sitemap.json') {
 /* ===============================
    Custom node
 ================================= */
-const SitemapNode: React.FC<NodeProps<SiteNodeData>> = ({ id, data, selected }) => {
+const SitemapNode: React.FC<NodeProps<SiteNodeData & { layout: 'TD' | 'LR' }>> = ({ id, data, selected }) => {
+  const isTD = data.layout === 'TD';
+
   return (
-    <div style={cardBase(data.isRoot)} onMouseDown={(e) => e.stopPropagation()}>
+    <div style={cardBase(data.isRoot, NODE_W, NODE_H)} onMouseDown={(e) => e.stopPropagation()}>
       {data.title}
 
+      {/* delete */}
       <div style={{ position: 'absolute', right: -14, top: -14 }}>
-        <button
-          type="button"
-          title="Delete"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            data.onDelete(id);
-          }}
-          style={btnBase}
-        >
+        <button type="button" title="Delete" onClick={(e) => { e.preventDefault(); e.stopPropagation(); data.onDelete(id); }} style={btnBase}>
           <Trash2 size={12} />
         </button>
       </div>
 
+      {/* handles switch */}
       <Handle
         type="target"
-        position={Position.Top}
+        position={isTD ? Position.Top : Position.Left}
         style={{ width: 8, height: 8, background: '#64748b' }}
         isConnectable={false}
       />
       <Handle
         type="source"
-        position={Position.Bottom}
+        position={isTD ? Position.Bottom : Position.Right}
         style={{ width: 8, height: 8, background: '#64748b' }}
         isConnectable={false}
       />
 
+      {/* sibling button: right in TD, bottom in LR */}
       {!data.isRoot && (
-        <div style={{ position: 'absolute', right: -14, top: '50%', transform: 'translateY(-50%)' }}>
+        <div
+          style={
+            isTD
+              ? { position: 'absolute', right: -14, top: '50%', transform: 'translateY(-50%)' }
+              : { position: 'absolute', left: '50%', bottom: -12, transform: 'translateX(-50%)' }
+          }
+        >
           <button
             type="button"
-            title="Add sibling to right"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              data.onAddRight?.(id);
-            }}
+            title={isTD ? 'Add sibling to right' : 'Add sibling below'}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); data.onAddRight?.(id); }}
             style={btnBase}
           >
             <Plus size={12} />
@@ -372,15 +305,18 @@ const SitemapNode: React.FC<NodeProps<SiteNodeData>> = ({ id, data, selected }) 
         </div>
       )}
 
-      <div style={{ position: 'absolute', left: '50%', bottom: -12, transform: 'translateX(-50%)' }}>
+      {/* child button: bottom in TD, right in LR */}
+      <div
+        style={
+          isTD
+            ? { position: 'absolute', left: '50%', bottom: -12, transform: 'translateX(-50%)' }
+            : { position: 'absolute', right: -14, top: '50%', transform: 'translateY(-50%)' }
+        }
+      >
         <button
           type="button"
-          title="Add child below"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            data.onAddBottom(id);
-          }}
+          title={isTD ? 'Add child below' : 'Add child to right'}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); data.onAddBottom(id); }}
           style={btnBase}
         >
           <Plus size={12} />
@@ -388,19 +324,12 @@ const SitemapNode: React.FC<NodeProps<SiteNodeData>> = ({ id, data, selected }) 
       </div>
 
       {selected && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: 12,
-            pointerEvents: 'none',
-            background: 'rgba(239, 68, 68, 0.05)',
-          }}
-        />
+        <div style={{ position: 'absolute', inset: 0, borderRadius: 12, pointerEvents: 'none', background: 'rgba(239, 68, 68, 0.05)' }} />
       )}
     </div>
   );
 };
+
 
 const nodeTypes = { sitemapNode: SitemapNode };
 
@@ -409,6 +338,9 @@ const nodeTypes = { sitemapNode: SitemapNode };
 ================================= */
 const Inner: React.FC = () => {
   const { value: fieldValue, setValue } = useField<Graph>({ path: 'graph' });
+  type LayoutMode = 'TD' | 'LR'; // TD = top-down (current), LR = left-right
+  const [layout, setLayout] = useState<LayoutMode>('TD');
+
   const initial: Graph =
     fieldValue && typeof fieldValue === 'object'
       ? (fieldValue as Graph)
@@ -574,7 +506,7 @@ const Inner: React.FC = () => {
     downloadJSON(data, filename);
   }, [graph]);
 
-  const built = useMemo(() => computePositions(graph), [graph]);
+  const built = useMemo(() => computePositions(graph, layout), [graph, layout]);
   const { nodes: rfNodes, edges: rfEdges } = useMemo(() => {
     const idSet = new Set(graph.nodes.map((n) => n.id));
     const roots = new Set(graph.nodes.filter((n) => !n.parentId).map((n) => n.id));
@@ -583,17 +515,19 @@ const Inner: React.FC = () => {
       ...n,
       data: {
         ...n.data,
+        layout, // <--
         onDelete: deleteWithSubtree,
-        onAddRight: roots.has(n.id) ? undefined : addSiblingRight,
+        onAddRight: roots.has(n.id) ? undefined : addSiblingRight, // same function; just UI label changes
         onAddBottom: addChildBottom,
-      } as SiteNodeData,
+      } as SiteNodeData & { layout: 'TD' | 'LR' },
     }));
 
     return {
       nodes,
       edges: built.edges.filter((e) => idSet.has(e.source) && idSet.has(e.target)),
     };
-  }, [built, graph.nodes, addSiblingRight, addChildBottom, deleteWithSubtree]);
+  }, [built, graph.nodes, layout, addSiblingRight, addChildBottom, deleteWithSubtree]);
+
 
   const { fitView, setCenter } = useReactFlow();
   const [pendingFocusId, setPendingFocusId] = useState<string | null>(null);
@@ -656,6 +590,19 @@ const Inner: React.FC = () => {
               style={pillBtn}
             >
               + Add parent
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setLayout((m) => (m === 'TD' ? 'LR' : 'TD'));
+                // re-fit after layout switch
+                setTimeout(() => fitView({ padding: 0.2, duration: 250 }), 0);
+              }}
+              style={pillBtn}
+            >
+              Layout: {layout === 'TD' ? 'Horizontal' : 'Vertical'}
             </button>
             <button
               type="button"
