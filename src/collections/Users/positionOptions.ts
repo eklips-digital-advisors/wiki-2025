@@ -27,4 +27,8 @@ export const positionOptions = [
     label: 'Other',
     value: 'other',
   },
+  {
+    label: 'Infrastructure & hosting',
+    value: 'im',
+  },
 ]
