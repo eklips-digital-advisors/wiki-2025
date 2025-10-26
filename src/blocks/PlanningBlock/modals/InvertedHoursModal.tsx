@@ -60,6 +60,7 @@ export const InvertedHoursModal: React.FC<Props> = ({
             onChange={(e) => setHoursInput(e.target.value)}
           />
           <div className="inline-flex gap-2 flex-wrap">
+            <Button variant="link" className="cursor-pointer p-0" onClick={() => setHoursInput('2')}>+2h</Button>
             <Button variant="link" className="cursor-pointer p-0" onClick={() => setHoursInput('4')}>+4h</Button>
             <Button variant="link" className="cursor-pointer p-0" onClick={() => setHoursInput('8')}>+8h</Button>
             <Button variant="link" className="cursor-pointer p-0" onClick={() => setHoursInput('20')}>+20h</Button>

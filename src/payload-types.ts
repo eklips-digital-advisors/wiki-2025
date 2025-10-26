@@ -349,7 +349,7 @@ export interface User {
   role?: ('user' | 'editor' | 'admin') | null;
   name?: string | null;
   media?: (string | null) | Media;
-  position?: ('frontend' | 'backend' | 'designer' | 'pm' | 'qa' | 'sm' | 'other') | null;
+  position?: ('frontend' | 'backend' | 'designer' | 'pm' | 'qa' | 'sm' | 'other' | 'im') | null;
   projects?: (string | Project)[] | null;
   includeInPlanningTool?: boolean | null;
   updatedAt: string;
