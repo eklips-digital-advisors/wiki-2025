@@ -41,8 +41,6 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
   const [pullText, setPullText] = useState('Pull new data')
   const [searchValue, setSearchValue] = useState('')
   const { latestWp, wpVersionLatestPercentage, phpApiData, buildTime } = extraInfo
-  
-  console.log('sites', sites)
 
   const revalidate = async () => {
     setLoading(true)
