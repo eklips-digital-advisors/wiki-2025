@@ -23,6 +23,7 @@ export const columns = [
   { key: 'dataProvider', label: 'Share data provider', defaultVisible: false, sortable: true, auto: true, type: 'external' },
   { key: 'hasGoogleAnalytics', label: 'Analytics', defaultVisible: false, sortable: true, auto: true, type: 'external' },
   { key: 'cookieProvider', label: 'Cookie provider', defaultVisible: false, sortable: true, auto: true, type: 'external' },
+  { key: 'fonts', label: 'Fonts', defaultVisible: false, sortable: true, auto: true, type: 'external' },
   { key: 'wcagLevel', label: 'WCAG', defaultVisible: false, sortable: false, auto: false, type: 'test' },
   { key: 'bsScan', label: 'BS Scan', defaultVisible: false, sortable: true, auto: false, type: 'test' },
   { key: 'lastResponsetime', label: 'Response time', defaultVisible: true, sortable: true, auto: true, type: 'test' },

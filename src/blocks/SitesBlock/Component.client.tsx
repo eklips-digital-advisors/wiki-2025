@@ -33,6 +33,7 @@ import SecondarySearch from '@/components/SearchSecondary'
 import { ChartPerformance } from '@/blocks/SitesBlock/ChartPerformance'
 import { getLabel } from '@/utilities/getLabel'
 import { frameworkOptions, wcagOptions } from '@/collections/Sites/selectOptions'
+import FontsTable from '@/blocks/SitesBlock/FontsTable'
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
@@ -40,6 +41,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
   const [pullText, setPullText] = useState('Pull new data')
   const [searchValue, setSearchValue] = useState('')
   const { latestWp, wpVersionLatestPercentage, phpApiData, buildTime } = extraInfo
+  
+  console.log('sites', sites)
 
   const revalidate = async () => {
     setLoading(true)
@@ -416,6 +419,11 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 {selectedColumns.includes('cookieProvider') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     {site?.cookieProvider}
+                  </td>
+                )}
+                {selectedColumns.includes('fonts') && (
+                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
+                    <FontsTable fonts={site?.fonts} />
                   </td>
                 )}
                 {selectedColumns.includes('wcagLevel') && (

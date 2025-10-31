@@ -1,3 +1,5 @@
+import { DetectedFont } from '@/utilities/GetAssets/getFontsFromPage'
+
 export interface SiteItem {
   id: string
   title: string
@@ -34,6 +36,7 @@ export interface SiteItem {
   updatedAt: string
   pingdom: string
   pressReleases: string[]
+  fonts: DetectedFont[]
   speedTestScan: string
   dataProvider: { cisionBlocks: boolean; dataBlocks: boolean }
   repository: object
