@@ -1,12 +1,12 @@
 import fetch from 'node-fetch';
 
-type FontDelivery = 'cdn' | 'local' | 'unknown';
+type FontDelivery = 'cdn' | 'local' | '';
 
-export interface DetectedFont {
-  family: string;
-  provider: string;
-  delivery: FontDelivery;
-  sourceUrl: string | null;
+export type DetectedFont = {
+  family: string
+  provider: string
+  delivery: 'cdn' | 'local' | ''
+  sourceUrl?: string | null
 }
 
 const KNOWN_FONT_PROVIDERS = [
@@ -76,7 +76,7 @@ function detectDelivery(url: string, origin: string): FontDelivery {
     return 'local';
   }
 
-  return 'unknown';
+  return '';
 }
 
 // heuristic: pick one main css from <link>s
@@ -225,7 +225,7 @@ export async function getFontsFromPage(url: string): Promise<DetectedFont[]> {
   for (const { name, urls } of perFamily.values()) {
     let sourceUrl: string | null = null;
     let provider = '';
-    let delivery: FontDelivery = 'unknown';
+    let delivery: FontDelivery = '';
 
     if (urls.length > 0) {
       // prefer provider-looking url (will catch /fonts.gstatic.com/... even when proxied!)

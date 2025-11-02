@@ -1,12 +1,6 @@
 import React from 'react'
 import { TableProperties } from 'lucide-react'
-
-type DetectedFont = {
-  family: string
-  provider: string
-  delivery: 'cdn' | 'local' | ''
-  sourceUrl?: string | null
-}
+import { DetectedFont } from '@/utilities/GetAssets/getFontsFromPage'
 
 export const FontsTable = ({ fonts }: { fonts?: DetectedFont[] }) => {
   return (
