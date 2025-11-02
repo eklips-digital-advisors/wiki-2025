@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 type FontDelivery = 'cdn' | 'local' | 'unknown';
 
-interface DetectedFont {
+export interface DetectedFont {
   family: string;
   provider: string;
   delivery: FontDelivery;
