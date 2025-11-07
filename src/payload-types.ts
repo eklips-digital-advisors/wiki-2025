@@ -189,6 +189,18 @@ export interface Site {
   phpVersion?: ('7.4' | '8.2' | '8.3' | '8.4') | null;
   framework?: ('cwaas' | 'eklips_v1' | 'eklips_v2') | null;
   pressReleases?: ('cision' | 'mfn' | 'bequoted')[] | null;
+  /**
+   * Add one row per typeface/family in use on this site.
+   */
+  fonts?:
+    | {
+        family: string;
+        provider: string;
+        delivery: 'cdn' | 'self-hosted';
+        licence: string;
+        id?: string | null;
+      }[]
+    | null;
   publishedAt?: string | null;
   slug?: string | null;
   slugLock?: boolean | null;
@@ -948,6 +960,15 @@ export interface SitesSelect<T extends boolean = true> {
   phpVersion?: T;
   framework?: T;
   pressReleases?: T;
+  fonts?:
+    | T
+    | {
+        family?: T;
+        provider?: T;
+        delivery?: T;
+        licence?: T;
+        id?: T;
+      };
   publishedAt?: T;
   slug?: T;
   slugLock?: T;

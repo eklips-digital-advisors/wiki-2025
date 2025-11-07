@@ -21,7 +21,6 @@ import pLimit from 'p-limit';
 import { getSSLCertificate } from '@/utilities/getNodeSsl'
 import { getDataBlocks } from '@/utilities/GetProviders/getDataBlocks'
 import { getCisionBlocks } from '@/utilities/GetProviders/getCisionBlocks'
-import { getFontsFromPage } from '@/utilities/GetAssets/getFontsFromPage'
 
 export const SitesBlock: React.FC = async () => {
   const buildTime: string = new Date().toLocaleString('et-ET', { timeZone: "Europe/Tallinn" })
@@ -73,7 +72,6 @@ export const SitesBlock: React.FC = async () => {
           const hasDataBlocks = siteUrl ? await getDataBlocks(siteUrl) : false;
           const hasCisionBlocks = siteUrl ? await getCisionBlocks(siteUrl) : false;
           const siteIntgrationRepository= site?.integrations?.repository
-          const getFonts = siteUrl ? await getFontsFromPage(siteUrl) : [];
 
           const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null
           const singleRepo = repoPath ? await limit(() => getSingleRepo(repoPath)) : null
@@ -149,7 +147,7 @@ export const SitesBlock: React.FC = async () => {
             cookieProvider,
             singleClodflareAnalyticsMultipleDays,
             singleClodflareUrl,
-            fonts: getFonts
+            fonts: site?.fonts,
           }
         } catch (error) {
           console.error(`Error processing site ${site.id}:`, error)

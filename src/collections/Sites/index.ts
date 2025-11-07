@@ -5,6 +5,7 @@ import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import {
+  fontDeliveryOptions,
   frameworkOptions,
   hostingOptions,
   phpVersionOptions,
@@ -140,6 +141,50 @@ export const Sites: CollectionConfig<'sites'> = {
       label: 'Press releases',
       options: pressReleasesOptions,
       hasMany: true,
+    },
+    // --- Fonts -------------------------------------------------------------
+    {
+      name: 'fonts',
+      label: 'Fonts',
+      type: 'array',
+      labels: {
+        singular: 'Font',
+        plural: 'Fonts',
+      },
+      admin: {
+        description: 'Add one row per typeface/family in use on this site.',
+      },
+      fields: [
+        {
+          name: 'family',
+          label: 'Family',
+          type: 'text',
+          required: true,
+          admin: { placeholder: 'e.g., Noe Display, Inter, Aperçu' },
+        },
+        {
+          name: 'provider',
+          label: 'Provider',
+          type: 'text',
+          required: true,
+          admin: { placeholder: 'e.g., MyFonts, Google, Adobe, In-house' },
+        },
+        {
+          name: 'delivery',
+          label: 'Delivery',
+          type: 'select',
+          options: fontDeliveryOptions,
+          required: true,
+          defaultValue: 'self-hosted',
+        },
+        {
+          name: 'licence',
+          label: 'Licence',
+          type: 'text',
+          required: true,
+          admin: { placeholder: 'License reference or notes' },
+        },
+      ],
     },
     {
       name: 'publishedAt',

@@ -134,3 +134,14 @@ export const pressReleasesOptions = [
     value: 'bequoted',
   },
 ]
+
+export const fontDeliveryOptions = [
+  {
+    label: 'CDN',
+    value: 'cdn',
+  },
+  {
+    label: 'Self hosted',
+    value: 'self-hosted',
+  },
+]

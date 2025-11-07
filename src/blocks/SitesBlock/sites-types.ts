@@ -1,4 +1,4 @@
-import { DetectedFont } from '@/utilities/GetAssets/getFontsFromPage'
+import { Site } from '@/payload-types'
 
 export interface SiteItem {
   id: string
@@ -36,7 +36,7 @@ export interface SiteItem {
   updatedAt: string
   pingdom: string
   pressReleases: string[]
-  fonts: DetectedFont[]
+  fonts: NonNullable<Site['fonts']>
   speedTestScan: string
   dataProvider: { cisionBlocks: boolean; dataBlocks: boolean }
   repository: object
