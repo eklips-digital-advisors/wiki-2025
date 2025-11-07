@@ -145,3 +145,16 @@ export const fontDeliveryOptions = [
     value: 'self-hosted',
   },
 ]
+
+export const fontLicenceOptions = [
+  { label: 'Google Fonts', value: 'google-fonts' },
+  { label: 'Eklips-owned (agency license)', value: 'eklips-owned' },
+  { label: 'Client-owned — self-hosted', value: 'client-owned-self-hosted' },
+  { label: 'Adobe Fonts', value: 'adobe-fonts' },
+  { label: 'Open-source (OFL/Apache)', value: 'open-source-webfont' },
+  { label: 'Client-owned — hosted service', value: 'client-owned-hosted' }, // e.g., Adobe/Monotype
+  { label: 'Public domain', value: 'public-domain' },
+  { label: 'Custom permission / EULA addendum', value: 'custom-permission' },
+  { label: 'System UI only', value: 'system-ui' },
+  { label: 'Unknown / Needs review', value: 'unknown-review' },
+]

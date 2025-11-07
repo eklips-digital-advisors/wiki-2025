@@ -197,7 +197,21 @@ export interface Site {
         family: string;
         provider?: string | null;
         delivery: 'cdn' | 'self-hosted';
-        licence?: string | null;
+        licence?:
+          | (
+              | 'google-fonts'
+              | 'eklips-owned'
+              | 'client-owned-self-hosted'
+              | 'adobe-fonts'
+              | 'open-source-webfont'
+              | 'client-owned-hosted'
+              | 'public-domain'
+              | 'custom-permission'
+              | 'system-ui'
+              | 'unknown-review'
+            )[]
+          | null;
+        notes?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -967,6 +981,7 @@ export interface SitesSelect<T extends boolean = true> {
         provider?: T;
         delivery?: T;
         licence?: T;
+        notes?: T;
         id?: T;
       };
   publishedAt?: T;

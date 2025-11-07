@@ -6,6 +6,7 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import {
   fontDeliveryOptions,
+  fontLicenceOptions,
   frameworkOptions,
   hostingOptions,
   phpVersionOptions,
@@ -179,8 +180,16 @@ export const Sites: CollectionConfig<'sites'> = {
         {
           name: 'licence',
           label: 'Licence',
+          type: 'select',
+          options: fontLicenceOptions,
+          admin: {
+            description: ''
+          },
+        },
+        {
+          name: 'notes',
+          label: 'Notes',
           type: 'text',
-          admin: { placeholder: 'License reference or notes' },
         },
       ],
     },
