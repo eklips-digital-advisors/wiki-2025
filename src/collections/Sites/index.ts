@@ -166,7 +166,6 @@ export const Sites: CollectionConfig<'sites'> = {
           name: 'provider',
           label: 'Provider',
           type: 'text',
-          required: true,
           admin: { placeholder: 'e.g., MyFonts, Google, Adobe, In-house' },
         },
         {
@@ -181,7 +180,6 @@ export const Sites: CollectionConfig<'sites'> = {
           name: 'licence',
           label: 'Licence',
           type: 'text',
-          required: true,
           admin: { placeholder: 'License reference or notes' },
         },
       ],

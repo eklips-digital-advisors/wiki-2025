@@ -195,9 +195,9 @@ export interface Site {
   fonts?:
     | {
         family: string;
-        provider: string;
+        provider?: string | null;
         delivery: 'cdn' | 'self-hosted';
-        licence: string;
+        licence?: string | null;
         id?: string | null;
       }[]
     | null;
