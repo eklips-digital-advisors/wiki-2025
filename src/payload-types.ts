@@ -209,7 +209,7 @@ export interface Site {
               | 'custom-permission'
               | 'system-ui'
               | 'unknown-review'
-            )[]
+            )
           | null;
         notes?: string | null;
         id?: string | null;

@@ -16,7 +16,7 @@ export const FontsTable: React.FC<FontsTableProps> = ({ fonts }) => {
     <span className="group relative inline-block">
       <TableProperties className="w-5 h-5 text-gray-500 cursor-pointer hover:text-gray-700" />
 
-      <span className="absolute left-0 top-0 mt-2 w-[460px] max-h-[260px] overflow-auto bg-white border border-gray-300 shadow-lg rounded-lg p-2 z-50 opacity-0 invisible group-hover:visible group-hover:opacity-100 group-hover:scale-100 transition-opacity transition-transform duration-300 text-sm">
+      <span className="absolute left-0 top-0 mt-2 w-[460px] max-h-[260px] overflow-auto bg-white border border-gray-300 shadow-lg rounded-lg p-2 z-50 opacity-0 invisible group-hover:visible group-hover:opacity-100 group-hover:scale-100 transition-opacity duration-300 text-sm">
         {items.length ? (
           <table className="w-full border-collapse text-left">
             <thead>

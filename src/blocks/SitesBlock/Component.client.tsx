@@ -421,7 +421,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                 )}
                 {selectedColumns.includes('fonts') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    <FontsTable fonts={site?.fonts} />
+                    {site?.fonts && site?.fonts.length > 0 && <FontsTable fonts={site?.fonts} />}
                   </td>
                 )}
                 {selectedColumns.includes('wcagLevel') && (
