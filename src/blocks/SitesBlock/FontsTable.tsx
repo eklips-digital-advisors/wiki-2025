@@ -1,6 +1,8 @@
 import React from 'react'
 import { TableProperties } from 'lucide-react'
 import { Site } from '@/payload-types'
+import { getLabel } from '@/utilities/getLabel'
+import { fontDeliveryOptions, fontLicenceOptions } from '@/collections/Sites/selectOptions'
 // import { Site } from '@/types' // wherever your Site interface lives
 
 type Font = NonNullable<Site['fonts']>[number]
@@ -35,8 +37,8 @@ export const FontsTable: React.FC<FontsTableProps> = ({ fonts }) => {
                 >
                   <td className="py-1 pr-2 text-zinc-800 break-all">{font.family}</td>
                   <td className="py-1 pr-2 text-zinc-500">{font.provider}</td>
-                  <td className="py-1 pr-2 text-xs text-zinc-400 uppercase">{font.delivery}</td>
-                  <td className="py-1 pr-2 text-xs text-zinc-400 uppercase">{font.licence}</td>
+                  <td className="py-1 pr-2 text-xs text-zinc-400">{getLabel(font.delivery, fontDeliveryOptions)}</td>
+                  <td className="py-1 pr-2 text-xs text-zinc-400">{font.licence && getLabel(font.licence, fontLicenceOptions)}</td>
                 </tr>
               ))}
             </tbody>
