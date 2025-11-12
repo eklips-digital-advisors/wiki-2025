@@ -13,10 +13,18 @@ type FontsTableProps = {
 
 export const FontsTable: React.FC<FontsTableProps> = ({ fonts }) => {
   const items: Font[] = Array.isArray(fonts) ? fonts : []
+  
+  const hasUnknownLicence = items.some(f => f.licence === 'unknown-review')
+  const iconClasses = `w-5 h-5 cursor-pointer ${
+    hasUnknownLicence ? 'text-red-500 hover:text-red-600' : 'text-gray-500 hover:text-gray-700'
+  }`
 
   return (
     <span className="group relative inline-block">
-      <TableProperties className="w-5 h-5 text-gray-500 cursor-pointer hover:text-gray-700" />
+      <TableProperties
+        className={iconClasses}
+        aria-label="Show font details"
+      />
 
       <span className="absolute left-0 top-0 mt-2 w-[460px] max-h-[260px] overflow-auto bg-white border border-gray-300 shadow-lg rounded-lg p-2 z-50 opacity-0 invisible group-hover:visible group-hover:opacity-100 group-hover:scale-100 transition-opacity duration-300 text-sm">
         {items.length ? (
