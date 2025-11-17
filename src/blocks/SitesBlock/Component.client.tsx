@@ -1,39 +1,58 @@
 'use client'
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import {
   ArrowUpDown,
   ChevronDown,
   ChevronUp,
-  Clock, Database,
+  Clock,
+  Database,
   ExternalLink,
   ExternalLinkIcon,
   FileDown,
   LoaderCircle,
 } from 'lucide-react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import Link from 'next/link'
-import Th from '@/components/Table/Th'
-import { getWpVersionBackground } from '@/utilities/GetDynamicBackgrounds/getWpVersionBackground'
-import CloudFlare from '@/components/Icons/cloudFlare'
-import { SiteItem, SitesBlockProps } from '@/blocks/SitesBlock/sites-types'
-import './index.scss'
-import Pill from '@/components/Button/pill'
-import { columns } from '@/blocks/SitesBlock/Columns'
-import { getPhpBackground } from '@/utilities/GetDynamicBackgrounds/getPhpBackground'
-import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+
+import Th from '@/components/Table/Th'
+import CloudFlare from '@/components/Icons/cloudFlare'
+import Pill from '@/components/Button/pill'
+import { Button } from '@/components/ui/button'
+import SecondarySearch from '@/components/SearchSecondary'
+
+import { getWpVersionBackground } from '@/utilities/GetDynamicBackgrounds/getWpVersionBackground'
+import { getPhpBackground } from '@/utilities/GetDynamicBackgrounds/getPhpBackground'
 import { getBsScanBackground } from '@/utilities/GetDynamicBackgrounds/getBsScanBackground'
+import { exportToExcel } from '@/utilities/exportToExcel'
+import { parseDateUTC } from '@/utilities/parseDateUTC'
+import { getLabel } from '@/utilities/getLabel'
+
+import { columns } from '@/blocks/SitesBlock/Columns'
 import Chart from '@/blocks/SitesBlock/Chart'
 import PathTable from '@/blocks/SitesBlock/PathTable'
 import CspTable from '@/blocks/SitesBlock/CspTable'
 import CheckIcon from '@/blocks/SitesBlock/CheckIcon'
-import { exportToExcel } from '@/utilities/exportToExcel'
-import { parseDateUTC } from '@/utilities/parseDateUTC'
-import SecondarySearch from '@/components/SearchSecondary'
 import { ChartPerformance } from '@/blocks/SitesBlock/ChartPerformance'
-import { getLabel } from '@/utilities/getLabel'
-import { frameworkOptions, wcagOptions } from '@/collections/Sites/selectOptions'
 import FontsTable from '@/blocks/SitesBlock/FontsTable'
+
+import {
+  frameworkOptions,
+  wcagOptions,
+} from '@/collections/Sites/selectOptions'
+
+import type {
+  SiteItem,
+  SitesBlockProps,
+} from '@/blocks/SitesBlock/sites-types'
+
+import './index.scss'
 
 const MemoCspTable = React.memo(CspTable)
 const MemoFontsTable = React.memo(FontsTable)
@@ -41,12 +60,16 @@ const MemoChart = React.memo(Chart)
 const MemoChartPerformance = React.memo(ChartPerformance)
 const MemoPathTable = React.memo(PathTable)
 
-export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
+export const SitesBlockClient: React.FC<SitesBlockProps> = ({
+  sites,
+  extraInfo,
+}) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [pullText, setPullText] = useState('Pull new data')
   const [searchValue, setSearchValue] = useState('')
-  const { latestWp, wpVersionLatestPercentage, phpApiData, buildTime } = extraInfo
+  const { latestWp, wpVersionLatestPercentage, phpApiData, buildTime } =
+    extraInfo
 
   const revalidate = async () => {
     setLoading(true)
@@ -56,8 +79,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ path: '/sites' }), // Pass the path dynamically
-    });
+      body: JSON.stringify({ path: '/sites' }),
+    })
     router.refresh()
   }
 
@@ -66,18 +89,19 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     setPullText('Pull new data')
   }, [buildTime])
 
-  const handleChange = (e: any) => {
-    e.target.addEventListener('keyup', function () {
-      const value = e.target.value.toLowerCase()
-      setSearchValue(value)
-    })
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value.toLowerCase())
   }
 
   const [selectedColumns, setSelectedColumns] = useState(
     columns.filter((col) => col.defaultVisible).map((col) => col.key),
   )
 
-  const selectedColumnSet = useMemo(() => new Set(selectedColumns), [selectedColumns])
+  const selectedColumnSet = useMemo(
+    () => new Set(selectedColumns),
+    [selectedColumns],
+  )
+
   const visibleColumns = useMemo(
     () => columns.filter((col) => selectedColumnSet.has(col.key)),
     [selectedColumnSet],
@@ -85,90 +109,158 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
 
   const toggleColumn = (key: string) => {
     setSelectedColumns((prev) =>
-      prev.includes(key) ? prev.filter((col) => col !== key) : [...prev, key],
+      prev.includes(key)
+        ? prev.filter((col) => col !== key)
+        : [...prev, key],
     )
   }
 
   const clearAllColumns = () => {
-    setSelectedColumns((prev) => prev.filter((col) => col === "index" || col === "title"));
-  };
+    setSelectedColumns((prev) =>
+      prev.filter((col) => col === 'index' || col === 'title'),
+    )
+  }
 
-  const [sortConfig, setSortConfig] = useState<{ key: string | null; direction: 'asc' | 'desc' }>({
+  const [sortConfig, setSortConfig] = useState<{
+    key: string | null
+    direction: 'asc' | 'desc'
+  }>({
     key: 'title',
     direction: 'asc',
   })
 
-  // Toggle column sorting
   const toggleSort = (key: string) => {
     setSortConfig((prev) => ({
       key,
-      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
+      direction:
+        prev.key === key && prev.direction === 'asc'
+          ? 'desc'
+          : 'asc',
     }))
   }
-  // Sort sites dynamically
+
   const sortedSites = useMemo(() => {
     const result = [...sites]
     if (!sortConfig.key) return result
 
     return result.sort((a, b) => {
-      const aValue = a[sortConfig.key as keyof SiteItem] as string
-      const bValue = b[sortConfig.key as keyof SiteItem] as string
+      const aValue = a[sortConfig.key as keyof SiteItem] as any
+      const bValue = b[sortConfig.key as keyof SiteItem] as any
 
-      const isDateFormat = (value: string) => /^\d{2}\.\d{2}\.\d{4}$/.test(value);
+      const isDateFormat = (value: string) =>
+        /^\d{2}\.\d{2}\.\d{4}$/.test(value)
 
-      const isADate = isDateFormat(aValue);
-      const isBDate = isDateFormat(bValue);
+      // kuupäeva võrdlus
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        const isADate = isDateFormat(aValue)
+        const isBDate = isDateFormat(bValue)
 
-      if (isADate && isBDate) {
-        const dateA = parseDateUTC(aValue);
-        const dateB = parseDateUTC(bValue);
+        if (isADate && isBDate) {
+          const dateA = parseDateUTC(aValue)
+          const dateB = parseDateUTC(bValue)
 
-        if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
-          return 0; // Handle as equal if dates are invalid
+          if (
+            isNaN(dateA.getTime()) ||
+            isNaN(dateB.getTime())
+          ) {
+            return 0
+          }
+
+          return sortConfig.direction === 'asc'
+            ? dateA.getTime() - dateB.getTime()
+            : dateB.getTime() - dateA.getTime()
         }
+      }
+
+      // dataProvider erijuht
+      if (sortConfig.key === 'dataProvider') {
+        const aScore = aValue
+          ? Object.values(aValue).filter(Boolean).length
+          : 0
+        const bScore = bValue
+          ? Object.values(bValue).filter(Boolean).length
+          : 0
 
         return sortConfig.direction === 'asc'
-          ? dateA.getTime() - dateB.getTime()
-          : dateB.getTime() - dateA.getTime();
+          ? aScore - bScore
+          : bScore - aScore
       }
 
-      if (sortConfig.key === "dataProvider") {
-        const aScore = aValue ? Object.values(aValue).filter(Boolean).length : 0;
-        const bScore = bValue ? Object.values(bValue).filter(Boolean).length : 0;
-
-        return sortConfig.direction === 'asc' ? aScore - bScore : bScore - aScore;
-      }
-
-      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
-      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
+      if (aValue < bValue)
+        return sortConfig.direction === 'asc' ? -1 : 1
+      if (aValue > bValue)
+        return sortConfig.direction === 'asc' ? 1 : -1
       return 0
     })
   }, [sites, sortConfig])
 
   const filteredSites = useMemo(
-    () => sortedSites.filter(site => site.title.toLowerCase().includes(searchValue)),
+    () =>
+      sortedSites.filter((site) =>
+        site.title.toLowerCase().includes(searchValue),
+      ),
     [sortedSites, searchValue],
   )
 
-  const renderCell = (colKey: string, site: SiteItem, index: number): React.ReactNode => {
+  // --- ROW VIRTUALIZATION (padding rows muster) ---
+
+  const scrollParentRef = useRef<HTMLDivElement | null>(null)
+
+  // hinnanguline rea kõrgus – timmi vastavalt SCSS-ile
+  const ESTIMATED_ROW_HEIGHT = 60
+
+  const rowVirtualizer = useVirtualizer({
+    count: filteredSites.length,
+    getScrollElement: () => scrollParentRef.current,
+    estimateSize: () => ESTIMATED_ROW_HEIGHT,
+    overscan: 10,
+  })
+
+  const virtualRows = rowVirtualizer.getVirtualItems()
+  const totalHeight = rowVirtualizer.getTotalSize()
+
+  const paddingTop =
+    virtualRows.length > 0 ? virtualRows[0].start : 0
+  const paddingBottom =
+    virtualRows.length > 0
+      ? totalHeight - virtualRows[virtualRows.length - 1].end
+      : 0
+
+  const renderCell = (
+    colKey: string,
+    site: SiteItem,
+    index: number,
+  ): React.ReactNode => {
     switch (colKey) {
       case 'index':
         return (
-          <td key={colKey} className="text-sm text-zinc-400">
+          <td
+            key={colKey}
+            className="text-sm text-zinc-400"
+          >
             {index + 1}
           </td>
         )
       case 'title':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm font-medium text-zinc-900">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm font-medium text-zinc-900"
+          >
             {site.title}
           </td>
         )
       case 'production':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.production && (
-              <Link target="_blank" href={site?.production}>
+              <Link
+                target="_blank"
+                href={site?.production}
+              >
                 <ExternalLink className="w-4" />
               </Link>
             )}
@@ -176,13 +268,24 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         )
       case 'staging':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.staging && site?.stagingLink && (
               <div className="flex gap-2 items-center">
-                <Link title="Stage URL" target="_blank" href={site?.staging}>
+                <Link
+                  title="Stage URL"
+                  target="_blank"
+                  href={site?.staging}
+                >
                   <ExternalLink className="w-4" />
                 </Link>
-                <Link title="Repository link" target="_blank" href={site?.stagingLink}>
+                <Link
+                  title="Repository link"
+                  target="_blank"
+                  href={site?.stagingLink}
+                >
                   <Database className="w-4" />
                 </Link>
               </div>
@@ -191,45 +294,72 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         )
       case 'createdAt':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.createdAt && site?.createdAt}
           </td>
         )
       case 'lastCommitAt':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.lastCommitAt && site?.lastCommitAt}
           </td>
         )
       case 'productionDate':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-            {site?.productionDate && site?.productionDate}
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
+            {site?.productionDate &&
+              site?.productionDate}
           </td>
         )
       case 'siteService':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.siteService}
           </td>
         )
       case 'hosting':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.hosting}
           </td>
         )
       case 'server':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.server}
           </td>
         )
       case 'wpVersion':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.wpVersion && (
-              <span className={`${getWpVersionBackground(site?.wpVersion, latestWp)} px-1 py-[0.5] text-xs inline-block`}>
+              <span
+                className={`${getWpVersionBackground(
+                  site?.wpVersion,
+                  latestWp,
+                )} px-1 py-[0.5] text-xs inline-block`}
+              >
                 {site?.wpVersion}
               </span>
             )}
@@ -237,10 +367,14 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         )
       case 'cloudflare':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.cloudflare === 'cloudflare' ? (
               <span className="text-xs">
-                <CloudFlare className="w-12" /> {site?.cloudflarePlan}
+                <CloudFlare className="w-12" />{' '}
+                {site?.cloudflarePlan}
               </span>
             ) : (
               site?.cloudflare
@@ -249,115 +383,210 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         )
       case 'ssl':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.ssl}
           </td>
         )
       case 'ipRestriction':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             <CheckIcon condition={site?.ipRestriction} />
           </td>
         )
       case 'csp':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-            {site?.csp && <MemoCspTable cspData={site?.csp} />}
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
+            {site?.csp && (
+              <MemoCspTable cspData={site?.csp} />
+            )}
           </td>
         )
       case 'phpVersion':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-            <span className={`${getPhpBackground(phpApiData, site?.phpVersion)} px-1 py-[0.5] text-xs inline-block`}>
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
+            <span
+              className={`${getPhpBackground(
+                phpApiData,
+                site?.phpVersion,
+              )} px-1 py-[0.5] text-xs inline-block`}
+            >
               {site?.phpVersion}
             </span>
           </td>
         )
       case 'framework':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
-            {getLabel(site?.framework, frameworkOptions)}
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase"
+          >
+            {getLabel(
+              site?.framework,
+              frameworkOptions,
+            )}
           </td>
         )
       case 'twoFa':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             <CheckIcon condition={site?.twoFa} />
           </td>
         )
       case 'hiddenLogin':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             <CheckIcon condition={site?.hiddenLogin} />
           </td>
         )
       case 'hasSolr':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             <CheckIcon condition={site?.hasSolr} />
           </td>
         )
       case 'pressReleases':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             <span className="flex gap-1 flex-wrap">
-              {Array.isArray(site?.pressReleases) && site.pressReleases.includes('cision') ? (
-                <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">Cision</span>
+              {Array.isArray(
+                site?.pressReleases,
+              ) &&
+              site.pressReleases.includes(
+                'cision',
+              ) ? (
+                <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">
+                  Cision
+                </span>
               ) : null}
-              {Array.isArray(site?.pressReleases) && site.pressReleases.includes('mfn') ? (
-                <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">MFN</span>
+              {Array.isArray(
+                site?.pressReleases,
+              ) &&
+              site.pressReleases.includes('mfn') ? (
+                <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">
+                  MFN
+                </span>
               ) : null}
-              {Array.isArray(site?.pressReleases) && site.pressReleases.includes('bequoted') ? (
-                <span className="px-1 py-[0.5] text-xs inline-block bg-indigo-100">BeQuoted</span>
+              {Array.isArray(
+                site?.pressReleases,
+              ) &&
+              site.pressReleases.includes(
+                'bequoted',
+              ) ? (
+                <span className="px-1 py-[0.5] text-xs inline-block bg-indigo-100">
+                  BeQuoted
+                </span>
               ) : null}
             </span>
           </td>
         )
       case 'dataProvider':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             <span className="flex gap-1 flex-wrap">
               {site?.dataProvider?.cisionBlocks && (
-                <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">CisionBlocks</span>
+                <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">
+                  CisionBlocks
+                </span>
               )}
               {site?.dataProvider?.dataBlocks && (
-                <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">DataBlocks</span>
+                <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">
+                  DataBlocks
+                </span>
               )}
             </span>
           </td>
         )
       case 'hasGoogleAnalytics':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.hasGoogleAnalytics}
           </td>
         )
       case 'cookieProvider':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.cookieProvider}
           </td>
         )
       case 'fonts':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-            {site?.fonts && site?.fonts.length > 0 && <MemoFontsTable fonts={site?.fonts} />}
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
+            {site?.fonts &&
+              site?.fonts.length > 0 && (
+                <MemoFontsTable fonts={site?.fonts} />
+              )}
           </td>
         )
       case 'wcagLevel':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
-            <strong className="block leading-4">{getLabel(site?.wcagLevel, wcagOptions)}</strong>
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase"
+          >
+            <strong className="block leading-4">
+              {getLabel(
+                site?.wcagLevel,
+                wcagOptions,
+              )}
+            </strong>
             <span className="leading-4">
-              {site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}
+              {site?.wcagUpdated &&
+                new Date(
+                  site?.wcagUpdated,
+                )
+                  .toISOString()
+                  .split('T')[0]}{' '}
             </span>
           </td>
         )
       case 'bsScan':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
+          >
             {site?.bsScan && (
-              <span className={`${getBsScanBackground(site?.bsScan)} px-1 py-[0.5] text-xs inline-block`}>
+              <span
+                className={`${getBsScanBackground(
+                  site?.bsScan,
+                )} px-1 py-[0.5] text-xs inline-block`}
+              >
                 {site?.bsScan}
               </span>
             )}
@@ -368,7 +597,10 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
           <td
             key={colKey}
             className={`whitespace-nowrap flex items-center gap-4 px-3 py-3 text-sm ${
-              site?.lastResponsetime && site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'
+              site?.lastResponsetime &&
+              site?.lastResponsetime > 2000
+                ? 'text-rose-500'
+                : 'text-zinc-500'
             }`}
           >
             {site?.lastResponsetime && (
@@ -378,7 +610,10 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
               </span>
             )}
             {site?.pingdomLink && (
-              <Link target="_blank" href={site?.pingdomLink}>
+              <Link
+                target="_blank"
+                href={site?.pingdomLink}
+              >
                 <ExternalLinkIcon className="w-5 h-5" />
               </Link>
             )}
@@ -386,25 +621,54 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         )
       case 'cloudflarePercentage':
         return (
-          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm">
+          <td
+            key={colKey}
+            className="whitespace-nowrap px-3 py-3 text-sm"
+          >
             <span className="flex gap-2 items-center">
-              <span className={`${site?.cloudflarePercentage && site?.cloudflarePercentage > 25 ? 'text-rose-400' : 'text-zinc-500'}`}>
+              <span
+                className={`${
+                  site?.cloudflarePercentage &&
+                  site?.cloudflarePercentage > 25
+                    ? 'text-rose-400'
+                    : 'text-zinc-500'
+                }`}
+              >
                 {site?.cloudflareBandwidth &&
                   site?.cloudflareRequests &&
                   site?.cloudflarePercentage &&
                   `${site?.cloudflareBandwidth} (${site?.cloudflarePercentage}%) / ${site?.cloudflareRequests}`}
               </span>
-              {site.singleClodflareAnalyticsMultipleDays && site.cloudflarePlan === 'Enterprise Website' ? (
+              {site.singleClodflareAnalyticsMultipleDays &&
+              site.cloudflarePlan ===
+                'Enterprise Website' ? (
                 <>
-                  <MemoChart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
-                  <MemoChartPerformance siteChartData={site.singleClodflareAnalyticsMultipleDays} />
-                  <MemoPathTable siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                  <MemoChart
+                    siteChartData={
+                      site.singleClodflareAnalyticsMultipleDays
+                    }
+                  />
+                  <MemoChartPerformance
+                    siteChartData={
+                      site.singleClodflareAnalyticsMultipleDays
+                    }
+                  />
+                  <MemoPathTable
+                    siteChartData={
+                      site.singleClodflareAnalyticsMultipleDays
+                    }
+                  />
                 </>
               ) : (
-                <span className="text-zinc-500 sr-only">No data</span>
+                <span className="text-zinc-500 sr-only">
+                  No data
+                </span>
               )}
               {site?.singleClodflareUrl && (
-                <Link target="_blank" href={site?.singleClodflareUrl}>
+                <Link
+                  target="_blank"
+                  href={site?.singleClodflareUrl}
+                >
                   <ExternalLink className="w-5 h-5 text-gray-500 hover:text-gray-700" />
                 </Link>
               )}
@@ -422,9 +686,16 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         <div className="bg-zinc-800 text-white rounded-md px-2">
           {sites?.length} sites in total
         </div>
-        <div className="">
-          Latest WP <span className="bg-emerald-100 px-1 py-[2px] leading-[1]">{latestWp}</span> (
-          <Link href="https://api.wordpress.org/core/version-check/1.7/" target="_blank">
+        <div>
+          Latest WP{' '}
+          <span className="bg-emerald-100 px-1 py-[2px] leading-[1]">
+            {latestWp}
+          </span>{' '}
+          (
+          <Link
+            href="https://api.wordpress.org/core/version-check/1.7/"
+            target="_blank"
+          >
             source
           </Link>
           )
@@ -432,14 +703,20 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         <Button
           variant="link"
           size="sm"
-          className={`cursor-pointer pr-0 underline inline-flex gap-1 items-center relative ${!loading ? 'pl-0' : 'pl-5'}`}
+          className={`cursor-pointer pr-0 underline inline-flex gap-1 items-center relative ${
+            !loading ? 'pl-0' : 'pl-5'
+          }`}
           onClick={revalidate}
         >
-          {loading && <LoaderCircle className="w-4 h-4 animate-spin absolute left-0 top-1/2 -translate-y-1/2" />}
+          {loading && (
+            <LoaderCircle className="w-4 h-4 animate-spin absolute left-0 top-1/2 -translate-y-1/2" />
+          )}
           {pullText}
         </Button>
         {buildTime && (
-          <p className="text-zinc-500">Last update: {buildTime}</p>
+          <p className="text-zinc-500">
+            Last update: {buildTime}
+          </p>
         )}
         <Button
           variant="link"
@@ -462,6 +739,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
           </Button>
         </div>
       </div>
+
       <div className="pill-container bg-white pt-8 mb-8 flex gap-1 flex-wrap sticky z-10">
         {columns
           .filter((col) => col.key !== 'index')
@@ -477,32 +755,47 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
           ))}
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto pb-24">
+      {/* virtualiseeritud tabel – header tavaline, body padding-ridadega */}
+      <div
+        ref={scrollParentRef}
+        className="overflow-auto pb-24"
+        style={{ maxHeight: '70vh' }}
+      >
         <table className="min-w-full divide-y divide-zinc-300">
           <thead>
             <tr>
               {visibleColumns.map((col) => (
                 <Th
                   key={col.key}
-                  className={`px-3 py-2 select-none ${col.sortable && 'cursor-pointer'}`}
-                  onClick={() => col.sortable && toggleSort(col.key)}
+                  className={`px-3 py-2 select-none ${
+                    col.sortable && 'cursor-pointer'
+                  }`}
+                  onClick={() =>
+                    col.sortable && toggleSort(col.key)
+                  }
                 >
                   <div className="flex items-center">
                     {col.label}
-                    {col.sortable && sortConfig.key !== col.key && (
-                      <ArrowUpDown className="ml-1 w-4 h-4" />
-                    )}
-                    {col.sortable && sortConfig.key === col.key && (
-                      <span className="ml-1">
-                        {sortConfig.direction === 'asc' ? (
-                          <ChevronDown className="w-4 h-4" />
-                        ) : (
-                          <ChevronUp className="w-4 h-4" />
-                        )}
+                    {col.sortable &&
+                      sortConfig.key !== col.key && (
+                        <ArrowUpDown className="ml-1 w-4 h-4" />
+                      )}
+                    {col.sortable &&
+                      sortConfig.key === col.key && (
+                        <span className="ml-1">
+                          {sortConfig.direction ===
+                          'asc' ? (
+                            <ChevronDown className="w-4 h-4" />
+                          ) : (
+                            <ChevronUp className="w-4 h-4" />
+                          )}
+                        </span>
+                      )}
+                    {!col.auto && (
+                      <span className="text-[10px] ml-1">
+                        M
                       </span>
                     )}
-                    {!col.auto && <span className="text-[10px] ml-1">M</span>}
                   </div>
 
                   {col.key === 'wpVersion' && (
@@ -511,7 +804,10 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                         {wpVersionLatestPercentage}%
                       </span>
                       <span className="bg-rose-100 p-1 rounded inline-block leading-3">
-                        {(100 - wpVersionLatestPercentage).toFixed(1)}%
+                        {(
+                          100 -
+                          wpVersionLatestPercentage
+                        ).toFixed(1)}
                       </span>
                     </div>
                   )}
@@ -519,12 +815,44 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
               ))}
             </tr>
           </thead>
+
           <tbody>
-            {filteredSites.map((site, index) => (
-              <tr key={site.id}>
-                {visibleColumns.map((col) => renderCell(col.key, site, index))}
+            {/* top padding row */}
+            {paddingTop > 0 && (
+              <tr>
+                <td
+                  colSpan={visibleColumns.length}
+                  style={{ height: paddingTop }}
+                />
               </tr>
-            ))}
+            )}
+
+            {/* ainult virtuaalsed read */}
+            {virtualRows.map((virtualRow) => {
+              const site =
+                filteredSites[virtualRow.index]
+              const index = virtualRow.index
+
+              if (!site) return null
+
+              return (
+                <tr key={site.id}>
+                  {visibleColumns.map((col) =>
+                    renderCell(col.key, site, index),
+                  )}
+                </tr>
+              )
+            })}
+
+            {/* bottom padding row */}
+            {paddingBottom > 0 && (
+              <tr>
+                <td
+                  colSpan={visibleColumns.length}
+                  style={{ height: paddingBottom }}
+                />
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
