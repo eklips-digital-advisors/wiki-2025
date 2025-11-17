@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   ArrowUpDown,
   ChevronDown,
@@ -71,6 +71,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     columns.filter((col) => col.defaultVisible).map((col) => col.key),
   )
 
+  const selectedColumnSet = useMemo(() => new Set(selectedColumns), [selectedColumns])
+
   const toggleColumn = (key: string) => {
     setSelectedColumns((prev) =>
       prev.includes(key) ? prev.filter((col) => col !== key) : [...prev, key],
@@ -94,41 +96,49 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     }))
   }
   // Sort sites dynamically
-  const sortedSites = [...sites].sort((a, b) => {
-    if (!sortConfig.key) return 0
+  const sortedSites = useMemo(() => {
+    const result = [...sites]
+    if (!sortConfig.key) return result
 
-    const aValue = a[sortConfig.key as keyof SiteItem] as string
-    const bValue = b[sortConfig.key as keyof SiteItem] as string
+    return result.sort((a, b) => {
+      const aValue = a[sortConfig.key as keyof SiteItem] as string
+      const bValue = b[sortConfig.key as keyof SiteItem] as string
 
-    const isDateFormat = (value: string) => /^\d{2}\.\d{2}\.\d{4}$/.test(value);
+      const isDateFormat = (value: string) => /^\d{2}\.\d{2}\.\d{4}$/.test(value);
 
-    const isADate = isDateFormat(aValue);
-    const isBDate = isDateFormat(bValue);
+      const isADate = isDateFormat(aValue);
+      const isBDate = isDateFormat(bValue);
 
-    if (isADate && isBDate) {
-      const dateA = parseDateUTC(aValue);
-      const dateB = parseDateUTC(bValue);
+      if (isADate && isBDate) {
+        const dateA = parseDateUTC(aValue);
+        const dateB = parseDateUTC(bValue);
 
-      if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
-        return 0; // Handle as equal if dates are invalid
+        if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+          return 0; // Handle as equal if dates are invalid
+        }
+
+        return sortConfig.direction === 'asc'
+          ? dateA.getTime() - dateB.getTime()
+          : dateB.getTime() - dateA.getTime();
       }
 
-      return sortConfig.direction === 'asc'
-        ? dateA.getTime() - dateB.getTime()
-        : dateB.getTime() - dateA.getTime();
-    }
+      if (sortConfig.key === "dataProvider") {
+        const aScore = aValue ? Object.values(aValue).filter(Boolean).length : 0;
+        const bScore = bValue ? Object.values(bValue).filter(Boolean).length : 0;
 
-    if (sortConfig.key === "dataProvider") {
-      const aScore = aValue ? Object.values(aValue).filter(Boolean).length : 0;
-      const bScore = bValue ? Object.values(bValue).filter(Boolean).length : 0;
+        return sortConfig.direction === 'asc' ? aScore - bScore : bScore - aScore;
+      }
 
-      return sortConfig.direction === 'asc' ? aScore - bScore : bScore - aScore;
-    }
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
+      return 0
+    })
+  }, [sites, sortConfig])
 
-    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
-    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
-    return 0
-  })
+  const filteredSites = useMemo(
+    () => sortedSites.filter(site => site.title.toLowerCase().includes(searchValue)),
+    [sortedSites, searchValue],
+  )
 
   return (
     <div>
@@ -182,7 +192,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
           .map((col) => (
             <Pill
               key={col.key}
-              active={selectedColumns.includes(col.key)}
+              active={selectedColumnSet.has(col.key)}
               onClick={() => toggleColumn(col.key)}
               type={col.type}
             >
@@ -198,7 +208,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
             <tr>
               {columns.map(
                 (col) =>
-                  selectedColumns.includes(col.key) && (
+                  selectedColumnSet.has(col.key) && (
                     <Th
                       key={col.key}
                       className={`px-3 py-2 select-none ${col.sortable && 'cursor-pointer'}`}
@@ -237,19 +247,17 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
             </tr>
           </thead>
           <tbody>
-            {sortedSites
-              .filter(site => site.title.toLowerCase().includes(searchValue))
-              .map((site, index) => (
+            {filteredSites.map((site, index) => (
               <tr key={site.id}>
-                {selectedColumns.includes('index') && (
+                {selectedColumnSet.has('index') && (
                   <td className="text-sm text-zinc-400">{index + 1}</td>
                 )}
-                {selectedColumns.includes('title') && (
+                {selectedColumnSet.has('title') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm font-medium text-zinc-900">
                     {site.title}
                   </td>
                 )}
-                {selectedColumns.includes('production') && (
+                {selectedColumnSet.has('production') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.production && (
                       <Link target="_blank" href={site?.production}>
@@ -258,7 +266,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     )}
                   </td>
                 )}
-                {selectedColumns.includes('staging') && (
+                {selectedColumnSet.has('staging') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.staging && site?.stagingLink && (
                       <div className="flex gap-2 items-center">
@@ -280,37 +288,37 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     )}
                   </td>
                 )}
-                {selectedColumns.includes('createdAt') && (
+                {selectedColumnSet.has('createdAt') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.createdAt && site?.createdAt}
                   </td>
                 )}
-                {selectedColumns.includes('lastCommitAt') && (
+                {selectedColumnSet.has('lastCommitAt') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.lastCommitAt && site?.lastCommitAt}
                   </td>
                 )}
-                {selectedColumns.includes('productionDate') && (
+                {selectedColumnSet.has('productionDate') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.productionDate && site?.productionDate}
                   </td>
                 )}
-                {selectedColumns.includes('siteService') && (
+                {selectedColumnSet.has('siteService') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.siteService}
                   </td>
                 )}
-                {selectedColumns.includes('hosting') && (
+                {selectedColumnSet.has('hosting') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.hosting}
                   </td>
                 )}
-                {selectedColumns.includes('server') && (
+                {selectedColumnSet.has('server') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.server}
                   </td>
                 )}
-                {selectedColumns.includes('wpVersion') && (
+                {selectedColumnSet.has('wpVersion') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.wpVersion && (
                       <span
@@ -321,7 +329,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     )}
                   </td>
                 )}
-                {selectedColumns.includes('cloudflare') && (
+                {selectedColumnSet.has('cloudflare') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site.cloudflare === 'cloudflare' ? (
                       <span className="text-xs"><CloudFlare className="w-12" /> {site.cloudflarePlan}</span>
@@ -330,20 +338,20 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     )}
                   </td>
                 )}
-                {selectedColumns.includes('ssl') && (
+                {selectedColumnSet.has('ssl') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">{site?.ssl}</td>
                 )}
-                {selectedColumns.includes('ipRestriction') && (
+                {selectedColumnSet.has('ipRestriction') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     <CheckIcon condition={site?.ipRestriction} />
                   </td>
                 )}
-                {selectedColumns.includes('csp') && (
+                {selectedColumnSet.has('csp') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.csp && <CspTable cspData={site?.csp} />}
                   </td>
                 )}
-                {selectedColumns.includes('phpVersion') && (
+                {selectedColumnSet.has('phpVersion') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     <span
                       className={`${getPhpBackground(phpApiData, site?.phpVersion)} px-1 py-[0.5] text-xs inline-block`}
@@ -352,27 +360,27 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     </span>
                   </td>
                 )}
-                {selectedColumns.includes('framework') && (
+                {selectedColumnSet.has('framework') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase`}>
                     {getLabel(site?.framework, frameworkOptions)}
                   </td>
                 )}
-                {selectedColumns.includes('twoFa') && (
+                {selectedColumnSet.has('twoFa') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     <CheckIcon condition={site?.twoFa} />
                   </td>
                 )}
-                {selectedColumns.includes('hiddenLogin') && (
+                {selectedColumnSet.has('hiddenLogin') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     <CheckIcon condition={site?.hiddenLogin} />
                   </td>
                 )}
-                {selectedColumns.includes('hasSolr') && (
+                {selectedColumnSet.has('hasSolr') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     <CheckIcon condition={site?.hasSolr} />
                   </td>
                 )}
-                {selectedColumns.includes('pressReleases') && (
+                {selectedColumnSet.has('pressReleases') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     <span className="flex gap-1 flex-wrap">
                       {(Array.isArray(site?.pressReleases) && site.pressReleases.includes('cision')) ? (
@@ -395,7 +403,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     </span>
                   </td>
                 )}
-                {selectedColumns.includes('dataProvider') && (
+                {selectedColumnSet.has('dataProvider') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     <span className="flex gap-1 flex-wrap">
                       {site?.dataProvider.cisionBlocks && (
@@ -409,28 +417,28 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     </span>
                   </td>
                 )}
-                {selectedColumns.includes('hasGoogleAnalytics') && (
+                {selectedColumnSet.has('hasGoogleAnalytics') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     {site?.hasGoogleAnalytics}
                   </td>
                 )}
-                {selectedColumns.includes('cookieProvider') && (
+                {selectedColumnSet.has('cookieProvider') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     {site?.cookieProvider}
                   </td>
                 )}
-                {selectedColumns.includes('fonts') && (
+                {selectedColumnSet.has('fonts') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
                     {site?.fonts && site?.fonts.length > 0 && <FontsTable fonts={site?.fonts} />}
                   </td>
                 )}
-                {selectedColumns.includes('wcagLevel') && (
+                {selectedColumnSet.has('wcagLevel') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
                     <strong className="block leading-4">{getLabel(site?.wcagLevel, wcagOptions)}</strong>
                     <span className="leading-4">{site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}</span>
                   </td>
                 )}
-                {selectedColumns.includes('bsScan') && (
+                {selectedColumnSet.has('bsScan') && (
                   <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
                     {site?.bsScan && (
                       <span
@@ -441,7 +449,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     )}
                   </td>
                 )}
-                {selectedColumns.includes('lastResponsetime') && (
+                {selectedColumnSet.has('lastResponsetime') && (
                   <td
                     className={`whitespace-nowrap flex items-center gap-4 px-3 py-3 text-sm ${site?.lastResponsetime && site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'}`}
                   >
@@ -458,7 +466,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
                     )}
                   </td>
                 )}
-                {selectedColumns.includes('cloudflarePercentage') && (
+                {selectedColumnSet.has('cloudflarePercentage') && (
                   <td className={`whitespace-nowrap px-3 py-3 text-sm`}>
                     <span className="flex gap-2 items-center">
                       <span
