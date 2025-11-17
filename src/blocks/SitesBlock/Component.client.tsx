@@ -35,6 +35,12 @@ import { getLabel } from '@/utilities/getLabel'
 import { frameworkOptions, wcagOptions } from '@/collections/Sites/selectOptions'
 import FontsTable from '@/blocks/SitesBlock/FontsTable'
 
+const MemoCspTable = React.memo(CspTable)
+const MemoFontsTable = React.memo(FontsTable)
+const MemoChart = React.memo(Chart)
+const MemoChartPerformance = React.memo(ChartPerformance)
+const MemoPathTable = React.memo(PathTable)
+
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -256,7 +262,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
       case 'csp':
         return (
           <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-            {site?.csp && <CspTable cspData={site?.csp} />}
+            {site?.csp && <MemoCspTable cspData={site?.csp} />}
           </td>
         )
       case 'phpVersion':
@@ -335,7 +341,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
       case 'fonts':
         return (
           <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-            {site?.fonts && site?.fonts.length > 0 && <FontsTable fonts={site?.fonts} />}
+            {site?.fonts && site?.fonts.length > 0 && <MemoFontsTable fonts={site?.fonts} />}
           </td>
         )
       case 'wcagLevel':
@@ -390,9 +396,9 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
               </span>
               {site.singleClodflareAnalyticsMultipleDays && site.cloudflarePlan === 'Enterprise Website' ? (
                 <>
-                  <Chart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
-                  <ChartPerformance siteChartData={site.singleClodflareAnalyticsMultipleDays} />
-                  <PathTable siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                  <MemoChart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                  <MemoChartPerformance siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                  <MemoPathTable siteChartData={site.singleClodflareAnalyticsMultipleDays} />
                 </>
               ) : (
                 <span className="text-zinc-500 sr-only">No data</span>
