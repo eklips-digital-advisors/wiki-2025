@@ -17,7 +17,7 @@ import {
   FileDown,
   LoaderCircle,
 } from 'lucide-react'
-import { useVirtualizer } from '@tanstack/react-virtual'
+import { useWindowVirtualizer } from '@tanstack/react-virtual'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -70,6 +70,7 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({
   const [searchValue, setSearchValue] = useState('')
   const { latestWp, wpVersionLatestPercentage, phpApiData, buildTime } =
     extraInfo
+  const containerRef = useRef<HTMLDivElement | null>(null)
 
   const revalidate = async () => {
     setLoading(true)
@@ -209,9 +210,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({
   // hinnanguline rea kõrgus – timmi vastavalt SCSS-ile
   const ESTIMATED_ROW_HEIGHT = 60
 
-  const rowVirtualizer = useVirtualizer({
+  const rowVirtualizer = useWindowVirtualizer({
     count: filteredSites.length,
-    getScrollElement: () => scrollParentRef.current,
     estimateSize: () => ESTIMATED_ROW_HEIGHT,
     overscan: 10,
   })
@@ -757,9 +757,8 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({
 
       {/* virtualiseeritud tabel – header tavaline, body padding-ridadega */}
       <div
-        ref={scrollParentRef}
-        className="overflow-auto pb-24"
-        style={{ maxHeight: '70vh' }}
+        ref={containerRef}
+        className="pb-24" // NO overflow-auto, NO maxHeight
       >
         <table className="min-w-full divide-y divide-zinc-300">
           <thead>
