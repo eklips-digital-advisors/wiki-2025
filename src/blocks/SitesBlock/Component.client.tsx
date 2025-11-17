@@ -72,6 +72,10 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
   )
 
   const selectedColumnSet = useMemo(() => new Set(selectedColumns), [selectedColumns])
+  const visibleColumns = useMemo(
+    () => columns.filter((col) => selectedColumnSet.has(col.key)),
+    [selectedColumnSet],
+  )
 
   const toggleColumn = (key: string) => {
     setSelectedColumns((prev) =>
@@ -140,6 +144,272 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
     [sortedSites, searchValue],
   )
 
+  const renderCell = (colKey: string, site: SiteItem, index: number): React.ReactNode => {
+    switch (colKey) {
+      case 'index':
+        return (
+          <td key={colKey} className="text-sm text-zinc-400">
+            {index + 1}
+          </td>
+        )
+      case 'title':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm font-medium text-zinc-900">
+            {site.title}
+          </td>
+        )
+      case 'production':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.production && (
+              <Link target="_blank" href={site?.production}>
+                <ExternalLink className="w-4" />
+              </Link>
+            )}
+          </td>
+        )
+      case 'staging':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.staging && site?.stagingLink && (
+              <div className="flex gap-2 items-center">
+                <Link title="Stage URL" target="_blank" href={site?.staging}>
+                  <ExternalLink className="w-4" />
+                </Link>
+                <Link title="Repository link" target="_blank" href={site?.stagingLink}>
+                  <Database className="w-4" />
+                </Link>
+              </div>
+            )}
+          </td>
+        )
+      case 'createdAt':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.createdAt && site?.createdAt}
+          </td>
+        )
+      case 'lastCommitAt':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.lastCommitAt && site?.lastCommitAt}
+          </td>
+        )
+      case 'productionDate':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.productionDate && site?.productionDate}
+          </td>
+        )
+      case 'siteService':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.siteService}
+          </td>
+        )
+      case 'hosting':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.hosting}
+          </td>
+        )
+      case 'server':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.server}
+          </td>
+        )
+      case 'wpVersion':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.wpVersion && (
+              <span className={`${getWpVersionBackground(site?.wpVersion, latestWp)} px-1 py-[0.5] text-xs inline-block`}>
+                {site?.wpVersion}
+              </span>
+            )}
+          </td>
+        )
+      case 'cloudflare':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.cloudflare === 'cloudflare' ? (
+              <span className="text-xs">
+                <CloudFlare className="w-12" /> {site?.cloudflarePlan}
+              </span>
+            ) : (
+              site?.cloudflare
+            )}
+          </td>
+        )
+      case 'ssl':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.ssl}
+          </td>
+        )
+      case 'ipRestriction':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            <CheckIcon condition={site?.ipRestriction} />
+          </td>
+        )
+      case 'csp':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.csp && <CspTable cspData={site?.csp} />}
+          </td>
+        )
+      case 'phpVersion':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            <span className={`${getPhpBackground(phpApiData, site?.phpVersion)} px-1 py-[0.5] text-xs inline-block`}>
+              {site?.phpVersion}
+            </span>
+          </td>
+        )
+      case 'framework':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
+            {getLabel(site?.framework, frameworkOptions)}
+          </td>
+        )
+      case 'twoFa':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            <CheckIcon condition={site?.twoFa} />
+          </td>
+        )
+      case 'hiddenLogin':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            <CheckIcon condition={site?.hiddenLogin} />
+          </td>
+        )
+      case 'hasSolr':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            <CheckIcon condition={site?.hasSolr} />
+          </td>
+        )
+      case 'pressReleases':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            <span className="flex gap-1 flex-wrap">
+              {Array.isArray(site?.pressReleases) && site.pressReleases.includes('cision') ? (
+                <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">Cision</span>
+              ) : null}
+              {Array.isArray(site?.pressReleases) && site.pressReleases.includes('mfn') ? (
+                <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">MFN</span>
+              ) : null}
+              {Array.isArray(site?.pressReleases) && site.pressReleases.includes('bequoted') ? (
+                <span className="px-1 py-[0.5] text-xs inline-block bg-indigo-100">BeQuoted</span>
+              ) : null}
+            </span>
+          </td>
+        )
+      case 'dataProvider':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            <span className="flex gap-1 flex-wrap">
+              {site?.dataProvider?.cisionBlocks && (
+                <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">CisionBlocks</span>
+              )}
+              {site?.dataProvider?.dataBlocks && (
+                <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">DataBlocks</span>
+              )}
+            </span>
+          </td>
+        )
+      case 'hasGoogleAnalytics':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.hasGoogleAnalytics}
+          </td>
+        )
+      case 'cookieProvider':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.cookieProvider}
+          </td>
+        )
+      case 'fonts':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.fonts && site?.fonts.length > 0 && <FontsTable fonts={site?.fonts} />}
+          </td>
+        )
+      case 'wcagLevel':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
+            <strong className="block leading-4">{getLabel(site?.wcagLevel, wcagOptions)}</strong>
+            <span className="leading-4">
+              {site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}
+            </span>
+          </td>
+        )
+      case 'bsScan':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
+            {site?.bsScan && (
+              <span className={`${getBsScanBackground(site?.bsScan)} px-1 py-[0.5] text-xs inline-block`}>
+                {site?.bsScan}
+              </span>
+            )}
+          </td>
+        )
+      case 'lastResponsetime':
+        return (
+          <td
+            key={colKey}
+            className={`whitespace-nowrap flex items-center gap-4 px-3 py-3 text-sm ${
+              site?.lastResponsetime && site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'
+            }`}
+          >
+            {site?.lastResponsetime && (
+              <span className="flex flex-col items-center">
+                <Clock className="w-4 h-4" />
+                {site?.lastResponsetime}
+              </span>
+            )}
+            {site?.pingdomLink && (
+              <Link target="_blank" href={site?.pingdomLink}>
+                <ExternalLinkIcon className="w-5 h-5" />
+              </Link>
+            )}
+          </td>
+        )
+      case 'cloudflarePercentage':
+        return (
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm">
+            <span className="flex gap-2 items-center">
+              <span className={`${site?.cloudflarePercentage && site?.cloudflarePercentage > 25 ? 'text-rose-400' : 'text-zinc-500'}`}>
+                {site?.cloudflareBandwidth &&
+                  site?.cloudflareRequests &&
+                  site?.cloudflarePercentage &&
+                  `${site?.cloudflareBandwidth} (${site?.cloudflarePercentage}%) / ${site?.cloudflareRequests}`}
+              </span>
+              {site.singleClodflareAnalyticsMultipleDays && site.cloudflarePlan === 'Enterprise Website' ? (
+                <>
+                  <Chart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                  <ChartPerformance siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                  <PathTable siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                </>
+              ) : (
+                <span className="text-zinc-500 sr-only">No data</span>
+              )}
+              {site?.singleClodflareUrl && (
+                <Link target="_blank" href={site?.singleClodflareUrl}>
+                  <ExternalLink className="w-5 h-5 text-gray-500 hover:text-gray-700" />
+                </Link>
+              )}
+            </span>
+          </td>
+        )
+      default:
+        return null
+    }
+  }
+
   return (
     <div>
       <div className="text-sm flex flex-wrap items-center gap-4">
@@ -206,296 +476,47 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({ sites, extraInfo }
         <table className="min-w-full divide-y divide-zinc-300">
           <thead>
             <tr>
-              {columns.map(
-                (col) =>
-                  selectedColumnSet.has(col.key) && (
-                    <Th
-                      key={col.key}
-                      className={`px-3 py-2 select-none ${col.sortable && 'cursor-pointer'}`}
-                      onClick={() => col.sortable && toggleSort(col.key)}
-                    >
-                      <div className="flex items-center">
-                        {col.label}
-                        {col.sortable && sortConfig.key !== col.key && (
-                          <ArrowUpDown className="ml-1 w-4 h-4" />
+              {visibleColumns.map((col) => (
+                <Th
+                  key={col.key}
+                  className={`px-3 py-2 select-none ${col.sortable && 'cursor-pointer'}`}
+                  onClick={() => col.sortable && toggleSort(col.key)}
+                >
+                  <div className="flex items-center">
+                    {col.label}
+                    {col.sortable && sortConfig.key !== col.key && (
+                      <ArrowUpDown className="ml-1 w-4 h-4" />
+                    )}
+                    {col.sortable && sortConfig.key === col.key && (
+                      <span className="ml-1">
+                        {sortConfig.direction === 'asc' ? (
+                          <ChevronDown className="w-4 h-4" />
+                        ) : (
+                          <ChevronUp className="w-4 h-4" />
                         )}
-                        {col.sortable && sortConfig.key === col.key && (
-                          <span className="ml-1">
-                            {sortConfig.direction === 'asc' ? (
-                              <ChevronDown className="w-4 h-4" />
-                            ) : (
-                              <ChevronUp className="w-4 h-4" />
-                            )}
-                          </span>
-                        )}
-                        {!col.auto && <span className="text-[10px] ml-1">M</span>}
-                      </div>
+                      </span>
+                    )}
+                    {!col.auto && <span className="text-[10px] ml-1">M</span>}
+                  </div>
 
-                      {col.key === 'wpVersion' && (
-                        <div className="inline-flex flex-wrap gap-1 text-xs">
-                          <span className="bg-emerald-100 p-1 rounded inline-block leading-3">
-                            {wpVersionLatestPercentage}%
-                          </span>
-                          <span className="bg-rose-100 p-1 rounded inline-block leading-3">
-                            {(100 - wpVersionLatestPercentage).toFixed(1)}%
-                          </span>
-                        </div>
-                      )}
-                    </Th>
-                  ),
-              )}
+                  {col.key === 'wpVersion' && (
+                    <div className="inline-flex flex-wrap gap-1 text-xs">
+                      <span className="bg-emerald-100 p-1 rounded inline-block leading-3">
+                        {wpVersionLatestPercentage}%
+                      </span>
+                      <span className="bg-rose-100 p-1 rounded inline-block leading-3">
+                        {(100 - wpVersionLatestPercentage).toFixed(1)}%
+                      </span>
+                    </div>
+                  )}
+                </Th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {filteredSites.map((site, index) => (
               <tr key={site.id}>
-                {selectedColumnSet.has('index') && (
-                  <td className="text-sm text-zinc-400">{index + 1}</td>
-                )}
-                {selectedColumnSet.has('title') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm font-medium text-zinc-900">
-                    {site.title}
-                  </td>
-                )}
-                {selectedColumnSet.has('production') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.production && (
-                      <Link target="_blank" href={site?.production}>
-                        <ExternalLink className="w-4" />
-                      </Link>
-                    )}
-                  </td>
-                )}
-                {selectedColumnSet.has('staging') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.staging && site?.stagingLink && (
-                      <div className="flex gap-2 items-center">
-                        <Link
-                          title="Stage URL"
-                          target="_blank"
-                          href={site?.staging}
-                        >
-                          <ExternalLink className="w-4" />
-                        </Link>
-                        <Link
-                          title="Repository link"
-                          target="_blank"
-                          href={site?.stagingLink}
-                        >
-                          <Database className="w-4" />
-                        </Link>
-                      </div>
-                    )}
-                  </td>
-                )}
-                {selectedColumnSet.has('createdAt') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.createdAt && site?.createdAt}
-                  </td>
-                )}
-                {selectedColumnSet.has('lastCommitAt') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.lastCommitAt && site?.lastCommitAt}
-                  </td>
-                )}
-                {selectedColumnSet.has('productionDate') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.productionDate && site?.productionDate}
-                  </td>
-                )}
-                {selectedColumnSet.has('siteService') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.siteService}
-                  </td>
-                )}
-                {selectedColumnSet.has('hosting') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.hosting}
-                  </td>
-                )}
-                {selectedColumnSet.has('server') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.server}
-                  </td>
-                )}
-                {selectedColumnSet.has('wpVersion') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.wpVersion && (
-                      <span
-                        className={`${getWpVersionBackground(site?.wpVersion, latestWp)} px-1 py-[0.5] text-xs inline-block`}
-                      >
-                        {site?.wpVersion}
-                      </span>
-                    )}
-                  </td>
-                )}
-                {selectedColumnSet.has('cloudflare') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site.cloudflare === 'cloudflare' ? (
-                      <span className="text-xs"><CloudFlare className="w-12" /> {site.cloudflarePlan}</span>
-                    ) : (
-                      site?.cloudflare
-                    )}
-                  </td>
-                )}
-                {selectedColumnSet.has('ssl') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">{site?.ssl}</td>
-                )}
-                {selectedColumnSet.has('ipRestriction') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    <CheckIcon condition={site?.ipRestriction} />
-                  </td>
-                )}
-                {selectedColumnSet.has('csp') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.csp && <CspTable cspData={site?.csp} />}
-                  </td>
-                )}
-                {selectedColumnSet.has('phpVersion') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    <span
-                      className={`${getPhpBackground(phpApiData, site?.phpVersion)} px-1 py-[0.5] text-xs inline-block`}
-                    >
-                      {site?.phpVersion}
-                    </span>
-                  </td>
-                )}
-                {selectedColumnSet.has('framework') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase`}>
-                    {getLabel(site?.framework, frameworkOptions)}
-                  </td>
-                )}
-                {selectedColumnSet.has('twoFa') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    <CheckIcon condition={site?.twoFa} />
-                  </td>
-                )}
-                {selectedColumnSet.has('hiddenLogin') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    <CheckIcon condition={site?.hiddenLogin} />
-                  </td>
-                )}
-                {selectedColumnSet.has('hasSolr') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    <CheckIcon condition={site?.hasSolr} />
-                  </td>
-                )}
-                {selectedColumnSet.has('pressReleases') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    <span className="flex gap-1 flex-wrap">
-                      {(Array.isArray(site?.pressReleases) && site.pressReleases.includes('cision')) ? (
-                        <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">
-                          Cision
-                        </span>
-                      ) : null}
-
-                      {(Array.isArray(site?.pressReleases) && site.pressReleases.includes('mfn')) ? (
-                        <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">
-                          MFN
-                        </span>
-                      ) : null}
-
-                      {(Array.isArray(site?.pressReleases) && site.pressReleases.includes('bequoted')) ? (
-                        <span className="px-1 py-[0.5] text-xs inline-block bg-indigo-100">
-                          BeQuoted
-                        </span>
-                      ) : null}
-                    </span>
-                  </td>
-                )}
-                {selectedColumnSet.has('dataProvider') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    <span className="flex gap-1 flex-wrap">
-                      {site?.dataProvider.cisionBlocks && (
-                        <span className="px-1 py-[0.5] text-xs inline-block bg-orange-100">
-                          CisionBlocks
-                        </span>
-                      )}
-                      {site?.dataProvider.dataBlocks && (
-                        <span className="px-1 py-[0.5] text-xs inline-block bg-green-100">DataBlocks</span>
-                      )}
-                    </span>
-                  </td>
-                )}
-                {selectedColumnSet.has('hasGoogleAnalytics') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.hasGoogleAnalytics}
-                  </td>
-                )}
-                {selectedColumnSet.has('cookieProvider') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.cookieProvider}
-                  </td>
-                )}
-                {selectedColumnSet.has('fonts') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm text-zinc-500`}>
-                    {site?.fonts && site?.fonts.length > 0 && <FontsTable fonts={site?.fonts} />}
-                  </td>
-                )}
-                {selectedColumnSet.has('wcagLevel') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500 uppercase">
-                    <strong className="block leading-4">{getLabel(site?.wcagLevel, wcagOptions)}</strong>
-                    <span className="leading-4">{site?.wcagUpdated && new Date(site?.wcagUpdated).toISOString().split('T')[0]}{' '}</span>
-                  </td>
-                )}
-                {selectedColumnSet.has('bsScan') && (
-                  <td className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500">
-                    {site?.bsScan && (
-                      <span
-                        className={`${getBsScanBackground(site?.bsScan)} px-1 py-[0.5] text-xs inline-block`}
-                      >
-                        {site?.bsScan}
-                      </span>
-                    )}
-                  </td>
-                )}
-                {selectedColumnSet.has('lastResponsetime') && (
-                  <td
-                    className={`whitespace-nowrap flex items-center gap-4 px-3 py-3 text-sm ${site?.lastResponsetime && site?.lastResponsetime > 2000 ? 'text-rose-500' : 'text-zinc-500'}`}
-                  >
-                    {site?.lastResponsetime && (
-                      <span className="flex flex-col items-center">
-                        <Clock className="w-4 h-4" />
-                        {site?.lastResponsetime}
-                      </span>
-                    )}
-                    {site?.pingdomLink && (
-                      <Link target="_blank" href={site?.pingdomLink}>
-                        <ExternalLinkIcon className="w-5 h-5" />
-                      </Link>
-                    )}
-                  </td>
-                )}
-                {selectedColumnSet.has('cloudflarePercentage') && (
-                  <td className={`whitespace-nowrap px-3 py-3 text-sm`}>
-                    <span className="flex gap-2 items-center">
-                      <span
-                        className={`${site?.cloudflarePercentage > 25 ? 'text-rose-400' : 'text-zinc-500'}`}
-                      >
-                        {site?.cloudflareBandwidth &&
-                          site?.cloudflareRequests &&
-                          site?.cloudflarePercentage &&
-                          `${site?.cloudflareBandwidth} (${site?.cloudflarePercentage}%) / ${site?.cloudflareRequests}`}
-                      </span>
-
-                      {site.singleClodflareAnalyticsMultipleDays && site.cloudflarePlan === 'Enterprise Website' ? (
-                        <>
-                          <Chart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
-                          <ChartPerformance siteChartData={site.singleClodflareAnalyticsMultipleDays} />
-                          <PathTable siteChartData={site.singleClodflareAnalyticsMultipleDays} />
-                        </>
-                      ) : (
-                        <span className="text-zinc-500 sr-only">No data</span>
-                      )}
-                      {site?.singleClodflareUrl && (
-                        <Link target="_blank" href={site?.singleClodflareUrl}>
-                          <ExternalLink className="w-5 h-5 text-gray-500 hover:text-gray-700" />
-                        </Link>
-                      )}
-                    </span>
-                  </td>
-                )}
-                {/*Display graphs here*/}
+                {visibleColumns.map((col) => renderCell(col.key, site, index))}
               </tr>
             ))}
           </tbody>
