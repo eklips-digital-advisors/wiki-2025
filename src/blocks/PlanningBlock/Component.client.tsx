@@ -187,6 +187,14 @@ export const PlanningComponentClient: React.FC<{
               timelineRow.style.setProperty('--overload-success', '#c6d2ff');
             } else if (position?.includes('designer') && timelineRow) {
               timelineRow.style.setProperty('--overload-success', '#fee685');
+            } else if (position?.includes('backend') && timelineRow) {
+              timelineRow.style.setProperty('--overload-success', 'oklch(88.2% 0.059 254.128)');
+            } else if (position?.includes('qa') && timelineRow) {
+              timelineRow.style.setProperty('--overload-success', 'oklch(91.7% 0.08 205.041)');
+            } else if (position?.includes('im') && timelineRow) {
+              timelineRow.style.setProperty('--overload-success', 'oklch(93.8% 0.127 124.321)');
+            } else if (position?.includes('sm') && timelineRow) {
+              timelineRow.style.setProperty('--overload-success', 'oklch(88.5% 0.062 18.334)');
             }
           }
 
