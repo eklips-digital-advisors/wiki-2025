@@ -16,7 +16,7 @@ export const generateInvertedResources = (
 
       return {
         ...project,
-        launchDate: launchStatus ? new Date(launchStatus.start).getTime() : Infinity,
+        launchDate: launchStatus ? new Date(launchStatus?.end).getTime() : Infinity,
       }
     })
     .sort((a, b) => {
