@@ -20,6 +20,7 @@ export const generateResources = (users: User[]) => {
           projectImage: project.image || '',
           projectType: project.type || '',
           comment: project.comment || '',
+          priority: project.priority || 'none',
           isProject: true,
           showInProjectView: project.showInProjectView,
         }))

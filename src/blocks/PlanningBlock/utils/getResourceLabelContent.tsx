@@ -1,12 +1,22 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import Tooltip from '@/components/Tooltip'
 import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
-import { PackagePlus, CircleX, Info } from 'lucide-react'
+import { PackagePlus, CircleX, Info, Flag } from 'lucide-react'
 import { getLabel } from '@/utilities/getLabel'
 import { positionOptions } from '@/collections/Users/positionOptions'
 import { handleRemoveProject } from '@/blocks/PlanningBlock/utils/regular/handleRemoveProject'
 import { handleRemoveProjectInverted } from '@/blocks/PlanningBlock/utils/inverted/handleRemoveProjectInverted'
+import { handleProjectPriority } from '@/blocks/PlanningBlock/utils/regular/handleProjectPriority'
+import { priorityOptions, ProjectPriority } from '@/collections/Projects/priorityOptions'
+
+const priorityColorMap: Record<ProjectPriority, string> = {
+  none: 'text-zinc-300',
+  low: 'text-emerald-500',
+  medium: 'text-amber-500',
+  high: 'text-rose-500',
+}
 
 type Props = {
   isInverted: boolean
@@ -38,6 +48,7 @@ export const getResourceLabelContent = ({
     const type = resource._resource?.extendedProps?.type
     const projectType = resource._resource?.extendedProps?.projectType
     const comment = resource._resource?.extendedProps?.comment
+    const priority = (resource?._resource?.extendedProps?.priority || 'none') as ProjectPriority
     const isProject = resource?._resource?.extendedProps?.isProject
     const showInProjectView = resource?._resource?.extendedProps?.showInProjectView
     const isArchived = !showInProjectView && isProject
@@ -135,6 +146,34 @@ export const getResourceLabelContent = ({
         </div>
         {resource.title && !isInverted && (
           <div className={`flex gap-2 items-center`}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="link" size="clear" className="cursor-pointer focus-visible:hidden">
+                  <Flag className={`w-[18px] h-[18px] ${priorityColorMap[priority]}`} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-white z-[60]">
+                {priorityOptions.map((option) => (
+                  <DropdownMenuItem
+                    key={option.value}
+                    className="hover:bg-zinc-100"
+                    onSelect={() =>
+                      handleProjectPriority({
+                        resource,
+                        priority: option.value,
+                        setUsersState,
+                        setProjectsState,
+                        router,
+                        setToast,
+                        loggedUser,
+                      })
+                    }
+                  >
+                    {option.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button
               className="p-0 cursor-pointer"
               variant="link"

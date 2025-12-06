@@ -34,6 +34,7 @@ export const generateInvertedResources = (
         isProject: true,
         type: project?.projectTeamwork ? '' : 'non-teamwork-project',
         comment: project.comment || '',
+        priority: project.priority || 'none',
         showInProjectView: project.showInProjectView,
       }
 

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '@/access/authenticated'
 import { anyone } from '@/access/anyone'
 import { revalidatePlanning } from '@/blocks/PlanningBlock/hooks/revalidatePlanning'
+import { priorityOptions } from '@/collections/Projects/priorityOptions'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -52,6 +53,12 @@ export const Projects: CollectionConfig = {
     {
       name: 'comment',
       type: 'text',
+    },
+    {
+      name: 'priority',
+      type: 'select',
+      defaultValue: 'none',
+      options: priorityOptions,
     },
     {
       name: 'image',

@@ -461,6 +461,7 @@ export interface Project {
    */
   title?: string | null;
   comment?: string | null;
+  priority?: ('none' | 'low' | 'medium' | 'high') | null;
   image?: string | null;
   showInProjectView?: boolean | null;
   type?: 'vacation' | null;
@@ -1274,6 +1275,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   projectTeamwork?: T;
   title?: T;
   comment?: T;
+  priority?: T;
   image?: T;
   showInProjectView?: T;
   type?: T;
