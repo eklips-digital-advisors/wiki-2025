@@ -1,4 +1,3 @@
-import Tooltip from '@/components/Tooltip'
 import {
   ArrowDownNarrowWide,
   ListCheck,
@@ -9,6 +8,7 @@ import {
 } from 'lucide-react'
 import React from 'react'
 import { User } from '@/payload-types'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface Props {
   isInverted: boolean
@@ -50,63 +50,78 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
       <div className="flex gap-3 items-center">
         {isInverted && (
           <>
-            <span
-              className="text-xs cursor-pointer flex items-center"
-              onClick={() => setInvertedShowAllProjects((prev) => !prev)}
-            >
-              <Tooltip content="Show archived projects" position="left">
-                <ListCheck className={`w-[20px] h-[20px] hover:stroke-emerald-400 transition-transform duration-200 ${invertedShowAllProjects ? 'stroke-emerald-500' : 'stroke-zinc-500'}`} />
-              </Tooltip>
-            </span>
-            <span
-              className="text-xs cursor-pointer flex items-center"
-              onClick={() => setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
-            >
-              <Tooltip content="Sort based on launch date" position="left">
-                <ArrowDownNarrowWide
-                  className={`w-[20px] h-[20px] hover:stroke-emerald-400 transition-transform duration-200 ${sortDirection === 'desc' ? 'rotate-180 stroke-emerald-500' : 'rotate-0 stroke-zinc-500'}`}
-                />
-              </Tooltip>
-            </span>
-            <span
-              className="text-xs cursor-pointer flex items-center mr-2"
-              onClick={() => {
-                if (!loggedUser) {
-                  setToast({ message: 'Please log in', type: 'error' })
-                  return
-                }
-                toggleModal(invertedProjectSlug)
-              }}
-            >
-              <Tooltip content="Add project" position="left">
-                <PackagePlus className="w-[20px] h-[20px] stroke-zinc-500 hover:stroke-emerald-400" />
-              </Tooltip>
-            </span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  className="text-xs cursor-pointer flex items-center"
+                  onClick={() => setInvertedShowAllProjects((prev) => !prev)}
+                >
+                  <ListCheck className={`w-[20px] h-[20px] hover:stroke-emerald-400 transition-transform duration-200 ${invertedShowAllProjects ? 'stroke-emerald-500' : 'stroke-zinc-500'}`} />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="left">Show archived projects</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  className="text-xs cursor-pointer flex items-center"
+                  onClick={() => setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
+                >
+                  <ArrowDownNarrowWide
+                    className={`w-[20px] h-[20px] hover:stroke-emerald-400 transition-transform duration-200 ${sortDirection === 'desc' ? 'rotate-180 stroke-emerald-500' : 'rotate-0 stroke-zinc-500'}`}
+                  />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="left">Sort based on launch date</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  className="text-xs cursor-pointer flex items-center mr-2"
+                  onClick={() => {
+                    if (!loggedUser) {
+                      setToast({ message: 'Please log in', type: 'error' })
+                      return
+                    }
+                    toggleModal(invertedProjectSlug)
+                  }}
+                >
+                  <PackagePlus className="w-[20px] h-[20px] stroke-zinc-500 hover:stroke-emerald-400" />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="left">Add project</TooltipContent>
+            </Tooltip>
           </>
         )}
         {!isInverted && (
-          <button
-            onClick={() => toggleModal(roleModalSlug)}
-            className="bg-none p-0 border-0 cursor-pointer flex items-center"
-          >
-            <Tooltip content="Filter users" position="left">
-              <UserCheck className="stroke-zinc-500 hover:stroke-emerald-400 w-[20px] h-[20px]" />
-            </Tooltip>
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => toggleModal(roleModalSlug)}
+                className="bg-none p-0 border-0 cursor-pointer flex items-center"
+              >
+                <UserCheck className="stroke-zinc-500 hover:stroke-emerald-400 w-[20px] h-[20px]" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="left">Filter users</TooltipContent>
+          </Tooltip>
         )}
-        <Tooltip content="Switch people/projects" position="left">
-          <button
-            onClick={() => setIsInverted((prev) => !prev)}
-            className="bg-none p-0 border-0 cursor-pointer"
-          >
-            {!isInverted ? (
-              <ToggleLeft className={`stroke-zinc-800 transition-transform w-[24px] h-[24px]`} />
-            ) : (
-              <ToggleRight
-                className={`stroke-emerald-500 transition-transform w-[24px] h-[24px]`}
-              />
-            )}
-          </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={() => setIsInverted((prev) => !prev)}
+              className="bg-none p-0 border-0 cursor-pointer"
+            >
+              {!isInverted ? (
+                <ToggleLeft className={`stroke-zinc-800 transition-transform w-[24px] h-[24px]`} />
+              ) : (
+                <ToggleRight
+                  className={`stroke-emerald-500 transition-transform w-[24px] h-[24px]`}
+                />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="left">Switch people/projects</TooltipContent>
         </Tooltip>
       </div>
     </div>

@@ -39,6 +39,7 @@ import { ResourceAreaHeaderContent } from '@/blocks/PlanningBlock/ResourceAreaHe
 import { Info } from 'lucide-react'
 import { RoleFilterModal } from '@/blocks/PlanningBlock/modals/RoleFilterModal'
 import { ProjectCommentModal } from '@/blocks/PlanningBlock/modals/ProjectCommentModal'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -218,6 +219,7 @@ export const PlanningComponentClient: React.FC<{
         }}
         eventContent={(arg) => {
           const { isSummary, bgColorSummary, heightPercentSummary } = arg.event.extendedProps
+          const comment = arg?.event?.extendedProps?.comment
 
           if (isSummary) {
             return (
@@ -238,11 +240,18 @@ export const PlanningComponentClient: React.FC<{
               <span className={`${!arg.event.getResources()?.[0]?._resource?.extendedProps?.isProject ? 'text-[12px]' : 'text-[14px]'} z-10 truncate`}>
                 {arg.event.title}
               </span>
-              {isInverted && arg?.event?.extendedProps?.comment &&
-                <div className="absolute right-[4px] top-[2px]">
-                  <Info className="w-3 h-3 stroke-zinc-800" />
-                </div>
-              }
+              {isInverted && comment && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="absolute right-[4px] top-[2px] cursor-pointer" aria-label={`Comment: ${comment}`}>
+                      <Info className="w-3 h-3 stroke-zinc-800" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    {comment}
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
           )
         }}
