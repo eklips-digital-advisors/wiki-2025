@@ -158,11 +158,16 @@ export const getResourceLabelContent = ({
         {resource.title && !isInverted && (
           <div className={`flex gap-2 items-center`}>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="link" size="clear" className="cursor-pointer focus-visible:hidden">
-                  <Flag className={`w-[18px] h-[18px] ${priorityColorMap[priority]}`} />
-                </Button>
-              </DropdownMenuTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="link" size="clear" className="cursor-pointer focus-visible:hidden">
+                      <Flag className={`w-[18px] h-[18px] ${priorityColorMap[priority]}`} />
+                    </Button>
+                  </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent side="left">Set priority</TooltipContent>
+              </Tooltip>
               <DropdownMenuContent align="end" className="bg-white z-[60]">
                 {priorityOptions.map((option) => (
                   <DropdownMenuItem
