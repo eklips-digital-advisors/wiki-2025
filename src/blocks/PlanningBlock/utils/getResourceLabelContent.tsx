@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import Tooltip from '@/components/Tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
 import { PackagePlus, CircleX, Info, Flag } from 'lucide-react'
 import { getLabel } from '@/utilities/getLabel'
@@ -74,57 +74,68 @@ export const getResourceLabelContent = ({
           </div>
           {resource?._resource?.extendedProps?.isProject && isInverted && (
             <div className={`flex gap-2 items-center`}>
-              <Button
-                className="p-0 cursor-pointer"
-                variant="link"
-                title={resource._resource?.extendedProps?.comment || 'Add comment'}
-                onClick={() => {
-                  if (!loggedUser) {
-                    setToast({ message: 'Please log in', type: 'error' })
-                    return
-                  }
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="p-0 cursor-pointer"
+                    variant="link"
+                    title={resource._resource?.extendedProps?.comment || 'Add comment'}
+                    onClick={() => {
+                      if (!loggedUser) {
+                        setToast({ message: 'Please log in', type: 'error' })
+                        return
+                      }
 
-                  setProjectComment(comment || '')
-                  setSelectedResource(resource)
-                  toggleModal('project-comment-modal')
-                }}
-              >
-                <Tooltip content={resource._resource?.extendedProps?.comment || 'Add comment'} position="left">
-                  <Info className={`w-[20px] h-[20px]  ${resource._resource?.extendedProps?.comment ? 'stroke-zinc-400 hover:stroke-zinc-300' : 'stroke-zinc-200 hover:stroke-zinc-100'}`} />
-                </Tooltip>
-              </Button>
-              <Button
-                className="p-0 cursor-pointer"
-                variant="link"
-                title="Remove project"
-                onClick={() =>
-                  handleRemoveProjectInverted(resource, setProjectsState, router, setToast, loggedUser)
-                }
-              >
-                <Tooltip content="Remove project" position="left">
-                  <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
-                </Tooltip>
-              </Button>
+                      setProjectComment(comment || '')
+                      setSelectedResource(resource)
+                      toggleModal('project-comment-modal')
+                    }}
+                  >
+                    <Info className={`w-[20px] h-[20px]  ${resource._resource?.extendedProps?.comment ? 'stroke-zinc-400 hover:stroke-zinc-300' : 'stroke-zinc-200 hover:stroke-zinc-100'}`} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="left">
+                  {resource._resource?.extendedProps?.comment || 'Add comment'}
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="p-0 cursor-pointer"
+                    variant="link"
+                    title="Remove project"
+                    onClick={() =>
+                      handleRemoveProjectInverted(resource, setProjectsState, router, setToast, loggedUser)
+                    }
+                  >
+                    <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="left">Remove project</TooltipContent>
+              </Tooltip>
             </div>
           )}
           {!isInverted && (
-            <div
-              title="Add project"
-              className="text-xs cursor-pointer flex items-center"
-              onClick={() => {
-                if (!loggedUser) {
-                  setToast({ message: 'Please log in', type: 'error' })
-                  return
-                }
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  title="Add project"
+                  className="text-xs cursor-pointer flex items-center"
+                  onClick={() => {
+                    if (!loggedUser) {
+                      setToast({ message: 'Please log in', type: 'error' })
+                      return
+                    }
 
-                setSelectedResource(resource)
-                toggleModal(modalSlug)
-              }}
-            >
-              <Tooltip content="Add project" position="left">
-                <PackagePlus className="w-[20px] h-[20px] stroke-zinc-500 hover:stroke-emerald-400" />
-              </Tooltip>
-            </div>
+                    setSelectedResource(resource)
+                    toggleModal(modalSlug)
+                  }}
+                >
+                  <PackagePlus className="w-[20px] h-[20px] stroke-zinc-500 hover:stroke-emerald-400" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="left">Add project</TooltipContent>
+            </Tooltip>
           )}
         </div>
       )
@@ -174,37 +185,45 @@ export const getResourceLabelContent = ({
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button
-              className="p-0 cursor-pointer"
-              variant="link"
-              title={resource._resource?.extendedProps?.comment || 'Add comment'}
-              onClick={() => {
-                if (!loggedUser) {
-                  setToast({ message: 'Please log in', type: 'error' })
-                  return
-                }
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="p-0 cursor-pointer"
+                  variant="link"
+                  title={resource._resource?.extendedProps?.comment || 'Add comment'}
+                  onClick={() => {
+                    if (!loggedUser) {
+                      setToast({ message: 'Please log in', type: 'error' })
+                      return
+                    }
 
-                setProjectComment(comment || '')
-                setSelectedResource(resource)
-                toggleModal('project-comment-modal')
-              }}
-            >
-              <Tooltip content={resource._resource?.extendedProps?.comment || 'Add comment'} position="left">
-                <Info className={`w-[20px] h-[20px]  ${resource._resource?.extendedProps?.comment ? 'stroke-zinc-400 hover:stroke-zinc-300' : 'stroke-zinc-200 hover:stroke-zinc-100'}`} />
-              </Tooltip>
-            </Button>
-            <Button
-              className="p-0 cursor-pointer"
-              variant="link"
-              title="Remove project"
-              onClick={() =>
-                handleRemoveProject(resource, setUsersState, router, setToast, loggedUser)
-              }
-            >
-              <Tooltip content="Remove project" position="left">
-                <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
-              </Tooltip>
-            </Button>
+                    setProjectComment(comment || '')
+                    setSelectedResource(resource)
+                    toggleModal('project-comment-modal')
+                  }}
+                >
+                  <Info className={`w-[20px] h-[20px]  ${resource._resource?.extendedProps?.comment ? 'stroke-zinc-400 hover:stroke-zinc-300' : 'stroke-zinc-200 hover:stroke-zinc-100'}`} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                {resource._resource?.extendedProps?.comment || 'Add comment'}
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="p-0 cursor-pointer"
+                  variant="link"
+                  title="Remove project"
+                  onClick={() =>
+                    handleRemoveProject(resource, setUsersState, router, setToast, loggedUser)
+                  }
+                >
+                  <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="left">Remove project</TooltipContent>
+            </Tooltip>
           </div>
         )}
       </div>
