@@ -4,6 +4,7 @@ import { isAdmin, isAdminLevel, isAdminOrEditorLevel } from '@/access/isAdmin'
 import { isAdminOrSelfOrEditor } from '@/access/isAdminOrSelf'
 import { revalidatePlanning } from '@/blocks/PlanningBlock/hooks/revalidatePlanning'
 import { positionOptions } from '@/collections/Users/positionOptions'
+import { priorityOptions } from '@/collections/Projects/priorityOptions'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -57,6 +58,28 @@ export const Users: CollectionConfig = {
       type: 'relationship',
       relationTo: 'projects',
       hasMany: true,
+    },
+    {
+      name: 'projectPriorities',
+      label: 'Project priorities',
+      type: 'array',
+      admin: {
+        description: 'Per-user priority overrides for projects',
+      },
+      fields: [
+        {
+          name: 'project',
+          type: 'relationship',
+          relationTo: 'projects',
+          required: true,
+        },
+        {
+          name: 'priority',
+          type: 'select',
+          options: priorityOptions,
+          defaultValue: 'none',
+        },
+      ],
     },
     {
       name: 'includeInPlanningTool',

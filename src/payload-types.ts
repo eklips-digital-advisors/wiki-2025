@@ -380,6 +380,16 @@ export interface User {
   media?: (string | null) | Media;
   position?: ('frontend' | 'backend' | 'designer' | 'pm' | 'qa' | 'sm' | 'other' | 'im') | null;
   projects?: (string | Project)[] | null;
+  /**
+   * Per-user priority overrides for projects
+   */
+  projectPriorities?:
+    | {
+        project: string | Project;
+        priority?: ('none' | 'low' | 'medium' | 'high') | null;
+        id?: string | null;
+      }[]
+    | null;
   includeInPlanningTool?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -1281,6 +1291,13 @@ export interface UsersSelect<T extends boolean = true> {
   media?: T;
   position?: T;
   projects?: T;
+  projectPriorities?:
+    | T
+    | {
+        project?: T;
+        priority?: T;
+        id?: T;
+      };
   includeInPlanningTool?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -1,6 +1,14 @@
 import { User } from '@/payload-types'
 import { ProjectPriority } from '@/collections/Projects/priorityOptions'
 
+type UserWithProjectPriorities = User & {
+  projectPriorities?: {
+    id?: string
+    project?: string | { id?: string | null } | null
+    priority?: ProjectPriority | null
+  }[]
+}
+
 const priorityRank: Record<ProjectPriority, number> = {
   high: 3,
   medium: 2,
@@ -8,21 +16,50 @@ const priorityRank: Record<ProjectPriority, number> = {
   none: 0,
 }
 
-export const generateResources = (users: User[]) => {
-  return users.flatMap((user: any) => {
+const getUserProjectPriority = (
+  user: UserWithProjectPriorities,
+  projectId: string
+): ProjectPriority | undefined => {
+  if (!projectId) return undefined
+
+  return user.projectPriorities?.find((entry) => {
+    const entryProject = entry?.project
+    const entryProjectId = typeof entryProject === 'string' ? entryProject : entryProject?.id
+    return entryProjectId === projectId
+  })?.priority as ProjectPriority | undefined
+}
+
+export const generateResources = (users: UserWithProjectPriorities[]) => {
+  return users.flatMap((user) => {
+    const profileImage =
+      user?.media && typeof user.media === 'object'
+        ? (user.media as { url?: string | null })?.url || ''
+        : ''
+
+    const resolvePriority = (project: any): ProjectPriority => {
+      const projectId = typeof project === 'string' ? project : project?.id
+      const userPriority = projectId ? getUserProjectPriority(user, projectId) : undefined
+      const projectPriority =
+        project && typeof project === 'object'
+          ? (project.priority as ProjectPriority | undefined)
+          : undefined
+
+      return userPriority || projectPriority || 'none'
+    }
+
     const userResource = {
       id: `${user.id}`,
       title: user.name || '',
       projects: user.projects || [],
-      profileImage: user?.media?.url || '',
+      profileImage,
       position: user?.position || '',
     }
 
     const userProjects = Array.isArray(user?.projects)
       ? [...user.projects]
         .sort((a: any, b: any) => {
-          const aPriority = priorityRank[(a?.priority as ProjectPriority) || 'none'] ?? 0
-          const bPriority = priorityRank[(b?.priority as ProjectPriority) || 'none'] ?? 0
+          const aPriority = priorityRank[resolvePriority(a)] ?? 0
+          const bPriority = priorityRank[resolvePriority(b)] ?? 0
 
           if (bPriority !== aPriority) {
             return bPriority - aPriority
@@ -39,7 +76,8 @@ export const generateResources = (users: User[]) => {
           projectImage: project.image || '',
           projectType: project.type || '',
           comment: project.comment || '',
-          priority: project.priority || 'none',
+          priority: resolvePriority(project),
+          userId: user.id,
           isProject: true,
           showInProjectView: project.showInProjectView,
         }))
