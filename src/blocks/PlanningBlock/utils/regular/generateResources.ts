@@ -3,10 +3,10 @@ import { ProjectPriority } from '@/collections/Projects/priorityOptions'
 
 type UserWithProjectPriorities = User & {
   projectPriorities?: {
-    id?: string
-    project?: string | { id?: string | null } | null
+    id?: string | null
+    project?: string | { id?: string | null } | null | import('@/payload-types').Project
     priority?: ProjectPriority | null
-  }[]
+  }[] | null
 }
 
 const priorityRank: Record<ProjectPriority, number> = {
