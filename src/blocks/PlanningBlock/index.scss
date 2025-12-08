@@ -160,6 +160,12 @@
     }
   }
 
+  .fc-datagrid-cell-cushion:not(:has(.fc-icon-minus-square, .fc-icon-plus-square)) {
+    .fc-datagrid-expander .fc-icon {
+      display: none;
+    }
+  }
+
   .fc-resource {
     &:has(.default) {
       background-color: var(--color-zinc-100);

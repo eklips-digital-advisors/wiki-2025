@@ -66,7 +66,7 @@ export const getResourceLabelContent = ({
               variant={isInverted ? 'square' : 'rounded'}
             />
             <span className="flex flex-col gap-1">
-              <span className="leading-4">{resource.title}</span>
+              <span className="leading-4 font-medium">{resource.title}</span>
               <span className="text-[12px] leading-3">
                 {getLabel(resource._resource?.extendedProps?.position, positionOptions)}
               </span>
@@ -143,8 +143,8 @@ export const getResourceLabelContent = ({
 
     return (
       <div className={`flex justify-between gap-2 ${projectType ? projectType : ''}`}>
-        <div className="flex gap-2 items-center ml-2">
-          {resource.title}
+        <div className="flex gap-2 items-center">
+          <span className="text-sm">{resource.title}</span>
           <ProfileImage
             name={resource._resource?.title}
             url={
@@ -210,7 +210,7 @@ export const getResourceLabelContent = ({
                   <Info className={`w-[20px] h-[20px]  ${resource._resource?.extendedProps?.comment ? 'stroke-zinc-400 hover:stroke-zinc-300' : 'stroke-zinc-200 hover:stroke-zinc-100'}`} />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="left">
+              <TooltipContent side="top">
                 {resource._resource?.extendedProps?.comment || 'Add comment'}
               </TooltipContent>
             </Tooltip>
@@ -227,7 +227,7 @@ export const getResourceLabelContent = ({
                   <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="left">Remove project</TooltipContent>
+              <TooltipContent side="right">Remove project</TooltipContent>
             </Tooltip>
           </div>
         )}

@@ -72,7 +72,7 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
                   />
                 </span>
               </TooltipTrigger>
-              <TooltipContent side="left">Sort based on launch date</TooltipContent>
+              <TooltipContent side="bottom">Sort based on launch date</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -89,7 +89,7 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
                   <PackagePlus className="w-[20px] h-[20px] stroke-zinc-500 hover:stroke-emerald-400" />
                 </span>
               </TooltipTrigger>
-              <TooltipContent side="left">Add project</TooltipContent>
+              <TooltipContent side="top">Add project</TooltipContent>
             </Tooltip>
           </>
         )}
@@ -121,7 +121,7 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
               )}
             </button>
           </TooltipTrigger>
-          <TooltipContent side="left">Switch people/projects</TooltipContent>
+          <TooltipContent side="right">Switch people/projects</TooltipContent>
         </Tooltip>
       </div>
     </div>
