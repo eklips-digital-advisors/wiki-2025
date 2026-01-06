@@ -39,7 +39,6 @@ import Chart from '@/blocks/SitesBlock/Chart'
 import PathTable from '@/blocks/SitesBlock/PathTable'
 import CspTable from '@/blocks/SitesBlock/CspTable'
 import CheckIcon from '@/blocks/SitesBlock/CheckIcon'
-import { ChartPerformance } from '@/blocks/SitesBlock/ChartPerformance'
 import FontsTable from '@/blocks/SitesBlock/FontsTable'
 
 import {
@@ -57,7 +56,6 @@ import './index.scss'
 const MemoCspTable = React.memo(CspTable)
 const MemoFontsTable = React.memo(FontsTable)
 const MemoChart = React.memo(Chart)
-const MemoChartPerformance = React.memo(ChartPerformance)
 const MemoPathTable = React.memo(PathTable)
 
 export const SitesBlockClient: React.FC<SitesBlockProps> = ({
@@ -621,15 +619,11 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({
         )
       case 'cloudflarePercentage':
         return (
-          <td
-            key={colKey}
-            className="whitespace-nowrap px-3 py-3 text-sm"
-          >
+          <td key={colKey} className="whitespace-nowrap px-3 py-3 text-sm">
             <span className="flex gap-2 items-center">
               <span
                 className={`${
-                  site?.cloudflarePercentage &&
-                  site?.cloudflarePercentage > 25
+                  site?.cloudflarePercentage && site?.cloudflarePercentage > 25
                     ? 'text-rose-400'
                     : 'text-zinc-500'
                 }`}
@@ -640,37 +634,13 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({
                   `${site?.cloudflareBandwidth} (${site?.cloudflarePercentage}%) / ${site?.cloudflareRequests}`}
               </span>
               {site.singleClodflareAnalyticsMultipleDays &&
-              site.cloudflarePlan ===
-                'Enterprise Website' ? (
+              site.cloudflarePlan === 'Business Website' ? (
                 <>
-                  <MemoChart
-                    siteChartData={
-                      site.singleClodflareAnalyticsMultipleDays
-                    }
-                  />
-                  <MemoChartPerformance
-                    siteChartData={
-                      site.singleClodflareAnalyticsMultipleDays
-                    }
-                  />
-                  <MemoPathTable
-                    siteChartData={
-                      site.singleClodflareAnalyticsMultipleDays
-                    }
-                  />
+                  <MemoChart siteChartData={site.singleClodflareAnalyticsMultipleDays} />
+                  <MemoPathTable siteChartData={site.singleClodflareAnalyticsMultipleDays} />
                 </>
               ) : (
-                <span className="text-zinc-500 sr-only">
-                  No data
-                </span>
-              )}
-              {site?.singleClodflareUrl && (
-                <Link
-                  target="_blank"
-                  href={site?.singleClodflareUrl}
-                >
-                  <ExternalLink className="w-5 h-5 text-gray-500 hover:text-gray-700" />
-                </Link>
+                <span className="text-zinc-500 sr-only">No data</span>
               )}
             </span>
           </td>

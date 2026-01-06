@@ -1,5 +1,6 @@
 import React from 'react'
 import { Dropdown } from '@/components/Dropdown'
+import { getCwaasZone } from '@/utilities/GetCloudflareItems/getCwaasZone'
 
 export const GetAllCloudflareItems: React.FC = async () => {
   try {
@@ -12,25 +13,44 @@ export const GetAllCloudflareItems: React.FC = async () => {
       ContentType: 'application/json',
     }
 
-    const response = await fetch(`https://api.cloudflare.com/client/v4/zones?per_page=200`, {
-      headers,
-    })
+    const zone = await getCwaasZone()
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
+    if (!zone?.id) {
+      throw new Error('Could not resolve cwaas.site zone.')
     }
 
-    const data = await response.json()
+    let page = 1
+    let hostnames: { hostname: string }[] = []
+
+    while (true) {
+      const response = await fetch(
+        `https://api.cloudflare.com/client/v4/zones/${zone.id}/custom_hostnames?page=${page}&per_page=100`,
+        { headers },
+      )
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      hostnames = hostnames.concat(data?.result || [])
+
+      if (data?.result_info?.page >= data?.result_info?.total_pages) {
+        break
+      }
+
+      page += 1
+    }
 
     const fetchedOptions =
-      data?.result?.map((item: { name: string; id: string }) => ({
-        label: item?.name,
-        value: item?.id,
+      hostnames?.map((item) => ({
+        label: item?.hostname,
+        value: item?.hostname,
       })) || []
 
     return <Dropdown label="Cloudflare" path="integrations.cloudflare" fetchedOptions={fetchedOptions} />
   } catch (error) {
-    console.error('Error fetching repositories:', error)
-    return <p>Failed to load repositories.</p>
+    console.error('Error fetching Cloudflare custom hostnames:', error)
+    return <p>Failed to load Cloudflare hostnames.</p>
   }
 }

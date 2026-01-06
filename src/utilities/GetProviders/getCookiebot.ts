@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 
-export async function getCookiebot(url: string) {
+export async function getCookiebot(url: string): Promise<string> {
   try {
     const response = await fetch(url, { method: 'GET' })
     if (!response.ok) throw new Error(`Failed to fetch ${url}`)
@@ -20,6 +20,6 @@ export async function getCookiebot(url: string) {
     return ''
   } catch (error) {
     console.error(`Error checking Cookiebot on ${url}:`, error)
-    return false
+    return ''
   }
 }

@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 
-export async function checkGoogleAnalytics(url: string) {
+export async function checkGoogleAnalytics(url: string): Promise<string> {
   try {
     const response = await fetch(url, { method: 'GET' })
     if (!response.ok) throw new Error(`Failed to fetch ${url}`)
@@ -17,6 +17,6 @@ export async function checkGoogleAnalytics(url: string) {
     return ''
   } catch (error) {
     console.error(`Error checking Google Analytics on ${url}:`, error)
-    return false
+    return ''
   }
 }

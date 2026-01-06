@@ -6,15 +6,16 @@ import getSingleRepo from '@/utilities/GetRepos/getSingleRepo'
 import getDefault from '@/utilities/getDefault'
 import { SitesBlockClient } from '@/blocks/SitesBlock/Component.client'
 import getHeaders from '@/utilities/getHeaders'
-import { getSingleCloudflareItem } from '@/utilities/GetCloudflareItems/getSingleCloudflareItem'
 import { getSingleCloudflareItemStats } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemStats'
 import { getSingleCloudflareItemSsl } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemSsl'
 import { SiteItem } from '@/blocks/SitesBlock/sites-types'
+import { Site } from '@/payload-types'
 import { checkGoogleAnalytics } from '@/utilities/GetProviders/getGoogleAnalytics'
 import { getCookiebot } from '@/utilities/GetProviders/getCookiebot'
 import {
   getSingleCloudflareItemStatsMultipleDays
 } from '@/utilities/GetCloudflareItems/getSingleCloudflareItemStatsMultipleDays'
+import { getCwaasZone } from '@/utilities/GetCloudflareItems/getCwaasZone'
 import { toLocaleDateString } from '@/utilities/toLocaleDateString'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import pLimit from 'p-limit';
@@ -37,7 +38,9 @@ export const SitesBlock: React.FC = async () => {
       payload.find({ collection: "sites", limit: siteLimit }),
     ])
 
-    const sites: SiteItem[] = sitesResponse.docs as SiteItem[]
+    const sites: Site[] = sitesResponse.docs as Site[]
+    const cwaasZone = await getCwaasZone()
+    const cwaasZonePlan = cwaasZone?.plan?.name || ''
 
     // Fetch external API data in parallel
     const [wpApiData, phpApiData] = await Promise.all([
@@ -50,16 +53,16 @@ export const SitesBlock: React.FC = async () => {
     let totalWpsites = 0
 
     // Fetch data for each site in parallel
-    const enrichedSites = await Promise.all(
+    const enrichedSites: Array<SiteItem | null> = await Promise.all(
       sites.map(async (site) => {
 
         try {
           const siteIntegrationsCloudflare= site?.integrations?.cloudflare
-          const singleClodflare = siteIntegrationsCloudflare ? await getSingleCloudflareItem(siteIntegrationsCloudflare) : null
           const singleClodflareSsl = siteIntegrationsCloudflare ? await getSingleCloudflareItemSsl(siteIntegrationsCloudflare) : null
           const singleClodflareAnalytics = siteIntegrationsCloudflare ? await getSingleCloudflareItemStats(siteIntegrationsCloudflare) : null
-          const singleClodflareAnalyticsMultipleDays = siteIntegrationsCloudflare ? await getSingleCloudflareItemStatsMultipleDays(siteIntegrationsCloudflare) : null
-          const singleClodflareUrl = singleClodflare?.result?.name && singleClodflare?.result?.owner?.id ? `https://dash.cloudflare.com/${singleClodflare?.result?.owner?.id}/${singleClodflare?.result?.name}` : null
+          const singleClodflareAnalyticsMultipleDays = siteIntegrationsCloudflare
+            ? await getSingleCloudflareItemStatsMultipleDays(siteIntegrationsCloudflare)
+            : null
 
           const singlePingdom = site?.integrations?.pingdom ? await getSinglePingdom(site?.integrations?.pingdom) : null
           const prodHostname = singlePingdom?.hostname ?? ""
@@ -133,26 +136,35 @@ export const SitesBlock: React.FC = async () => {
             if (repoPath && singleRepoWpVersion) totalWpsites++
           }
 
-          return {
+          const siteItem: SiteItem = {
             id: site.id,
             title: site.title,
-            ipRestriction: site?.ipRestriction,
-            hosting: site?.hosting,
-            server: site?.server,
+            ipRestriction: site?.ipRestriction ?? false,
+            hosting: site?.hosting || '',
+            server: site?.server || '',
             csp: csp ? csp : '',
-            wcagUpdated: site?.wcagUpdated,
-            wcagLevel: site?.wcagLevel,
+            wcagUpdated: site?.wcagUpdated || '',
+            wcagLevel: site?.wcagLevel || '',
             bsScan: site?.bsScan ? formatDateTime(site?.bsScan) : '',
-            phpVersion: site?.phpVersion,
+            phpVersion: site?.phpVersion || '',
             siteService: site?.siteService ?? '',
             production: singlePingdom?.hostname ? `https://${singlePingdom?.hostname}` : '',
             wpVersion: singleRepoWpVersionParsed || (prodFetch ? `${prodFetch.get("x-powered-by") ?? ''}` : 'Unknown'),
             productionDate: singlePingdom?.hostname ? toLocaleDateString(singlePingdom?.created) : '',
-            cloudflare: prodFetch ? prodFetch?.get('server')?.toLowerCase() : '',
-            cloudflarePlan: singleClodflare?.result?.plan?.name,
-            cloudflareRequests: singleClodflareAnalytics?.requests ? singleClodflareAnalytics?.requests : null,
-            cloudflareBandwidth: singleClodflareAnalytics?.bandwidth ? Number(singleClodflareAnalytics?.bandwidth.toFixed(2)) : null,
-            cloudflarePercentage: singleClodflareAnalytics?.percentageBandWidth ? Number(singleClodflareAnalytics?.percentageBandWidth.toFixed(1)) : null,
+            cloudflare: (prodFetch?.get('server') || '').toLowerCase(),
+            cloudflarePlan: siteIntegrationsCloudflare ? cwaasZonePlan : '',
+            cloudflareRequests:
+              typeof singleClodflareAnalytics?.requests === 'number'
+                ? singleClodflareAnalytics.requests
+                : null,
+            cloudflareBandwidth:
+              typeof singleClodflareAnalytics?.bandwidth === 'number'
+                ? Number(singleClodflareAnalytics.bandwidth.toFixed(2))
+                : null,
+            cloudflarePercentage:
+              typeof singleClodflareAnalytics?.percentageBandWidth === 'number'
+                ? Number(singleClodflareAnalytics.percentageBandWidth.toFixed(1))
+                : null,
             createdAt: formatDateTime(singleRepo?.repository?.created_at) || azureCreatedAt || '',
             lastCommitAt: formatDateTime(singleRepo?.repository?.last_commit_at) || azureLastCommitAt || '',
             staging: hasAzureDevops
@@ -168,18 +180,18 @@ export const SitesBlock: React.FC = async () => {
             ssl: sslIssuerOrganization || singleClodflareSsl?.certificate_authority || '',
             twoFa: twoFaExists,
             hiddenLogin: hiddenLoginExists,
-            framework: site?.framework ? site?.framework : isCwaas,
-            pressReleases: site?.pressReleases,
+            framework: site?.framework || isCwaas || '',
+            pressReleases: site?.pressReleases || [],
             dataProvider: {cisionBlocks: hasCisionBlocks, dataBlocks: hasDataBlocks},
-            lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : '',
+            lastResponsetime: singlePingdom?.hostname ? Number(singlePingdom?.lastresponsetime) : null,
             pingdomLink: singlePingdom?.hostname ? `https://my.pingdom.com/app/reports/uptime#check=${singlePingdom.id}` : null,
             hasSolr,
             hasGoogleAnalytics,
             cookieProvider,
             singleClodflareAnalyticsMultipleDays,
-            singleClodflareUrl,
-            fonts: site?.fonts,
+            fonts: site?.fonts || [],
           }
+          return siteItem
         } catch (error) {
           console.error(`Error processing site ${site.id}:`, error)
           return null // Skip site if it fails

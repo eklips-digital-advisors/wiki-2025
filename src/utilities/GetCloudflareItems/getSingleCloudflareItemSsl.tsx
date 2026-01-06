@@ -1,9 +1,16 @@
-export async function getSingleCloudflareItemSsl(path: string | number) {
-  if (!path) return '';
+import { getCwaasZoneId } from '@/utilities/GetCloudflareItems/getCwaasZone'
+
+export async function getSingleCloudflareItemSsl(hostname: string) {
+  if (!hostname) return ''
 
   try {
     if (!process.env.CLOUDFLARE_EKLIPS) {
       throw new Error('CLOUDFLARE_EKLIPS is not set in environment variables.')
+    }
+
+    const zoneId = await getCwaasZoneId()
+    if (!zoneId) {
+      throw new Error('Could not resolve cwaas.site zone.')
     }
 
     const headers = {
@@ -11,7 +18,7 @@ export async function getSingleCloudflareItemSsl(path: string | number) {
       ContentType: 'application/json',
     }
 
-    const url = `https://api.cloudflare.com/client/v4/zones/${path}/ssl/certificate_packs?status=all`;
+    const url = `https://api.cloudflare.com/client/v4/zones/${zoneId}/custom_hostnames?hostname=${encodeURIComponent(hostname)}`
 
     const response = await fetch(url, { headers });
 
@@ -19,9 +26,10 @@ export async function getSingleCloudflareItemSsl(path: string | number) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    return await response.json();
+    const data = await response.json()
+    return data?.result?.[0]?.ssl || null
   } catch (error) {
-    console.error(`Error fetching Cloudflare SSL data from ${path}:`, error);
+    console.error(`Error fetching Cloudflare SSL data for ${hostname}:`, error)
     return null; // Return `null` to indicate failure
   }
 }

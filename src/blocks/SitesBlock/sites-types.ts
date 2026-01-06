@@ -6,7 +6,6 @@ export interface SiteItem {
   siteService: string
   wpVersion: string
   productionDate: string
-  integrations: { repository: string; cloudflare: string; pingdom: string; azureDevops: string }
   cloudflare: string
   staging: string
   stagingLink: string
@@ -14,9 +13,9 @@ export interface SiteItem {
   createdAt: string
   lastCommitAt: string
   cloudflarePlan: string
-  cloudflareRequests: string
-  cloudflareBandwidth: number
-  cloudflarePercentage: number
+  cloudflareRequests: number | null
+  cloudflareBandwidth: number | null
+  cloudflarePercentage: number | null
   ssl: string
   twoFa: boolean
   hiddenLogin: boolean
@@ -29,24 +28,16 @@ export interface SiteItem {
   phpVersion: string
   server: string
   hosting: string
-  lastResponsetime: number
-  publishedAt?: string | null
-  slug?: string | null
-  slugLock?: boolean | null
-  updatedAt: string
-  pingdom: string
+  lastResponsetime: number | null
   pressReleases: string[]
   fonts: NonNullable<Site['fonts']>
-  speedTestScan: string
   dataProvider: { cisionBlocks: boolean; dataBlocks: boolean }
-  repository: object
   hasSolr: boolean
   hasGoogleAnalytics: string
   cookieProvider: string
   pingdomLink: string | null
-  singleClodflareUrl: string | null
   singleClodflareAnalyticsMultipleDays: {
-    groupedData: { date: string; requests: string; bandwidth: string; dateTime: string }[]
+    groupedData: { dateTime: string; requests: number; bandwidth: number }[]
     totalBandwidth: number
     totalRequests: number
     pathData: {
@@ -54,7 +45,7 @@ export interface SiteItem {
       dimensions: { clientRequestPath: string }
       avg: { edgeTimeToFirstByteMs: number; originResponseDurationMs: number }
     }[]
-  }
+  } | null
 }
 
 interface ExtraInfo {
