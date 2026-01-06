@@ -48,14 +48,20 @@ export async function getSingleCloudflareItemStatsMultipleDays(hostname: string)
     const formattedStartDate = startDate.toISOString()
     const formattedEndDate = endDate.toISOString()
 
-    const buildHostQuery = (label: string, host: string, includeCount: boolean) => {
+    const buildHostQuery = (
+      label: string,
+      host: string,
+      includeCount: boolean,
+      startTime: string,
+      endTime: string,
+    ) => {
       const countField = includeCount ? 'count' : ''
-      const groupLimit = 50000
+      const groupLimit = 10000
 
       return `
         ${label}: httpRequestsAdaptiveGroups(
           limit: ${groupLimit}
-          filter: { datetime_geq: "${formattedStartDate}", datetime_lt: "${formattedEndDate}", clientRequestHTTPHost: "${host}" }
+          filter: { datetime_geq: "${startTime}", datetime_lt: "${endTime}", clientRequestHTTPHost: "${host}" }
         ) {
           ${countField}
           dimensions {
@@ -72,12 +78,14 @@ export async function getSingleCloudflareItemStatsMultipleDays(hostname: string)
       `
     }
 
-    const buildQuery = (includeCount: boolean) => ({
+    const buildQuery = (includeCount: boolean, startTime: string, endTime: string) => ({
       query: `
       {
         viewer {
           zones(filter: {zoneTag: "${zoneId}"}) {
-            ${hostSections.map((section) => buildHostQuery(section.label, section.host, includeCount)).join('\n')}
+            ${hostSections
+              .map((section) => buildHostQuery(section.label, section.host, includeCount, startTime, endTime))
+              .join('\n')}
           }
         }
       }
@@ -117,11 +125,11 @@ export async function getSingleCloudflareItemStatsMultipleDays(hostname: string)
       }
     }
 
-    const fetchStats = async (includeCount: boolean) => {
+    const fetchStats = async (includeCount: boolean, startTime: string, endTime: string) => {
       const response = await fetch('https://api.cloudflare.com/client/v4/graphql', {
         method: 'POST',
         headers,
-        body: JSON.stringify(buildQuery(includeCount)),
+        body: JSON.stringify(buildQuery(includeCount, startTime, endTime)),
       })
 
       const data = await response.json()
@@ -136,7 +144,7 @@ export async function getSingleCloudflareItemStatsMultipleDays(hostname: string)
       )
 
       if (hasCountError && includeCount) {
-        return fetchStats(false)
+        return fetchStats(false, startTime, endTime)
       }
 
       if (data?.errors?.length) {
@@ -177,9 +185,20 @@ export async function getSingleCloudflareItemStatsMultipleDays(hostname: string)
       return data
     }
 
-    const data = await fetchStats(true)
-    const results: CloudflareAdaptiveGroup[] = hostSections.flatMap(
-      (section) => data?.data?.viewer?.zones?.[0]?.[section.label] || [],
+    const chunkMs = 3 * 60 * 60 * 1000
+    const chunkCount = 8
+    const chunks = Array.from({ length: chunkCount }, (_, index) => {
+      const chunkStart = new Date(startDate.getTime() + index * chunkMs).toISOString()
+      const chunkEnd = new Date(startDate.getTime() + (index + 1) * chunkMs).toISOString()
+      return { start: chunkStart, end: chunkEnd }
+    })
+
+    const chunkResponses = await Promise.all(
+      chunks.map((chunk) => fetchStats(true, chunk.start, chunk.end)),
+    )
+
+    const results: CloudflareAdaptiveGroup[] = chunkResponses.flatMap((data) =>
+      hostSections.flatMap((section) => data?.data?.viewer?.zones?.[0]?.[section.label] || []),
     )
 
     if (!results.length) {

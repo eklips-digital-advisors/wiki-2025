@@ -52,7 +52,7 @@ export async function getSingleCloudflareItemStats(hostname: string) {
 
     const buildHostQuery = (label: string, host: string, includeCount: boolean) => {
       const countField = includeCount ? 'count' : ''
-      const groupLimit = 50000
+      const groupLimit = 10000
 
       return `
         ${label}TwentyFour: httpRequestsAdaptiveGroups(limit: ${groupLimit}, filter: {datetime_geq: "${twentyFourTime}", datetime_lt: "${nowTime}", clientRequestHTTPHost: "${host}"}) {
