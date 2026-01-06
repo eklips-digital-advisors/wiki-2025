@@ -31,7 +31,7 @@ export const GetRepos: React.FC = async () => {
         value: item.repository.id,
       })) || [];
 
-    return <Dropdown label="Repository" path="integrations.repository" fetchedOptions={fetchedOptions} />;
+    return <Dropdown label="Beanstalk repository" path="integrations.repository" fetchedOptions={fetchedOptions} />;
   } catch (error) {
     console.error("Error fetching repositories:", error);
     return <p>Failed to load repositories.</p>;

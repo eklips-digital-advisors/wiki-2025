@@ -42,7 +42,11 @@ export const GetAzureDevopsRepos: React.FC = async () => {
       })) || []
 
     return (
-      <Dropdown label="Azure DevOps" path="integrations.azureDevops" fetchedOptions={fetchedOptions} />
+      <Dropdown
+        label="Azure DevOps repository"
+        path="integrations.azureDevops"
+        fetchedOptions={fetchedOptions}
+      />
     )
   } catch (error) {
     console.error('Error fetching Azure DevOps repositories:', error)
