@@ -46,6 +46,15 @@ export const Sites: CollectionConfig<'sites'> = {
       name: 'integrations',
       fields: [
         {
+          name: 'azureDevops',
+          type: 'text',
+          admin: {
+            components: {
+              Field: '@/utilities/GetAzureDevopsRepos/getAzureDevopsRepos#GetAzureDevopsRepos',
+            },
+          },
+        },
+        {
           name: 'repository',
           type: 'text',
           admin: {
@@ -78,17 +87,17 @@ export const Sites: CollectionConfig<'sites'> = {
       name: 'siteService',
       type: 'select',
       defaultValue: 'corporate',
-      options: siteServiceOptions
+      options: siteServiceOptions,
     },
     {
       name: 'hosting',
       type: 'select',
-      options: hostingOptions
+      options: hostingOptions,
     },
     {
       name: 'server',
       type: 'select',
-      options: serverOptions
+      options: serverOptions,
     },
     {
       type: 'checkbox',
@@ -110,7 +119,7 @@ export const Sites: CollectionConfig<'sites'> = {
         {
           name: 'wcagLevel',
           type: 'select',
-          options: wcagOptions
+          options: wcagOptions,
         },
       ],
     },
@@ -128,7 +137,7 @@ export const Sites: CollectionConfig<'sites'> = {
       name: 'phpVersion',
       type: 'select',
       label: 'PHP Version',
-      options: phpVersionOptions
+      options: phpVersionOptions,
     },
     {
       name: 'framework',
@@ -183,7 +192,7 @@ export const Sites: CollectionConfig<'sites'> = {
           type: 'select',
           options: fontLicenceOptions,
           admin: {
-            description: ''
+            description: '',
           },
         },
         {

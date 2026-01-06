@@ -165,6 +165,7 @@ export interface Site {
   id: string;
   title: string;
   integrations?: {
+    azureDevops?: string | null;
     repository?: string | null;
     pingdom?: string | null;
     cloudflare?: string | null;
@@ -996,6 +997,7 @@ export interface SitesSelect<T extends boolean = true> {
   integrations?:
     | T
     | {
+        azureDevops?: T;
         repository?: T;
         pingdom?: T;
         cloudflare?: T;

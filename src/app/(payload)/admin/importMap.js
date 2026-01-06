@@ -1,3 +1,4 @@
+import { GetAzureDevopsRepos as GetAzureDevopsRepos_476b453c362dcee4d064b7ec4e318363 } from '@/utilities/GetAzureDevopsRepos/getAzureDevopsRepos'
 import { GetRepos as GetRepos_19fbb84822e8a908b1530774dfb55d6a } from '@/utilities/GetRepos/getRepos'
 import { GetPingdomChecks as GetPingdomChecks_2caa047f01159a10eb04220c0ae3a3ee } from '@/utilities/GetPingdomChecks/getPingdomChecks'
 import { GetAllCloudflareItems as GetAllCloudflareItems_f67c5c847205e0eb9557d5bdadc66f5f } from '@/utilities/GetCloudflareItems/getAllCloudflareItems'
@@ -57,6 +58,7 @@ import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/component
 import { ImportExportProvider as ImportExportProvider_cdf7e044479f899a31f804427d568b36 } from '@payloadcms/plugin-import-export/rsc'
 
 export const importMap = {
+  "@/utilities/GetAzureDevopsRepos/getAzureDevopsRepos#GetAzureDevopsRepos": GetAzureDevopsRepos_476b453c362dcee4d064b7ec4e318363,
   "@/utilities/GetRepos/getRepos#GetRepos": GetRepos_19fbb84822e8a908b1530774dfb55d6a,
   "@/utilities/GetPingdomChecks/getPingdomChecks#GetPingdomChecks": GetPingdomChecks_2caa047f01159a10eb04220c0ae3a3ee,
   "@/utilities/GetCloudflareItems/getAllCloudflareItems#GetAllCloudflareItems": GetAllCloudflareItems_f67c5c847205e0eb9557d5bdadc66f5f,

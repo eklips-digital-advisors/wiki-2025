@@ -21,6 +21,8 @@ import pLimit from 'p-limit';
 import { getSSLCertificate } from '@/utilities/getNodeSsl'
 import { getDataBlocks } from '@/utilities/GetProviders/getDataBlocks'
 import { getCisionBlocks } from '@/utilities/GetProviders/getCisionBlocks'
+import getSingleAzureDevopsItem from '@/utilities/GetAzureDevopsRepos/getSingleAzureDevopsItem'
+import getAzureDevopsRepoCommits from '@/utilities/GetAzureDevopsRepos/getAzureDevopsRepoCommits'
 
 export const SitesBlock: React.FC = async () => {
   const buildTime: string = new Date().toLocaleString('et-ET', { timeZone: "Europe/Tallinn" })
@@ -30,8 +32,9 @@ export const SitesBlock: React.FC = async () => {
     const payload = await getPayload({ config: configPromise })
 
     // Fetch all sites from the 'sites' collection
+    const siteLimit = 3
     const [sitesResponse] = await Promise.all([
-      payload.find({ collection: "sites", limit: 150 }),
+      payload.find({ collection: "sites", limit: siteLimit }),
     ])
 
     const sites: SiteItem[] = sitesResponse.docs as SiteItem[]
@@ -75,6 +78,21 @@ export const SitesBlock: React.FC = async () => {
 
           const repoPath = siteIntgrationRepository ? `repositories/${siteIntgrationRepository}.json` : null
           const singleRepo = repoPath ? await limit(() => getSingleRepo(repoPath)) : null
+          const siteIntegrationAzureDevops = site?.integrations?.azureDevops
+          const singleAzureDevops = siteIntegrationAzureDevops
+            ? await limit(() => getSingleAzureDevopsItem(siteIntegrationAzureDevops))
+            : null
+          const azureOldestCommitDate = siteIntegrationAzureDevops
+            ? await limit(() =>
+                getAzureDevopsRepoCommits(
+                  siteIntegrationAzureDevops,
+                  singleAzureDevops?.defaultBranch,
+                  singleAzureDevops?.project?.name,
+                ),
+              )
+            : null
+          const azureCreatedAt = formatDateTime(singleAzureDevops?.project?.lastUpdateTime || '')
+          const azureLastCommitAt = formatDateTime(azureOldestCommitDate || '')
 
           let singleRepoWpVersionParsed = ''
           let twoFaExists = false
@@ -130,8 +148,8 @@ export const SitesBlock: React.FC = async () => {
             cloudflareRequests: singleClodflareAnalytics?.requests ? singleClodflareAnalytics?.requests : null,
             cloudflareBandwidth: singleClodflareAnalytics?.bandwidth ? Number(singleClodflareAnalytics?.bandwidth.toFixed(2)) : null,
             cloudflarePercentage: singleClodflareAnalytics?.percentageBandWidth ? Number(singleClodflareAnalytics?.percentageBandWidth.toFixed(1)) : null,
-            createdAt: formatDateTime(singleRepo?.repository?.created_at) || '',
-            lastCommitAt: formatDateTime(singleRepo?.repository?.last_commit_at) || '',
+            createdAt: formatDateTime(singleRepo?.repository?.created_at) || azureCreatedAt || '',
+            lastCommitAt: formatDateTime(singleRepo?.repository?.last_commit_at) || azureLastCommitAt || '',
             staging: singleRepo?.repository?.name ? `https://${singleRepo?.repository?.name}.eklipsdevelopment.com` : '',
             stagingLink: singleRepo?.repository?.name ? `https://eklips.beanstalkapp.com/${singleRepo?.repository?.name}` : '',
             ssl: sslIssuerOrganization || singleClodflareSsl?.result[0]?.certificate_authority || '',

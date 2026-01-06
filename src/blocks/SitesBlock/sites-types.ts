@@ -6,7 +6,7 @@ export interface SiteItem {
   siteService: string
   wpVersion: string
   productionDate: string
-  integrations: { repository: string; cloudflare: string; pingdom: string }
+  integrations: { repository: string; cloudflare: string; pingdom: string; azureDevops: string }
   cloudflare: string
   staging: string
   stagingLink: string

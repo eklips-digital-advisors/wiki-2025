@@ -28,3 +28,14 @@
 ## Security & Configuration Tips
 - Copy `.env.example` to `.env`, set `DATABASE_URI` (host `mongo` when using Docker) and `PAYLOAD_SECRET`, and exclude the file from commits.  
 - Keep secrets in env vars accessed from server-only modules, and store bulky uploads in `public/media` or external storage referenced by Payload fields.
+
+## Connect DB in Coolify
+
+mongosh "mongodb://root:dnwr9jdERGncuzHxuQ3KSdWQD1NP4blRaYaQkZnk9EwOJMPOZIPPZZCYM2cEPCZL@kg0kgcgg08k0soog4o0kkkkw:27017/test?authSource=admin&directConnection=true"
+
+mongodump \
+--uri="mongodb://root:dnwr9jdERGncuzHxuQ3KSdWQD1NP4blRaYaQkZnk9EwOJMPOZIPPZZCYM2cEPCZL@kg0kgcgg08k0soog4o0kkkkw:27017/test?authSource=admin&directConnection=true" \
+--archive=/tmp/test.archive.gz \
+--gzip
+
+docker cp <mongo_container_name>:/tmp/test.archive.gz ./test.archive.gz
