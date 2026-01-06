@@ -50,7 +50,7 @@ export async function getSingleCloudflareItemStatsMultipleDays(hostname: string)
 
     const buildHostQuery = (label: string, host: string, includeCount: boolean) => {
       const countField = includeCount ? 'count' : ''
-      const groupLimit = 10000
+      const groupLimit = 50000
 
       return `
         ${label}: httpRequestsAdaptiveGroups(
