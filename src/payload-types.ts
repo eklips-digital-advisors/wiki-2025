@@ -174,6 +174,7 @@ export interface Site {
   hosting?: ('adminor' | 'azure') | null;
   server?:
     | (
+        | 'azure'
         | '06-188-v1'
         | '06-188-v2'
         | '06-188-v9'

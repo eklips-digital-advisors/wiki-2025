@@ -26,6 +26,10 @@ export const wcagOptions = [
 
 export const serverOptions = [
   {
+    label: 'Azure',
+    value: 'azure',
+  },
+  {
     label: '06-188-v1',
     value: '06-188-v1',
   },

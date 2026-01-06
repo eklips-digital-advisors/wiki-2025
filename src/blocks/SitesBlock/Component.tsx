@@ -32,7 +32,7 @@ export const SitesBlock: React.FC = async () => {
     const payload = await getPayload({ config: configPromise })
 
     // Fetch all sites from the 'sites' collection
-    const siteLimit = 3
+    const siteLimit = 999
     const [sitesResponse] = await Promise.all([
       payload.find({ collection: "sites", limit: siteLimit }),
     ])
@@ -93,6 +93,11 @@ export const SitesBlock: React.FC = async () => {
             : null
           const azureCreatedAt = formatDateTime(singleAzureDevops?.project?.lastUpdateTime || '')
           const azureLastCommitAt = formatDateTime(azureOldestCommitDate || '')
+          const hasAzureDevops = Boolean(siteIntegrationAzureDevops)
+          const azureStaging = hasAzureDevops && singleAzureDevops?.name
+            ? `https://${singleAzureDevops.name}.stage.cwaas.site`
+            : ''
+          const azureStagingLink = hasAzureDevops ? singleAzureDevops?.webUrl || '' : ''
 
           let singleRepoWpVersionParsed = ''
           let twoFaExists = false
@@ -150,9 +155,17 @@ export const SitesBlock: React.FC = async () => {
             cloudflarePercentage: singleClodflareAnalytics?.percentageBandWidth ? Number(singleClodflareAnalytics?.percentageBandWidth.toFixed(1)) : null,
             createdAt: formatDateTime(singleRepo?.repository?.created_at) || azureCreatedAt || '',
             lastCommitAt: formatDateTime(singleRepo?.repository?.last_commit_at) || azureLastCommitAt || '',
-            staging: singleRepo?.repository?.name ? `https://${singleRepo?.repository?.name}.eklipsdevelopment.com` : '',
-            stagingLink: singleRepo?.repository?.name ? `https://eklips.beanstalkapp.com/${singleRepo?.repository?.name}` : '',
-            ssl: sslIssuerOrganization || singleClodflareSsl?.result[0]?.certificate_authority || '',
+            staging: hasAzureDevops
+              ? azureStaging
+              : singleRepo?.repository?.name
+                ? `https://${singleRepo?.repository?.name}.eklipsdevelopment.com`
+                : '',
+            stagingLink: hasAzureDevops
+              ? azureStagingLink
+              : singleRepo?.repository?.name
+                ? `https://eklips.beanstalkapp.com/${singleRepo?.repository?.name}`
+                : '',
+            ssl: sslIssuerOrganization || singleClodflareSsl?.certificate_authority || '',
             twoFa: twoFaExists,
             hiddenLogin: hiddenLoginExists,
             framework: site?.framework ? site?.framework : isCwaas,
