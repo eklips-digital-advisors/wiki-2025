@@ -33,7 +33,7 @@ export const SitesBlock: React.FC = async () => {
     const payload = await getPayload({ config: configPromise })
 
     // Fetch all sites from the 'sites' collection
-    const siteLimit = 3
+    const siteLimit = 999
     const [sitesResponse] = await Promise.all([
       payload.find({ collection: "sites", limit: siteLimit }),
     ])
