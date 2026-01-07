@@ -22,7 +22,9 @@ export default async function getSingleRepo(
 
       if (response.status === 429) {
         // Rate limit hit, wait and retry
-        console.warn(`Rate limit hit (attempt ${attempt}). Retrying in ${delay}ms...`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`Rate limit hit (attempt ${attempt}). Retrying in ${delay}ms...`);
+        }
         await new Promise(resolve => setTimeout(resolve, delay));
         delay *= 2; // Exponential backoff (2s → 4s → 8s → etc.)
         continue;

@@ -9,7 +9,9 @@ export async function getSingleCloudflareItemStats(hostname: string) {
   if (!hostname) return null
 
   if (!hostname.includes('.')) {
-    console.warn('Cloudflare stats skipped: hostname is not valid.', hostname)
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Cloudflare stats skipped: hostname is not valid.', hostname)
+    }
     return null
   }
 

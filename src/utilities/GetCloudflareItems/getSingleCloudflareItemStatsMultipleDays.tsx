@@ -11,7 +11,9 @@ export async function getSingleCloudflareItemStatsMultipleDays(hostname: string)
   if (!hostname) return null
 
   if (!hostname.includes('.')) {
-    console.warn('Cloudflare stats (multi) skipped: hostname is not valid.', hostname)
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Cloudflare stats (multi) skipped: hostname is not valid.', hostname)
+    }
     return null
   }
 

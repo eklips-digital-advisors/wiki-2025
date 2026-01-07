@@ -35,12 +35,16 @@ export async function getDataBlocks(baseUrl: string) {
           const response = await fetch(url, { method: 'GET', redirect: 'manual' });
 
           if (response.status >= 300 && response.status < 400) {
-            console.warn(`Skipping ${url} due to redirect (status: ${response.status})`);
+            if (process.env.NODE_ENV !== 'production') {
+              console.warn(`Skipping ${url} due to redirect (status: ${response.status})`);
+            }
             return false; // Skip checking this URL if it's a redirect
           }
 
           if (!response.ok) {
-            console.warn(`Failed to fetch ${url}: ${response.status}`);
+            if (process.env.NODE_ENV !== 'production') {
+              console.warn(`Failed to fetch ${url}: ${response.status}`);
+            }
             return false;
           }
 

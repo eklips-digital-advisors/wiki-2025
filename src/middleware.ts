@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
   ]
   const allowedIPsLocal = ['127.0.0.1', '::1', '::ffff:127.0.0.1']
 
-  const addedIps = process.env.WIKI_DEV === 'true' ? allowedIPsLocal : allowedIPs
+  const addedIps = process.env.NODE_ENV !== 'production' ? allowedIPsLocal : allowedIPs
 
   const ip = request.headers.get('x-forwarded-for') || ''
   if (!addedIps.includes(ip)) {
