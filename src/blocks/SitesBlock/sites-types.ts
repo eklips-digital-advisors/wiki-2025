@@ -36,6 +36,7 @@ export interface SiteItem {
   hasGoogleAnalytics: string
   cookieProvider: string
   pingdomLink: string | null
+  singleClodflareUrl: string | null
   singleClodflareAnalyticsMultipleDays: {
     groupedData: { dateTime: string; requests: number; bandwidth: number }[]
     totalBandwidth: number

@@ -642,6 +642,11 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({
               ) : (
                 <span className="text-zinc-500 sr-only">No data</span>
               )}
+              {site?.singleClodflareUrl && (
+                <Link target="_blank" href={site?.singleClodflareUrl}>
+                  <ExternalLink className="w-5 h-5 text-gray-500 hover:text-gray-700" />
+                </Link>
+              )}
             </span>
           </td>
         )

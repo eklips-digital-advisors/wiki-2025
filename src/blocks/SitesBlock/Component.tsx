@@ -33,7 +33,7 @@ export const SitesBlock: React.FC = async () => {
     const payload = await getPayload({ config: configPromise })
 
     // Fetch all sites from the 'sites' collection
-    const siteLimit = 999
+    const siteLimit = 3
     const [sitesResponse] = await Promise.all([
       payload.find({ collection: "sites", limit: siteLimit }),
     ])
@@ -63,6 +63,12 @@ export const SitesBlock: React.FC = async () => {
           const singleClodflareAnalyticsMultipleDays = siteIntegrationsCloudflare
             ? await getSingleCloudflareItemStatsMultipleDays(siteIntegrationsCloudflare)
             : null
+          const singleClodflareUrl =
+            siteIntegrationsCloudflare && cwaasZone?.owner?.id && cwaasZone?.name
+              ? `https://dash.cloudflare.com/${cwaasZone.owner.id}/${cwaasZone.name}/analytics/traffic/data-transfer?host=${encodeURIComponent(
+                  siteIntegrationsCloudflare,
+                )}`
+              : null
 
           const singlePingdom = site?.integrations?.pingdom ? await getSinglePingdom(site?.integrations?.pingdom) : null
           const prodHostname = singlePingdom?.hostname ?? ""
@@ -188,6 +194,7 @@ export const SitesBlock: React.FC = async () => {
             hasSolr,
             hasGoogleAnalytics,
             cookieProvider,
+            singleClodflareUrl,
             singleClodflareAnalyticsMultipleDays,
             fonts: site?.fonts || [],
           }
