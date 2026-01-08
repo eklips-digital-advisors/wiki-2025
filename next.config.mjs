@@ -26,12 +26,21 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (webpackConfig) => {
+    webpackConfig.resolve.extensionAlias = {
+      '.cjs': ['.cts', '.cjs'],
+      '.js': ['.ts', '.tsx', '.js', '.jsx'],
+      '.mjs': ['.mts', '.mjs'],
+    }
+
+    return webpackConfig
+  },
   reactStrictMode: true,
   redirects,
   staticPageGenerationTimeout: 500,
   env: {
-    BUILD_TIMESTAMP: new Date().toLocaleString('et-ET')
-  }
+    BUILD_TIMESTAMP: new Date().toLocaleString('et-ET'),
+  },
 }
 
 export default withPayload(nextConfig, {

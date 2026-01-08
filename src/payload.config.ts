@@ -28,7 +28,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     avatar: {
-      Component: '@/components/Users/AdminUserProfileImage'
+      Component: '@/components/Users/AdminUserProfileImage',
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -38,11 +38,22 @@ export default buildConfig({
       afterLogin: ['@/components/BeforeDashboard'],
       graphics: {
         Logo: '@/components/Logo',
-        Icon: '@/components/Favicon'
-      }
-    }
+        Icon: '@/components/Favicon',
+      },
+    },
   },
-  collections: [Sites, Pages, Posts, Categories, Media, Users, Projects, TimeEntries, StatusTimeEntries, SiteMaps],
+  collections: [
+    Sites,
+    Pages,
+    Posts,
+    Categories,
+    Media,
+    Users,
+    Projects,
+    TimeEntries,
+    StatusTimeEntries,
+    SiteMaps,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Sidebar],
   editor: lexicalEditor(),
@@ -54,8 +65,5 @@ export default buildConfig({
     url: process.env.DATABASE_URI || '',
   }),
   sharp,
-  plugins: [
-    ...plugins,
-    // storage-adapter-placeholder
-  ],
+  plugins,
 })

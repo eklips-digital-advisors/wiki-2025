@@ -18,7 +18,7 @@ import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
 
-import { slugField } from '@/fields/slug'
+import { slugField } from 'payload'
 import { EmbedBlock } from '@/blocks/EmbedBlock/config'
 
 export const Posts: CollectionConfig<'posts'> = {
@@ -36,24 +36,21 @@ export const Posts: CollectionConfig<'posts'> = {
     title: true,
     slug: true,
     categories: true,
-    sections: true
+    sections: true,
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
-      url: ({ data, req }) => {
-        const path = generatePreviewPath({
-          slug: typeof data?.slug === 'string' ? data.slug : '',
+      url: ({ data, req }) =>
+        generatePreviewPath({
+          slug: data?.slug,
           collection: 'posts',
           req,
-        })
-
-        return path
-      },
+        }),
     },
     preview: (data, { req }) =>
       generatePreviewPath({
-        slug: typeof data?.slug === 'string' ? data.slug : '',
+        slug: data?.slug as string,
         collection: 'posts',
         req,
       }),
@@ -78,7 +75,7 @@ export const Posts: CollectionConfig<'posts'> = {
                 {
                   name: 'sectionName',
                   type: 'text',
-                  required: true
+                  required: true,
                 },
                 {
                   name: 'content',
@@ -92,16 +89,16 @@ export const Posts: CollectionConfig<'posts'> = {
                         FixedToolbarFeature(),
                         InlineToolbarFeature(),
                         HorizontalRuleFeature(),
-                        EXPERIMENTAL_TableFeature()
+                        EXPERIMENTAL_TableFeature(),
                       ]
                     },
                   }),
                   label: false,
                   required: true,
                 },
-              ]
-            }
-          ]
+              ],
+            },
+          ],
         },
         {
           fields: [
@@ -117,7 +114,7 @@ export const Posts: CollectionConfig<'posts'> = {
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),
-                    EXPERIMENTAL_TableFeature()
+                    EXPERIMENTAL_TableFeature(),
                   ]
                 },
               }),
@@ -171,13 +168,13 @@ export const Posts: CollectionConfig<'posts'> = {
       },
       hasMany: true,
       relationTo: 'users',
-      defaultValue: async ({user}: PayloadRequest) => {
+      defaultValue: async ({ user }: PayloadRequest) => {
         if (user) {
           return [user?.id]
         }
 
         return false
-      }
+      },
     },
     // This field is only used to populate the user data via the `populateAuthors` hook
     // This is because the `user` collection has access control locked to protect user privacy
@@ -203,7 +200,7 @@ export const Posts: CollectionConfig<'posts'> = {
         },
       ],
     },
-    ...slugField(),
+    slugField(),
   ],
   hooks: {
     afterChange: [revalidatePost],

@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { slugField } from '@/fields/slug'
+import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import {
   fontDeliveryOptions,
@@ -209,7 +209,7 @@ export const Sites: CollectionConfig<'sites'> = {
         position: 'sidebar',
       },
     },
-    ...slugField(),
+    slugField(),
   ],
   hooks: {
     beforeChange: [populatePublishedAt],
