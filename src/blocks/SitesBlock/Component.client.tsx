@@ -149,6 +149,19 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({
       const isDateFormat = (value: string) =>
         /^\d{2}\.\d{2}\.\d{4}$/.test(value)
 
+      if (sortConfig.key === 'cloudflarePercentage') {
+        const aBandwidth = a.cloudflareBandwidth
+        const bBandwidth = b.cloudflareBandwidth
+
+        if (aBandwidth == null && bBandwidth == null) return 0
+        if (aBandwidth == null) return 1
+        if (bBandwidth == null) return -1
+
+        return sortConfig.direction === 'asc'
+          ? aBandwidth - bBandwidth
+          : bBandwidth - aBandwidth
+      }
+
       // kuupäeva võrdlus
       if (typeof aValue === 'string' && typeof bValue === 'string') {
         const isADate = isDateFormat(aValue)
