@@ -21,7 +21,7 @@ export const Users: CollectionConfig = {
     group: 'Globals',
   },
   auth: {
-    tokenExpiration: 60 * 60 * 24 * 7 // 1 week
+    tokenExpiration: 60 * 60 * 24 * 8 // 1 week + 1 day
   },
   fields: [
     {
