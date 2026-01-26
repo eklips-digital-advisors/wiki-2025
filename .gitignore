@@ -47,3 +47,7 @@ public/cypress-reports/
 public/exports/
 
 dump
+
+# OpenNext
+.open-next
+.wrangler

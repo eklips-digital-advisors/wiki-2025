@@ -1,9 +1,12 @@
 // storage-adapter-import-placeholder
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import fs from 'fs'
 import path from 'path'
+import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
+// import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 import sharp from 'sharp'
 
 import { Users } from '@/collections/Users'
@@ -20,9 +23,21 @@ import { Sidebar } from '@/Sidebar/config'
 import { getServerSideURL } from '@/utilities/getURL'
 import { StatusTimeEntries } from '@/collections/StatusTimeEntries'
 import { SiteMaps } from '@/collections/SiteMaps'
+import migrations from './db/migrations'
+import { getCloudflareContextFromWrangler } from '@/utilities/getCloudflareContextFromWrangler'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
+
+const isCLI = process.argv.some((value) => realpath(value).endsWith(path.join('payload', 'bin.js')))
+const isProduction = process.env.NODE_ENV === 'production'
+
+const cloudflare =
+  isCLI || !isProduction
+    ? await getCloudflareContextFromWrangler()
+    : await getCloudflareContext({ async: true })
 
 export default buildConfig({
   admin: {
@@ -61,8 +76,11 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: mongooseAdapter({
-    url: process.env.DATABASE_URI || '',
+  // db: mongooseAdapter({
+  //   url: process.env.DATABASE_URI || '',
+  // }),
+  db: sqliteD1Adapter({
+    binding: cloudflare.env.D1,
   }),
   sharp,
   plugins,
