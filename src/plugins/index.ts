@@ -23,7 +23,6 @@ export const plugins: Plugin[] = [
     },
   }),
   importExportPlugin({
-    collections: ['sites'],
     overrideExportCollection: (collection) => {
       collection.admin.group = 'Globals'
       collection.upload.staticDir = path.resolve(dirname, '../../public/exports')
