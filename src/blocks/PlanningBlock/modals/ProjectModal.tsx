@@ -52,7 +52,7 @@ export const ProjectModal: React.FC<Props> = ({
             name="addProject"
             options={projectsState.map((project) => ({
               label: project.title || '',
-              value: project.id,
+              value: `${project.id}`,
             }))}
             onChange={(e) => setSelectedProjectId((e as any)?.value)}
             value={selectedProjectId ?? undefined}

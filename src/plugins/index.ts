@@ -15,7 +15,9 @@ const dirname = path.dirname(filename)
 
 const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
 
-const isCLI = process.argv.some((value) => realpath(value).endsWith(path.join('payload', 'bin.js')))
+const isCLI = process.argv.some((value) =>
+  realpath(value)?.endsWith(path.join('payload', 'bin.js')),
+)
 const isProduction = process.env.NODE_ENV === 'production'
 
 const cloudflare =
@@ -37,7 +39,6 @@ export const plugins: Plugin[] = [
     },
   }),
   importExportPlugin({
-    collections: ['sites'],
     overrideExportCollection: (collection) => {
       collection.admin.group = 'Globals'
       collection.upload.staticDir = path.resolve(dirname, '../../public/exports')

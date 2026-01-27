@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 export async function GET(req: NextRequest) {
   const API_KEY = process.env.TEAMWORK_API_KEY
   const BASE_URL = process.env.TEAMWORK_BASE_URL
+  type TeamworkProjectResponse = { project?: unknown }
 
   if (!API_KEY || !BASE_URL) {
     return new Response(
@@ -32,7 +33,7 @@ export async function GET(req: NextRequest) {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
 
-    const data = await response.json()
+    const data = (await response.json()) as TeamworkProjectResponse
     const project = data?.project
 
     if (!project) {

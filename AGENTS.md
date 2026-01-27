@@ -39,3 +39,6 @@ mongodump \
 --gzip
 
 docker cp <mongo_container_name>:/tmp/test.archive.gz ./test.archive.gz
+
+docker cp 32a60a126ddc:/tmp/mongo-export-2026-01-26_211908 /home/notroot/projects/wiki-2025/db-dump
+chown -R notroot:notroot /home/notroot/projects/wiki-2025/db-dump

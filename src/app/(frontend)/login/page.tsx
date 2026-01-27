@@ -7,6 +7,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  type LoginErrorResponse = { errors?: { message?: string }[] }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,9 +42,9 @@ export default function LoginPage() {
     })
 
     if (res.ok) {
-      window.location.href = "/"
+      window.location.href = '/'
     } else {
-      const json = await res.json()
+      const json = (await res.json()) as LoginErrorResponse
       setError(json?.errors?.[0]?.message || 'Login failed')
     }
   }
