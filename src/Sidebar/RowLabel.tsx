@@ -1,7 +1,6 @@
 'use client'
 import { RowLabelProps, useRowLabel } from '@payloadcms/ui'
 import { useEffect, useState } from 'react'
-import type { Category } from '@/payload-types'
 
 export const RowLabelSidebar: React.FC<RowLabelProps> = () => {
   const data = useRowLabel<any>()
@@ -12,7 +11,7 @@ export const RowLabelSidebar: React.FC<RowLabelProps> = () => {
   useEffect(() => {
     if (categoryId) {
       fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/categories/${categoryId}`)
-        .then((res) => res.json() as Promise<Category>)
+        .then((res) => res.json())
         .then((category) => {
           setCategoryName(category?.title || 'Unknown Category')
         })

@@ -4,7 +4,7 @@ import { ProjectPriority } from '@/collections/Projects/priorityOptions'
 type UserWithProjectPriorities = User & {
   projectPriorities?: {
     id?: string | null
-    project?: string | number | { id?: string | null } | null | import('@/payload-types').Project
+    project?: string | { id?: string | null } | null | import('@/payload-types').Project
     priority?: ProjectPriority | null
   }[] | null
 }
@@ -18,19 +18,14 @@ const priorityRank: Record<ProjectPriority, number> = {
 
 const getUserProjectPriority = (
   user: UserWithProjectPriorities,
-  projectId: string | number
+  projectId: string
 ): ProjectPriority | undefined => {
   if (!projectId) return undefined
 
   return user.projectPriorities?.find((entry) => {
     const entryProject = entry?.project
-    const entryProjectId =
-      typeof entryProject === 'string' || typeof entryProject === 'number'
-        ? String(entryProject)
-        : entryProject?.id
-          ? String(entryProject.id)
-          : undefined
-    return entryProjectId === String(projectId)
+    const entryProjectId = typeof entryProject === 'string' ? entryProject : entryProject?.id
+    return entryProjectId === projectId
   })?.priority as ProjectPriority | undefined
 }
 

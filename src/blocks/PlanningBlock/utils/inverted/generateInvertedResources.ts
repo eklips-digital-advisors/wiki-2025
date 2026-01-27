@@ -44,7 +44,7 @@ export const generateInvertedResources = (
           .map((user: any) => ({
             id: `user-${user.id}-${project.id}`,
             title: user.name || '',
-            parentId: `${project.id}`,
+            parentId: project.id,
             userId: user.id,
             profileImage: user?.media?.url || '',
             position: user?.position || '',

@@ -143,7 +143,7 @@ export const SitesBlock: React.FC = async () => {
           }
 
           const siteItem: SiteItem = {
-            id: `${site.id}`,
+            id: site.id,
             title: site.title,
             ipRestriction: site?.ipRestriction ?? false,
             hosting: site?.hosting || '',
