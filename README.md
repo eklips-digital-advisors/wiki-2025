@@ -1,6 +1,6 @@
 # Payload Cloudflare Template
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/eklips-digital-advisors/wiki-2025)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://eklipsdigital@dev.azure.com/eklipsdigital/cwaas/_git/wiki)
 
 **This can only be deployed on Paid Workers right now due to size limits.** This template comes configured with the bare minimum to get started on anything you need.
 

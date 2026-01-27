@@ -117,7 +117,7 @@ export interface Config {
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: number;
+    defaultIDType: string;
   };
   fallbackLocale: null;
   globals: {
@@ -167,7 +167,7 @@ export interface UserAuthOperations {
  * via the `definition` "sites".
  */
 export interface Site {
-  id: number;
+  id: string;
   title: string;
   integrations?: {
     azureDevops?: string | null;
@@ -239,7 +239,7 @@ export interface Site {
  * via the `definition` "pages".
  */
 export interface Page {
-  id: number;
+  id: string;
   title: string;
   layout: (
     | CallToActionBlock
@@ -292,11 +292,11 @@ export interface CallToActionBlock {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: number | Page;
+                value: string | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: number | Post;
+                value: string | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -317,7 +317,7 @@ export interface CallToActionBlock {
  * via the `definition` "posts".
  */
 export interface Post {
-  id: number;
+  id: string;
   title: string;
   sections?:
     | {
@@ -355,9 +355,9 @@ export interface Post {
     };
     [k: string]: unknown;
   } | null;
-  categories?: (number | null) | Category;
+  categories?: (string | null) | Category;
   publishedAt?: string | null;
-  authors?: (number | User)[] | null;
+  authors?: (string | User)[] | null;
   populatedAuthors?:
     | {
         id?: string | null;
@@ -378,7 +378,7 @@ export interface Post {
  * via the `definition` "categories".
  */
 export interface Category {
-  id: number;
+  id: string;
   title: string;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
@@ -393,18 +393,18 @@ export interface Category {
  * via the `definition` "users".
  */
 export interface User {
-  id: number;
+  id: string;
   role?: ('user' | 'editor' | 'admin') | null;
   name?: string | null;
-  media?: (number | null) | Media;
+  media?: (string | null) | Media;
   position?: ('frontend' | 'backend' | 'designer' | 'pm' | 'qa' | 'sm' | 'other' | 'im') | null;
-  projects?: (number | Project)[] | null;
+  projects?: (string | Project)[] | null;
   /**
    * Per-user priority overrides for projects
    */
   projectPriorities?:
     | {
-        project: number | Project;
+        project: string | Project;
         priority?: ('none' | 'low' | 'medium' | 'high') | null;
         id?: string | null;
       }[]
@@ -433,7 +433,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: number;
+  id: string;
   alt?: string | null;
   caption?: {
     root: {
@@ -450,7 +450,7 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
-  folder?: (number | null) | FolderInterface;
+  folder?: (string | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -494,18 +494,18 @@ export interface Media {
  * via the `definition` "payload-folders".
  */
 export interface FolderInterface {
-  id: number;
+  id: string;
   name: string;
-  folder?: (number | null) | FolderInterface;
+  folder?: (string | null) | FolderInterface;
   documentsAndFolders?: {
     docs?: (
       | {
           relationTo?: 'payload-folders';
-          value: number | FolderInterface;
+          value: string | FolderInterface;
         }
       | {
           relationTo?: 'media';
-          value: number | Media;
+          value: string | Media;
         }
     )[];
     hasNextPage?: boolean;
@@ -520,7 +520,7 @@ export interface FolderInterface {
  * via the `definition` "projects".
  */
 export interface Project {
-  id: number;
+  id: string;
   projectTeamwork?: string | null;
   /**
    * Set manually if no project in TW
@@ -532,17 +532,17 @@ export interface Project {
   showInProjectView?: boolean | null;
   type?: 'vacation' | null;
   users?: {
-    docs?: (number | User)[];
+    docs?: (string | User)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
   timeEntries?: {
-    docs?: (number | TimeEntry)[];
+    docs?: (string | TimeEntry)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
   statusTimeEntries?: {
-    docs?: (number | StatusTimeEntry)[];
+    docs?: (string | StatusTimeEntry)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
@@ -554,12 +554,12 @@ export interface Project {
  * via the `definition` "time-entries".
  */
 export interface TimeEntry {
-  id: number;
+  id: string;
   start?: string | null;
   end?: string | null;
   hours: number;
-  user: number | User;
-  project: number | Project;
+  user: string | User;
+  project: string | Project;
   updatedAt: string;
   createdAt: string;
 }
@@ -568,12 +568,12 @@ export interface TimeEntry {
  * via the `definition` "status-time-entries".
  */
 export interface StatusTimeEntry {
-  id: number;
+  id: string;
   start?: string | null;
   end?: string | null;
   status?: ('planning' | 'design' | 'development' | 'test-content' | 'launch') | null;
   comment?: string | null;
-  project: number | Project;
+  project: string | Project;
   updatedAt: string;
   createdAt: string;
 }
@@ -582,7 +582,7 @@ export interface StatusTimeEntry {
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
-  media: number | Media;
+  media: string | Media;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
@@ -627,11 +627,11 @@ export interface ContentBlock {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: number | Page;
+                value: string | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: number | Post;
+                value: string | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -679,12 +679,12 @@ export interface ArchiveBlock {
   } | null;
   populateBy?: ('collection' | 'selection') | null;
   relationTo?: 'posts' | null;
-  categories?: (number | Category)[] | null;
+  categories?: (string | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
     | {
         relationTo: 'posts';
-        value: number | Post;
+        value: string | Post;
       }[]
     | null;
   id?: string | null;
@@ -743,7 +743,7 @@ export interface ReportsBlock {
  * via the `definition` "site-maps".
  */
 export interface SiteMap {
-  id: number;
+  id: string;
   title: string;
   /**
    * Build your page tree. Use "+ Main page" or select a node and "+ Child".
@@ -767,18 +767,18 @@ export interface SiteMap {
  * via the `definition` "search".
  */
 export interface Search {
-  id: number;
+  id: string;
   title?: string | null;
   priority?: number | null;
   doc: {
     relationTo: 'posts';
-    value: number | Post;
+    value: string | Post;
   };
   slug?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
-    image?: (number | null) | Media;
+    image?: (string | null) | Media;
   };
   categories?:
     | {
@@ -795,7 +795,7 @@ export interface Search {
  * via the `definition` "exports".
  */
 export interface Export {
-  id: number;
+  id: string;
   name?: string | null;
   format?: ('csv' | 'json') | null;
   limit?: number | null;
@@ -832,7 +832,7 @@ export interface Export {
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: number;
+  id: string;
   key: string;
   data:
     | {
@@ -849,7 +849,7 @@ export interface PayloadKv {
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
-  id: number;
+  id: string;
   /**
    * Input data provided to the job
    */
@@ -941,64 +941,64 @@ export interface PayloadJob {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: number;
+  id: string;
   document?:
     | ({
         relationTo: 'sites';
-        value: number | Site;
+        value: string | Site;
       } | null)
     | ({
         relationTo: 'pages';
-        value: number | Page;
+        value: string | Page;
       } | null)
     | ({
         relationTo: 'posts';
-        value: number | Post;
+        value: string | Post;
       } | null)
     | ({
         relationTo: 'categories';
-        value: number | Category;
+        value: string | Category;
       } | null)
     | ({
         relationTo: 'media';
-        value: number | Media;
+        value: string | Media;
       } | null)
     | ({
         relationTo: 'users';
-        value: number | User;
+        value: string | User;
       } | null)
     | ({
         relationTo: 'projects';
-        value: number | Project;
+        value: string | Project;
       } | null)
     | ({
         relationTo: 'time-entries';
-        value: number | TimeEntry;
+        value: string | TimeEntry;
       } | null)
     | ({
         relationTo: 'status-time-entries';
-        value: number | StatusTimeEntry;
+        value: string | StatusTimeEntry;
       } | null)
     | ({
         relationTo: 'site-maps';
-        value: number | SiteMap;
+        value: string | SiteMap;
       } | null)
     | ({
         relationTo: 'search';
-        value: number | Search;
+        value: string | Search;
       } | null)
     | ({
         relationTo: 'exports';
-        value: number | Export;
+        value: string | Export;
       } | null)
     | ({
         relationTo: 'payload-folders';
-        value: number | FolderInterface;
+        value: string | FolderInterface;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -1008,10 +1008,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: number;
+  id: string;
   user: {
     relationTo: 'users';
-    value: number | User;
+    value: string | User;
   };
   key?: string | null;
   value?:
@@ -1031,7 +1031,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: number;
+  id: string;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -1564,7 +1564,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  * via the `definition` "header".
  */
 export interface Header {
-  id: number;
+  id: string;
   navItems?:
     | {
         link: {
@@ -1573,11 +1573,11 @@ export interface Header {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: number | Page;
+                value: string | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: number | Post;
+                value: string | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -1593,7 +1593,7 @@ export interface Header {
  * via the `definition` "sidebar".
  */
 export interface Sidebar {
-  id: number;
+  id: string;
   /**
    * 1st level of sidebar
    */
@@ -1603,15 +1603,15 @@ export interface Sidebar {
          * Fill only when adding 2nd level subitems
          */
         title?: string | null;
-        firstLevelCategoriesOrder?: (number | null) | Category;
-        firstLevelPostsOrder?: (number | Post)[] | null;
+        firstLevelCategoriesOrder?: (string | null) | Category;
+        firstLevelPostsOrder?: (string | Post)[] | null;
         /**
          * 2nd level of sidebar
          */
         subItems?:
           | {
-              categoriesOrder: number | Category;
-              postsOrder: (number | Post)[];
+              categoriesOrder: string | Category;
+              postsOrder: (string | Post)[];
               id?: string | null;
             }[]
           | null;
@@ -1710,14 +1710,14 @@ export interface TaskSchedulePublish {
     doc?:
       | ({
           relationTo: 'pages';
-          value: number | Page;
+          value: string | Page;
         } | null)
       | ({
           relationTo: 'posts';
-          value: number | Post;
+          value: string | Post;
         } | null);
     global?: string | null;
-    user?: (number | null) | User;
+    user?: (string | null) | User;
   };
   output?: unknown;
 }
