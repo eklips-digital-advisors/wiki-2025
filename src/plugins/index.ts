@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { searchPlugin } from '@payloadcms/plugin-search'
-import { Plugin } from 'payload'
+import type { CollectionConfig, CollectionSlug, Plugin } from 'payload'
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 import { importExportPlugin } from '@payloadcms/plugin-import-export'
@@ -25,6 +25,25 @@ const cloudflare =
     ? await getCloudflareContextFromWrangler()
     : await getCloudflareContext({ async: true })
 
+type R2StorageBucket = Parameters<typeof r2Storage>[0]['bucket']
+const r2Bucket = cloudflare.env.R2 as unknown as R2StorageBucket
+
+const importExportCollectionSlugs: CollectionSlug[] = [
+  'sites',
+  'pages',
+  'posts',
+  'categories',
+  'media',
+  'users',
+  'projects',
+  'time-entries',
+  'status-time-entries',
+  'site-maps',
+]
+
+const importExportCollectionOverride = ({ collection }: { collection: CollectionConfig }) =>
+  collection
+
 export const plugins: Plugin[] = [
   searchPlugin({
     collections: ['posts'],
@@ -39,15 +58,31 @@ export const plugins: Plugin[] = [
     },
   }),
   importExportPlugin({
-    overrideExportCollection: (collection) => {
-      collection.admin.group = 'Globals'
-      collection.upload.staticDir = path.resolve(dirname, '../../public/exports')
-      return collection
-    },
-    disableJobsQueue: true,
+    collections: importExportCollectionSlugs.map((slug) => ({
+      slug,
+      export: {
+        disableJobsQueue: true,
+        overrideCollection: importExportCollectionOverride,
+      },
+      import: {
+        disableJobsQueue: true,
+        overrideCollection: importExportCollectionOverride,
+      },
+    })),
+    overrideExportCollection: ({ collection }) => ({
+      ...collection,
+      admin: {
+        ...(collection.admin || {}),
+        group: 'Globals',
+      },
+      upload: {
+        ...(typeof collection.upload === 'object' ? collection.upload : {}),
+        staticDir: path.resolve(dirname, '../../public/exports'),
+      },
+    }),
   }),
   r2Storage({
-    bucket: cloudflare.env.R2,
+    bucket: r2Bucket,
     collections: { media: true },
   }),
 ]
