@@ -30,6 +30,7 @@ export const generateInvertedResources = (
         id: `${project.id}`,
         title: project.title || '',
         projectId: project.id,
+        projectTeamwork: project?.projectTeamwork || '',
         projectImage: project.image || '',
         isProject: true,
         type: project?.projectTeamwork ? '' : 'non-teamwork-project',

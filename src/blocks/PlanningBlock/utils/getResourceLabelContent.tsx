@@ -1,8 +1,8 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
+import { TeamworkTasksDropdown } from '@/blocks/PlanningBlock/TeamworkTasksDropdown'
 import { PackagePlus, CircleX, Info, Flag } from 'lucide-react'
 import { getLabel } from '@/utilities/getLabel'
 import { positionOptions } from '@/collections/Users/positionOptions'
@@ -51,7 +51,9 @@ export const getResourceLabelContent = ({
     const priority = (resource?._resource?.extendedProps?.priority || 'none') as ProjectPriority
     const isProject = resource?._resource?.extendedProps?.isProject
     const showInProjectView = resource?._resource?.extendedProps?.showInProjectView
+    const projectTeamworkId = resource?._resource?.extendedProps?.projectTeamwork
     const isArchived = !showInProjectView && isProject
+    const shouldShowTeamworkTasks = Boolean(isInverted && isProject && projectTeamworkId)
 
     if (!resource._resource.parentId) {
       return (
@@ -66,7 +68,12 @@ export const getResourceLabelContent = ({
               variant={isInverted ? 'square' : 'rounded'}
             />
             <span className="flex flex-col gap-1">
-              <span className="leading-4 font-medium">{resource.title}</span>
+              <span className="flex items-center gap-1">
+                <span className="leading-4 font-medium">{resource.title}</span>
+                {shouldShowTeamworkTasks && (
+                  <TeamworkTasksDropdown projectTeamworkId={projectTeamworkId} />
+                )}
+              </span>
               <span className="text-[12px] leading-3">
                 {getLabel(resource._resource?.extendedProps?.position, positionOptions)}
               </span>
