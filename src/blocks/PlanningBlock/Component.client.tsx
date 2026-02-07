@@ -61,7 +61,6 @@ export const PlanningComponentClient: React.FC<{
   const [hoursInput, setHoursInput] = useState('')
   const [statusInput, setStatusInput] = useState(statusOptions[0].value)
   const [statusComment, setStatusComment] = useState('')
-  const [projectComment, setProjectComment] = useState('')
   const [clickedInfo, setClickedInfo] = useState<any>(null)
   const hoursModalSlug = 'hours-entry-modal'
   const invertedHoursModalSlug = 'inverted-hours-entry-modal'
@@ -300,7 +299,7 @@ export const PlanningComponentClient: React.FC<{
           resourceTimelineSixMonths: '6 months',
         }}
         resourceLabelContent={getResourceLabelContent({ isInverted, loggedUser, setSelectedResource, toggleModal,
-          modalSlug, setUsersState, router, setToast, setProjectsState, setProjectComment
+          modalSlug, setUsersState, router, setToast, setProjectsState
         })}
       />
 
@@ -312,8 +311,8 @@ export const PlanningComponentClient: React.FC<{
 
       <ProjectCommentModal
         modalSlug={projectCommentModalSlug} selectedResource={selectedResource} setUsersState={setUsersState}
-        router={router} setToast={setToast} toggleModal={toggleModal} loggedUser={loggedUser} projectComment={projectComment}
-        setProjectComment={setProjectComment} setProjectsState={setProjectsState}
+        router={router} setToast={setToast} toggleModal={toggleModal} loggedUser={loggedUser}
+        setProjectsState={setProjectsState}
       />
 
       <InvertedProjectModal

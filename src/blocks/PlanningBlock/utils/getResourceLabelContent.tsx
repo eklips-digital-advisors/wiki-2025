@@ -28,7 +28,6 @@ type Props = {
   router: any
   setToast: (val: { message: string; type: 'success' | 'error' }) => void
   setProjectsState: any,
-  setProjectComment: (val: string) => void,
 }
 
 export const getResourceLabelContent = ({
@@ -41,13 +40,11 @@ export const getResourceLabelContent = ({
   router,
   setToast,
   setProjectsState,
-  setProjectComment
 }: Props) => {
   const ResourceLabelContent = (arg: any) => {
     const resource = arg.resource
     const type = resource._resource?.extendedProps?.type
     const projectType = resource._resource?.extendedProps?.projectType
-    const comment = resource._resource?.extendedProps?.comment
     const priority = (resource?._resource?.extendedProps?.priority || 'none') as ProjectPriority
     const isProject = resource?._resource?.extendedProps?.isProject
     const showInProjectView = resource?._resource?.extendedProps?.showInProjectView
@@ -98,7 +95,6 @@ export const getResourceLabelContent = ({
                         return
                       }
 
-                      setProjectComment(comment || '')
                       setSelectedResource(resource)
                       toggleModal('project-comment-modal')
                     }}
@@ -214,7 +210,6 @@ export const getResourceLabelContent = ({
                       return
                     }
 
-                    setProjectComment(comment || '')
                     setSelectedResource(resource)
                     toggleModal('project-comment-modal')
                   }}

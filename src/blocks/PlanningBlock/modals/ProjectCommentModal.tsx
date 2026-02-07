@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, ModalToggler, ModalContainer } from '@faceless-ui/modal'
 import { Button } from '@/components/ui/button'
-import { TextareaInput } from '@payloadcms/ui'
+import { Textarea } from '@/components/ui/textarea'
 import { CircleX } from 'lucide-react'
 import { User } from '@/payload-types'
 import { handleProjectComment } from '@/blocks/PlanningBlock/utils/regular/handleProjectComment'
@@ -14,8 +14,6 @@ type Props = {
   setToast: (val: { message: string; type: 'success' | 'error' }) => void
   toggleModal: (slug: string) => void
   loggedUser: User | null
-  projectComment: string
-  setProjectComment: (val: string) => void
   setProjectsState: React.Dispatch<React.SetStateAction<any[]>>
 }
 
@@ -27,10 +25,18 @@ export const ProjectCommentModal: React.FC<Props> = ({
   setToast,
   toggleModal,
   loggedUser,
-  projectComment,
-  setProjectComment,
   setProjectsState
 }) => {
+  const [projectCommentInput, setProjectCommentInput] = React.useState('')
+
+  React.useEffect(() => {
+    const nextComment =
+      selectedResource?._resource?.extendedProps?.comment ??
+      selectedResource?.extendedProps?.comment ??
+      ''
+    setProjectCommentInput(nextComment)
+  }, [selectedResource])
+
   return (
     <ModalContainer className="bg-zinc-800/10">
       <Modal
@@ -44,18 +50,26 @@ export const ProjectCommentModal: React.FC<Props> = ({
         </ModalToggler>
         <div className="flex flex-col gap-6">
           <h2 className="text-xl font-semibold">Update project comment</h2>
-          <TextareaInput
-            className="border border-zinc-100"
-            path="addStatusComment"
-            rows={3}
-            value={projectComment}
-            onChange={(e) => setProjectComment(e.target.value)}
+          <Textarea
+            className="min-h-[96px]"
+            rows={4}
+            value={projectCommentInput}
+            onChange={(e) => setProjectCommentInput(e.target.value)}
           />
           <Button
             variant="default"
             className="cursor-pointer self-start"
             onClick={() =>
-              handleProjectComment(selectedResource, setUsersState, router, setToast, loggedUser, projectComment, toggleModal, setProjectsState)
+              handleProjectComment(
+                selectedResource,
+                setUsersState,
+                router,
+                setToast,
+                loggedUser,
+                projectCommentInput,
+                toggleModal,
+                setProjectsState
+              )
             }
           >
             Update
