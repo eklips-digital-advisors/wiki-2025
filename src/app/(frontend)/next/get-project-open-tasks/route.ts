@@ -6,6 +6,7 @@ type TeamworkTask = {
   url: string
   listName: string
   assignees: string
+  createdAt: string
 }
 
 const isCompletedTask = (task: any) => {
@@ -140,6 +141,18 @@ const resolveAssigneeIdsFromTask = (task: any) => {
   return Array.from(ids)
 }
 
+const resolveCreatedAtFromTask = (task: any) =>
+  String(
+    task?.createdAt ||
+      task?.createdOn ||
+      task?.createdDate ||
+      task?.createdDateTime ||
+      task?.created_at ||
+      task?.['created-on'] ||
+      task?.['created-date'] ||
+      ''
+  )
+
 const fetchTasklistsMap = async (baseUrl: string, apiKey: string, projectId: string) => {
   const headers = {
     Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString('base64')}`,
@@ -254,12 +267,13 @@ const normalizeTask = (
       .map((assigneeId) => assigneeNameById[assigneeId])
       .filter(Boolean)
       .join(', ')
+  const createdAt = resolveCreatedAtFromTask(task)
 
   if (!id || !url) {
     return null
   }
 
-  return { id, name, url, listName, assignees }
+  return { id, name, url, listName, assignees, createdAt }
 }
 
 export async function GET(req: NextRequest) {

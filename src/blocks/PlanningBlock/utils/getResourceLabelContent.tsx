@@ -69,7 +69,12 @@ export const getResourceLabelContent = ({
             />
             <span className="flex flex-col gap-1">
               <span className="flex items-center gap-1">
-                <span className="leading-4 font-medium">{resource.title}</span>
+                <span
+                  className="max-w-[220px] truncate leading-4 font-medium"
+                  title={resource.title}
+                >
+                  {resource.title}
+                </span>
                 {shouldShowTeamworkTasks && (
                   <TeamworkTasksDropdown projectTeamworkId={projectTeamworkId} />
                 )}
