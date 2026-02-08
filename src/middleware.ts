@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
   const addedIps = process.env.NODE_ENV !== 'production' ? allowedIPsLocal : allowedIPs
 
   const ip = request.headers.get('x-forwarded-for') || ''
-  if (!addedIps.includes(ip)) {
+  if (process.env.NODE_ENV === 'production' && !addedIps.includes(ip)) {
     return new Response('Access Denied', { status: 403 })
   }
 
