@@ -299,7 +299,7 @@ export const PlanningComponentClient: React.FC<{
           resourceTimelineSixMonths: '6 months',
         }}
         resourceLabelContent={getResourceLabelContent({ isInverted, loggedUser, setSelectedResource, toggleModal,
-          modalSlug, setUsersState, router, setToast, setProjectsState
+          modalSlug, usersState, setUsersState, router, setToast, setProjectsState
         })}
       />
 

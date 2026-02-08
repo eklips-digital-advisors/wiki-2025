@@ -1,5 +1,12 @@
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
 import { TeamworkTasksDropdown } from '@/blocks/PlanningBlock/TeamworkTasksDropdown'
@@ -10,6 +17,7 @@ import { handleRemoveProject } from '@/blocks/PlanningBlock/utils/regular/handle
 import { handleRemoveProjectInverted } from '@/blocks/PlanningBlock/utils/inverted/handleRemoveProjectInverted'
 import { handleProjectPriority } from '@/blocks/PlanningBlock/utils/regular/handleProjectPriority'
 import { priorityOptions, ProjectPriority } from '@/collections/Projects/priorityOptions'
+import { getClientSideURL } from '@/utilities/getURL'
 
 const priorityColorMap: Record<ProjectPriority, string> = {
   none: 'text-zinc-300',
@@ -24,6 +32,7 @@ type Props = {
   setSelectedResource: (val: any) => void
   toggleModal: (slug: string) => void
   modalSlug: string
+  usersState: any
   setUsersState: any
   router: any
   setToast: (val: { message: string; type: 'success' | 'error' }) => void
@@ -36,6 +45,7 @@ export const getResourceLabelContent = ({
   setSelectedResource,
   toggleModal,
   modalSlug,
+  usersState,
   setUsersState,
   router,
   setToast,
@@ -84,7 +94,13 @@ export const getResourceLabelContent = ({
     const isArchived = !showInProjectView && isProject
     const shouldShowTeamworkTasks = Boolean(isInverted && isProject && projectTeamworkId)
     const shouldShowProjectAssignments = Boolean(isInverted && isProject)
-    const assignmentSlots = [
+    const assignmentSlots: Array<{
+      key: 'pm' | 'frontend' | 'backend'
+      label: string
+      id: string | null
+      name: string
+      avatarUrl: string
+    }> = [
       { key: 'pm', label: 'PM', id: pmId, name: pmName, avatarUrl: pmAvatarUrl },
       { key: 'frontend', label: 'Frontend', id: frontendId, name: frontendName, avatarUrl: frontendAvatarUrl },
       { key: 'backend', label: 'Backend', id: backendId, name: backendName, avatarUrl: backendAvatarUrl },
@@ -93,6 +109,77 @@ export const getResourceLabelContent = ({
       pm: 'border-indigo-400',
       frontend: 'border-emerald-400',
       backend: 'border-blue-400',
+    }
+    const projectIdForUpdate = resource?._resource?.extendedProps?.projectId || resource?._resource?.id
+    const usersByRole = {
+      pm: usersState.filter((user: any) => (user?.position || '').toLowerCase() === 'pm'),
+      frontend: usersState.filter((user: any) => (user?.position || '').toLowerCase() === 'frontend'),
+      backend: usersState.filter((user: any) => (user?.position || '').toLowerCase() === 'backend'),
+    }
+
+    const handleAssigneeUpdate = async (
+      field: 'pm' | 'frontend' | 'backend',
+      userId: string | null,
+      roleLabel: string,
+    ) => {
+      if (!loggedUser) {
+        setToast({ message: 'Please log in', type: 'error' })
+        return
+      }
+
+      if (!projectIdForUpdate) {
+        setToast({ message: 'Could not update project', type: 'error' })
+        return
+      }
+
+      try {
+        const req = await fetch(`${getClientSideURL()}/api/projects/${projectIdForUpdate}?depth=2`, {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            [field]: userId,
+          }),
+        })
+
+        if (!req.ok) {
+          throw new Error(`Failed to update ${field}: ${req.status}`)
+        }
+
+        const data = await req.json()
+        const updatedProject = data?.doc
+
+        if (!updatedProject) {
+          throw new Error('No updated project document returned')
+        }
+
+        setProjectsState((prev: any[]) =>
+          prev.map((project) => (project.id === updatedProject.id ? updatedProject : project)),
+        )
+
+        setUsersState((prev: any[]) =>
+          prev.map((user) =>
+            !user.projects
+              ? user
+              : {
+                  ...user,
+                  projects: user.projects.map((project: any) =>
+                    project.id === updatedProject.id ? updatedProject : project,
+                  ),
+                },
+          ),
+        )
+
+        setToast({
+          message: userId ? `${roleLabel} updated` : `${roleLabel} cleared`,
+          type: 'success',
+        })
+      } catch (error) {
+        console.log(error)
+        setToast({ message: `Could not update ${roleLabel}`, type: 'error' })
+      }
     }
 
     if (!resource._resource.parentId) {
@@ -124,9 +211,19 @@ export const getResourceLabelContent = ({
                     )}
                     <span className="inline-flex items-center gap-1">
                       {assignmentSlots.map((slot) => (
-                        <Tooltip key={slot.key}>
-                          <TooltipTrigger asChild>
-                            <span className="inline-flex h-[20px] w-[20px] items-center justify-center">
+                        <DropdownMenu key={slot.key}>
+                          <DropdownMenuTrigger asChild>
+                            <button
+                              type="button"
+                              className="inline-flex h-[20px] w-[20px] items-center justify-center cursor-pointer"
+                              title={`${slot.label}: ${slot.name || 'Not set'}`}
+                              onClick={(event) => {
+                                if (loggedUser) return
+                                event.preventDefault()
+                                event.stopPropagation()
+                                setToast({ message: 'Please log in', type: 'error' })
+                              }}
+                            >
                               {slot.id ? (
                                 <ProfileImage
                                   name={slot.name || slot.label}
@@ -139,14 +236,33 @@ export const getResourceLabelContent = ({
                                   className={`inline-flex h-[20px] w-[20px] rounded-full border-[1.5px] border-dotted bg-white ${placeholderBorderClassByKey[slot.key] || 'border-zinc-300'}`}
                                 />
                               )}
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent side="top">
-                            {slot.id
-                              ? `${slot.label}: ${slot.name || 'Set'}`
-                              : `${slot.label}: Not set`}
-                          </TooltipContent>
-                        </Tooltip>
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className="bg-white z-[80] min-w-[220px]">
+                            <DropdownMenuLabel>{slot.label}</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onSelect={() => void handleAssigneeUpdate(slot.key, null, slot.label)}
+                            >
+                              Clear assignment
+                            </DropdownMenuItem>
+                            {usersByRole[slot.key].map((user: any) => (
+                              <DropdownMenuItem
+                                key={`${slot.key}-${user.id}`}
+                                onSelect={() => void handleAssigneeUpdate(slot.key, user.id, slot.label)}
+                                className="flex items-center gap-2"
+                              >
+                                <ProfileImage
+                                  name={user.name || slot.label}
+                                  url={(user?.media?.url as string) || ''}
+                                  size={16}
+                                  variant="rounded"
+                                />
+                                <span>{user.name || 'Unnamed user'}</span>
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       ))}
                     </span>
                   </span>
