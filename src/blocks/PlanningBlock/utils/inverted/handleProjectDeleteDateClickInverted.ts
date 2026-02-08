@@ -11,7 +11,7 @@ export const handleProjectDeleteDateClickInverted = async (
   const eventId = info?.event?.id
 
   if (!isEventClick || !eventId) {
-    setToast({ message: 'Entry not deleted, no status entry id, does status entry exist?', type: 'error' })
+    setToast({ message: 'Unable to delete status entry: missing entry ID.', type: 'error' })
     return
   }
 
@@ -32,7 +32,7 @@ export const handleProjectDeleteDateClickInverted = async (
 
     setStatusTimeEntriesState((prev: any) => prev.filter((entry: any) => entry.id !== existingEntry.id))
 
-    setToast({ message: 'Status Entry deleted', type: 'success' })
+    setToast({ message: 'Status entry deleted successfully.', type: 'success' })
 
     await fetch('/next/revalidate', {
       method: 'POST',
@@ -44,5 +44,6 @@ export const handleProjectDeleteDateClickInverted = async (
     router.refresh()
   } catch (err) {
     console.error('Error handling time entry:', err)
+    setToast({ message: 'Unable to delete status entry.', type: 'error' })
   }
 }

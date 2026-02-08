@@ -60,7 +60,12 @@ export const handleResizeClickInverted = async (
           prev.map((entry: any) => (entry.id === newTimeEntryState.id ? newTimeEntryState : entry)),
         )
       }
-      setToast({ message: 'Status updated', type: 'success' })
+      setToast({
+        message: isChild
+          ? 'Time entry updated successfully.'
+          : 'Status entry updated successfully.',
+        type: 'success',
+      })
       console.log('Updated entry:', updated)
     }
 
@@ -73,7 +78,10 @@ export const handleResizeClickInverted = async (
     })
     router.refresh()
   } catch (err) {
-    setToast({ message: 'Failed to update status', type: 'error' })
+    setToast({
+      message: isChild ? 'Unable to update time entry.' : 'Unable to update status entry.',
+      type: 'error',
+    })
     console.error('Error handling status:', err)
   }
 }

@@ -61,7 +61,7 @@ export const handleUserSaveDateClickInverted = async (
             prev.map((entry: any) => (entry.id === newTimeEntryState.id ? newTimeEntryState : entry)),
           )
         }
-        setToast({ message: 'Hours updated', type: 'success' })
+        setToast({ message: 'Hours entry updated successfully.', type: 'success' })
         console.log('Updated entry:', updated) 
       }
     } else {
@@ -85,7 +85,7 @@ export const handleUserSaveDateClickInverted = async (
         setTimeEntriesState((prev: any) => [...prev, newTimeEntryState])
       }
 
-      setToast({ message: 'Hours added', type: 'success' })
+      setToast({ message: 'Hours entry created successfully.', type: 'success' })
       console.log('Created entry:', created)
     }
 
@@ -99,5 +99,6 @@ export const handleUserSaveDateClickInverted = async (
     router.refresh()
   } catch (err) {
     console.error('Error handling time entry:', err)
+    setToast({ message: 'Unable to save hours entry.', type: 'error' })
   }
 }

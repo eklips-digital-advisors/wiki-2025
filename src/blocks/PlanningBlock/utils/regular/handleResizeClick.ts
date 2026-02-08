@@ -49,7 +49,7 @@ export const handleResizeClick = async (
           prev.map((entry: any) => (entry.id === newTimeEntryState.id ? newTimeEntryState : entry)),
         )
       }
-      setToast({ message: 'Time entry updated', type: 'success' })
+      setToast({ message: 'Time entry updated successfully.', type: 'success' })
       console.log('Updated entry:', updated)
     }
 
@@ -62,7 +62,7 @@ export const handleResizeClick = async (
     })
     router.refresh()
   } catch (err) {
-    setToast({ message: 'Failed to update time entry', type: 'error' })
+    setToast({ message: 'Unable to update time entry.', type: 'error' })
     console.error('Error handling time entry:', err)
   }
 }

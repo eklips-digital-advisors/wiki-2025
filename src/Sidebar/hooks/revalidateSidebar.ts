@@ -6,7 +6,7 @@ export const revalidateSidebar: GlobalAfterChangeHook = ({ doc, req: { payload, 
   if (!context.disableRevalidate) {
     payload.logger.info(`Revalidating sidebar`)
 
-    revalidateTag('global_sidebar')
+    revalidateTag('global_sidebar', 'max')
   }
 
   return doc

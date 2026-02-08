@@ -8,7 +8,7 @@ export const handleRemoveProject = async (
   loggedUser: any
 ) => {
   if (!loggedUser) {
-    setToast({ message: 'Please log in', type: 'error' })
+    setToast({ message: 'Please sign in to continue.', type: 'error' })
     return
   }
 
@@ -16,7 +16,10 @@ export const handleRemoveProject = async (
   const projectId = resource?.extendedProps?.projectId
 
   if (loggedUser?.id !== user && (loggedUser.role !== 'admin' && loggedUser.role !== 'editor')) {
-    setToast({ message: 'Cannot update other user unless you are admin or editor', type: 'error' })
+    setToast({
+      message: 'You can only update your own projects unless you are an admin or editor.',
+      type: 'error',
+    })
     return
   }
 
@@ -51,9 +54,11 @@ export const handleRemoveProject = async (
       setUsersState((prev) =>
         prev.map((user) => (user.id === newUserState.id ? newUserState : user)),
       )
+      setToast({ message: 'Project removed from this user.', type: 'success' })
     }
   } catch (err) {
     console.log(err)
+    setToast({ message: 'Unable to remove project from this user.', type: 'error' })
   }
 
   await fetch('/next/revalidate', {

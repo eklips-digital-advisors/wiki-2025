@@ -70,7 +70,7 @@ export const HoursModal: React.FC<Props> = ({
               className="cursor-pointer self-start"
               onClick={async () => {
                 await handleSaveDateClick(clickedInfo, router, hoursInput, setTimeEntriesState)
-                setToast({ message: 'Hours saved', type: 'success' })
+                setToast({ message: 'Hours entry saved successfully.', type: 'success' })
                 setHoursInput('')
                 toggleModal(hoursModalSlug)
               }}

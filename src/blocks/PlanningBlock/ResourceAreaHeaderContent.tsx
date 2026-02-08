@@ -80,7 +80,7 @@ export const ResourceAreaHeaderContent: React.FC<Props> = ({
                   className="text-xs cursor-pointer flex items-center mr-2"
                   onClick={() => {
                     if (!loggedUser) {
-                      setToast({ message: 'Please log in', type: 'error' })
+                      setToast({ message: 'Please sign in to continue.', type: 'error' })
                       return
                     }
                     toggleModal(invertedProjectSlug)

@@ -11,7 +11,7 @@ export const handleDeleteDateClick = async (
   const eventId = info?.event?.id?.split?.('-')?.[0]?.trim()
 
   if (!eventId || !isEventClick) {
-    setToast({ message: 'Entry not deleted, no event id, does event exist?', type: 'error' })
+    setToast({ message: 'Unable to delete entry: missing event reference.', type: 'error' })
     return
   }
 
@@ -32,7 +32,7 @@ export const handleDeleteDateClick = async (
 
     setTimeEntriesState((prev: any) => prev.filter((entry: any) => entry.id !== existingEntry.id))
 
-    setToast({ message: 'Entry deleted', type: 'success' })
+    setToast({ message: 'Entry deleted successfully.', type: 'success' })
 
     await fetch('/next/revalidate', {
       method: 'POST',
@@ -44,5 +44,6 @@ export const handleDeleteDateClick = async (
     router.refresh()
   } catch (err) {
     console.error('Error handling time entry:', err)
+    setToast({ message: 'Unable to delete entry.', type: 'error' })
   }
 }

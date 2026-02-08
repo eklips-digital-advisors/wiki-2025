@@ -8,7 +8,7 @@ export const handleRemoveProjectInverted = async (
   loggedUser: any
 ) => {
   if (!loggedUser) {
-    setToast({ message: 'Please log in', type: 'error' })
+    setToast({ message: 'Please sign in to continue.', type: 'error' })
     return
   }
 
@@ -35,9 +35,10 @@ export const handleRemoveProjectInverted = async (
         prev.map((project) => (project.id === newProjectState.id ? newProjectState : project)),
       )
     }
-    setToast({ message: 'Project removed', type: 'success' })
+    setToast({ message: 'Project removed from project view.', type: 'success' })
   } catch (err) {
     console.log(err)
+    setToast({ message: 'Unable to remove project from project view.', type: 'error' })
   }
 
   await fetch('/next/revalidate', {

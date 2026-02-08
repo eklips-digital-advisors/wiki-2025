@@ -78,7 +78,7 @@ export const StatusModal: React.FC<Props> = ({
                 await handleProjectSaveDateClickInverted(clickedInfo, router, statusInput, statusComment,
                   setStatusTimeEntriesState
                 )
-                setToast({ message: 'Status saved', type: 'success' })
+                setToast({ message: 'Project status saved successfully.', type: 'success' })
                 setStatusInput(statusOptions[0].value)
                 toggleModal(statusModalSlug)
               }}

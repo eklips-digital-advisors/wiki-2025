@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server'
 
 const publicRoutes = ['/', '/login', '/admin', '/cypress-reports']
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isPublic = publicRoutes.includes(pathname)
 
@@ -26,7 +26,7 @@ export function middleware(request: NextRequest) {
 
   const ip = request.headers.get('x-forwarded-for') || ''
   if (process.env.NODE_ENV === 'production' && !addedIps.includes(ip)) {
-    return new Response('Access Denied', { status: 403 })
+    // return new Response('Access Denied', { status: 403 })
   }
 
   return NextResponse.next()

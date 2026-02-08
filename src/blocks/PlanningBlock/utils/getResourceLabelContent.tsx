@@ -123,12 +123,15 @@ export const getResourceLabelContent = ({
       roleLabel: string,
     ) => {
       if (!loggedUser) {
-        setToast({ message: 'Please log in', type: 'error' })
+        setToast({ message: 'Please sign in to continue.', type: 'error' })
         return
       }
 
       if (!projectIdForUpdate) {
-        setToast({ message: 'Could not update project', type: 'error' })
+        setToast({
+          message: 'Unable to update project assignment: missing project reference.',
+          type: 'error',
+        })
         return
       }
 
@@ -173,12 +176,14 @@ export const getResourceLabelContent = ({
         )
 
         setToast({
-          message: userId ? `${roleLabel} updated` : `${roleLabel} cleared`,
+          message: userId
+            ? `${roleLabel} assignment updated successfully.`
+            : `${roleLabel} assignment cleared.`,
           type: 'success',
         })
       } catch (error) {
         console.log(error)
-        setToast({ message: `Could not update ${roleLabel}`, type: 'error' })
+        setToast({ message: `Unable to update ${roleLabel} assignment.`, type: 'error' })
       }
     }
 
@@ -221,7 +226,7 @@ export const getResourceLabelContent = ({
                                 if (loggedUser) return
                                 event.preventDefault()
                                 event.stopPropagation()
-                                setToast({ message: 'Please log in', type: 'error' })
+                                setToast({ message: 'Please sign in to continue.', type: 'error' })
                               }}
                             >
                               {slot.id ? (
@@ -283,7 +288,7 @@ export const getResourceLabelContent = ({
                     title="Edit project details"
                     onClick={() => {
                       if (!loggedUser) {
-                        setToast({ message: 'Please log in', type: 'error' })
+                        setToast({ message: 'Please sign in to continue.', type: 'error' })
                         return
                       }
 
@@ -337,7 +342,7 @@ export const getResourceLabelContent = ({
                   className="text-xs cursor-pointer flex items-center"
                   onClick={() => {
                     if (!loggedUser) {
-                      setToast({ message: 'Please log in', type: 'error' })
+                      setToast({ message: 'Please sign in to continue.', type: 'error' })
                       return
                     }
 
@@ -416,7 +421,7 @@ export const getResourceLabelContent = ({
                   title="Edit project details"
                   onClick={() => {
                     if (!loggedUser) {
-                      setToast({ message: 'Please log in', type: 'error' })
+                      setToast({ message: 'Please sign in to continue.', type: 'error' })
                       return
                     }
 

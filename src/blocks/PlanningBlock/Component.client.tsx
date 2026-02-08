@@ -10,7 +10,6 @@ import '@payloadcms/ui/css'
 import { useModal } from '@faceless-ui/modal'
 import { useRouter } from 'next/navigation'
 import { onCalendarDateClick } from '@/blocks/PlanningBlock/utils/regular/onCalendarDateClick'
-import { Toast } from '@/components/Toast'
 import { getFrontendUser } from '@/utilities/getFrontendUser'
 import { calculateUserWeeklyLoads, createUserWeeklySummaryEvents } from '@/blocks/PlanningBlock/utils/regular/calculateUserLoads'
 import { generateResources } from '@/blocks/PlanningBlock/utils/regular/generateResources'
@@ -40,6 +39,8 @@ import { Info } from 'lucide-react'
 import { RoleFilterModal } from '@/blocks/PlanningBlock/modals/RoleFilterModal'
 import { ProjectCommentModal } from '@/blocks/PlanningBlock/modals/ProjectCommentModal'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Toaster } from '@/components/ui/sonner'
+import { toast } from 'sonner'
 
 export const PlanningComponentClient: React.FC<{
   users: User[]
@@ -66,12 +67,44 @@ export const PlanningComponentClient: React.FC<{
   const invertedHoursModalSlug = 'inverted-hours-entry-modal'
   const statusModalSlug = 'status-entry-modal'
   const projectCommentModalSlug = 'project-comment-modal'
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const [loggedUser, setLoggedUser] = useState<User | null>(null);
   const [isInverted, setIsInverted] = useState(false)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [invertedShowAllProjects, setInvertedShowAllProjects] = useState(false)
+
+  const setToast = React.useCallback(
+    ({ message, type }: { message: string; type: 'success' | 'error' }) => {
+      const normalizedMessage = (message || '').trim() || (type === 'success' ? 'Done' : 'Something went wrong')
+      const loweredMessage = normalizedMessage.toLowerCase()
+
+      if (type === 'success') {
+        toast.success(normalizedMessage)
+        return
+      }
+
+      if (loweredMessage.includes('log in') || loweredMessage.includes('sign in')) {
+        toast.error('Authentication required', {
+          description: 'Please sign in and try again.',
+        })
+        return
+      }
+
+      if (
+        loweredMessage.includes('failed') ||
+        loweredMessage.includes('could not') ||
+        loweredMessage.includes('unable')
+      ) {
+        toast.error(normalizedMessage, {
+          description: 'Please try again. If the issue continues, refresh the page.',
+        })
+        return
+      }
+
+      toast.error(normalizedMessage)
+    },
+    [],
+  )
 
   const allRoles = useMemo(() => {
     const roles = usersState.map((user) => user.position).filter(Boolean) as string[];
@@ -97,7 +130,7 @@ export const PlanningComponentClient: React.FC<{
 
   const handleCalendarClick = async (info: any) => {
     if (!loggedUser) {
-      setToast({ message: 'Please log in first', type: 'error' })
+      setToast({ message: 'Please sign in to continue.', type: 'error' })
       return
     }
 
@@ -121,7 +154,7 @@ export const PlanningComponentClient: React.FC<{
 
   const allowFn = () => {
     if (!loggedUser) {
-      setToast({ message: 'Please log in', type: 'error' })
+      setToast({ message: 'Please sign in to continue.', type: 'error' })
       return false
     }
     return true
@@ -344,7 +377,7 @@ export const PlanningComponentClient: React.FC<{
         setSelectedRoles={setSelectedRoles}
       />
 
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <Toaster richColors closeButton position="bottom-right" />
     </>
   )
 }

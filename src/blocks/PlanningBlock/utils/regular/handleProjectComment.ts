@@ -14,7 +14,7 @@ export const handleProjectComment = async (
   backend: string | null,
 ) => {
   if (!loggedUser) {
-    setToast({ message: 'Please log in', type: 'error' })
+    setToast({ message: 'Please sign in to continue.', type: 'error' })
     return
   }
 
@@ -64,13 +64,13 @@ export const handleProjectComment = async (
         ),
       )
 
-      setToast({ message: 'Project details updated', type: 'success' })
+      setToast({ message: 'Project details saved successfully.', type: 'success' })
     } else {
-      setToast({ message: 'Could not update project details', type: 'error' })
+      setToast({ message: 'Unable to save project details.', type: 'error' })
     }
   } catch (err) {
     console.log(err)
-    setToast({ message: 'Could not update project details', type: 'error' })
+    setToast({ message: 'Unable to save project details.', type: 'error' })
   }
 
   toggleModal('project-comment-modal') // Close modal

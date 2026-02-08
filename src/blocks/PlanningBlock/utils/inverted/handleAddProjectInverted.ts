@@ -38,7 +38,7 @@ export const handleAddProjectInverted = async ({
   setBackend: React.Dispatch<React.SetStateAction<string | null>>
 }) => {
   if (!loggedUser) {
-    setToast({ message: 'Please log in', type: 'error' })
+    setToast({ message: 'Please sign in to continue.', type: 'error' })
     return
   }
 
@@ -47,7 +47,7 @@ export const handleAddProjectInverted = async ({
   )
 
   if (alreadyExists) {
-    setToast({ message: 'Project is already in project view', type: 'error' })
+    setToast({ message: 'This project is already visible in project view.', type: 'error' })
     return
   }
 
@@ -76,13 +76,13 @@ export const handleAddProjectInverted = async ({
       setProjectsState((prev) =>
         prev.map((project) => (project.id === newProjectState.id ? newProjectState : project)),
       )
-      setToast({ message: 'Project added', type: 'success' })
+      setToast({ message: 'Project added to project view.', type: 'success' })
     } else {
-      setToast({ message: 'Could not add project', type: 'error' })
+      setToast({ message: 'Unable to add project to project view.', type: 'error' })
     }
   } catch (err) {
     console.log(err)
-    setToast({ message: 'Could not add project', type: 'error' })
+    setToast({ message: 'Unable to add project to project view.', type: 'error' })
   }
 
   setSelectedProjectId(null) // Reset selection

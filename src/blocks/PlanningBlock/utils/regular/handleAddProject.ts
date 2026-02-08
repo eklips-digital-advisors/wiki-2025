@@ -29,7 +29,10 @@ export const handleAddProject = async ({
   const projectExists = existingProjects.some((project: any) => project.id === selectedProjectId)
 
   if (loggedUser?.id !== selectedResource.id && loggedUser.role !== 'admin' && loggedUser.role !== 'editor') {
-    setToast({ message: 'Cannot update other user unless you are admin or editor', type: 'error' })
+    setToast({
+      message: 'You can only update your own projects unless you are an admin or editor.',
+      type: 'error',
+    })
     return
   }
 
@@ -37,7 +40,7 @@ export const handleAddProject = async ({
     console.log(
       `Project ${selectedProjectId} already exists for user ${selectedResource.id}. Canceling add.`,
     )
-    setToast({ message: `Project already exists for user`, type: 'error' })
+    setToast({ message: 'This project is already assigned to this user.', type: 'error' })
     // toggleModal(modalSlug)
     return
   }
@@ -58,7 +61,10 @@ export const handleAddProject = async ({
     const data = await req.json()
     const newUserState = data?.doc
     console.log('added', data?.doc)
-    setToast({ message: `Project added for ${selectedResource?.title}`, type: 'success' })
+    setToast({
+      message: `Project added to ${selectedResource?.title || 'the selected user'}.`,
+      type: 'success',
+    })
     if (data?.doc) {
       setUsersState((prev) =>
         prev.map((user) => (user.id === newUserState.id ? newUserState : user)),
@@ -66,6 +72,7 @@ export const handleAddProject = async ({
     }
   } catch (err) {
     console.log(err)
+    setToast({ message: 'Unable to add project for this user.', type: 'error' })
   }
 
   setSelectedProjectId(null) // Reset selection

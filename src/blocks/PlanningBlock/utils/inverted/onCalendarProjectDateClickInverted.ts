@@ -25,7 +25,7 @@ export const onCalendarProjectDateClickInverted = async ({
   const isEventClick = !!info.event
 
   if (isEventClick && info.event?.extendedProps?.type || info?.resource?._resource?.id === 'eklips-vacation') {
-    setToast({ message: 'Cannot edit teamwork vacations', type: 'error' })
+    setToast({ message: 'Teamwork vacation entries are read-only.', type: 'error' })
     return
   }
   

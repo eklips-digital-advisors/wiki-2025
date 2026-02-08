@@ -19,7 +19,7 @@ export const handleProjectPriority = async ({
   loggedUser: any
 }) => {
   if (!loggedUser) {
-    setToast({ message: 'Please log in', type: 'error' })
+    setToast({ message: 'Please sign in to continue.', type: 'error' })
     return
   }
 
@@ -82,11 +82,11 @@ export const handleProjectPriority = async ({
       setUsersState((prev) =>
         prev.map((user) => (user.id === updatedUser.id ? updatedUser : user))
       )
-      setToast({ message: 'Priority updated', type: 'success' })
+      setToast({ message: 'Project priority updated successfully.', type: 'success' })
     }
   } catch (err) {
     console.log(err)
-    setToast({ message: 'Could not update priority', type: 'error' })
+    setToast({ message: 'Unable to update project priority.', type: 'error' })
   }
 
   await fetch('/next/revalidate', {

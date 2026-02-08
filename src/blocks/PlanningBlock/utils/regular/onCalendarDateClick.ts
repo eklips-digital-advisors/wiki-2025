@@ -25,7 +25,9 @@ export const onCalendarDateClick = async ({
     ? info.event.getResources()?.[0]?.extendedProps?.projectId
     : info?.resource?.extendedProps?.projectId
 
-  if (!projectId) setToast({ message: 'Cannot add time to user, please add to project', type: 'error' })
+  if (!projectId) {
+    setToast({ message: 'Select a project row before adding time.', type: 'error' })
+  }
 
   if (!projectId) {
     return
