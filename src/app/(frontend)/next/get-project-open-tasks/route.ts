@@ -9,6 +9,25 @@ type TeamworkTask = {
   createdAt: string
 }
 
+type CachedTasks = {
+  tasks: TeamworkTask[]
+  cachedAt: number
+}
+
+class TeamworkApiError extends Error {
+  status: number
+
+  constructor(message: string, status: number) {
+    super(message)
+    this.name = 'TeamworkApiError'
+    this.status = status
+  }
+}
+
+const OPEN_TASKS_CACHE_TTL_MS = process.env.NODE_ENV === 'development' ? 5 * 60 * 1000 : 60 * 1000
+const openTasksCache = new Map<string, CachedTasks>()
+const openTasksInFlight = new Map<string, Promise<TeamworkTask[]>>()
+
 const isCompletedTask = (task: any) => {
   const status = String(task?.status || '').toLowerCase()
 
@@ -303,51 +322,96 @@ export async function GET(req: NextRequest) {
   const API_URL = `${BASE_URL}/projects/api/v3/tasks.json?${query.toString()}`
 
   try {
-    const headers = {
-      Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString('base64')}`,
-      'Content-Type': 'application/json',
+    const cached = openTasksCache.get(projectId)
+    const hasFreshCache = Boolean(cached && Date.now() - cached.cachedAt < OPEN_TASKS_CACHE_TTL_MS)
+
+    if (hasFreshCache && cached) {
+      return new Response(JSON.stringify({ tasks: cached.tasks, cached: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
 
-    const response = await fetch(API_URL, { headers })
+    const existingInFlight = openTasksInFlight.get(projectId)
+    const fetchPromise =
+      existingInFlight ||
+      (async () => {
+        const headers = {
+          Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString('base64')}`,
+          'Content-Type': 'application/json',
+        }
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
+        const response = await fetch(API_URL, { headers })
+
+        if (!response.ok) {
+          throw new TeamworkApiError(`HTTP error! Status: ${response.status}`, response.status)
+        }
+
+        const data = await response.json()
+        const rawTasks =
+          (Array.isArray(data?.tasks) && data.tasks) ||
+          (Array.isArray(data?.data?.tasks) && data.data.tasks) ||
+          (Array.isArray(data?.data) && data.data) ||
+          []
+
+        const needsListLookup = rawTasks.some((task: any) => {
+          const listName = resolveListNameFromTask(task)
+          const listId = resolveListIdFromTask(task)
+          return !listName && Boolean(listId)
+        })
+        const needsAssigneeLookup = rawTasks.some((task: any) => {
+          const assignees = resolveAssigneeNamesFromTask(task)
+          const ids = resolveAssigneeIdsFromTask(task)
+          return !assignees && ids.length > 0
+        })
+
+        const [listNameById, assigneeNameById] = await Promise.all([
+          needsListLookup ? fetchTasklistsMap(BASE_URL, API_KEY, projectId) : Promise.resolve({}),
+          needsAssigneeLookup ? fetchPeopleMap(BASE_URL, API_KEY) : Promise.resolve({}),
+        ])
+
+        const tasks = rawTasks
+          .filter((task: any) => !isCompletedTask(task))
+          .map((task: any) => normalizeTask(task, BASE_URL, listNameById, assigneeNameById))
+          .filter((task: TeamworkTask | null): task is TeamworkTask => Boolean(task))
+
+        openTasksCache.set(projectId, {
+          tasks,
+          cachedAt: Date.now(),
+        })
+
+        return tasks
+      })()
+
+    if (!existingInFlight) {
+      openTasksInFlight.set(projectId, fetchPromise)
     }
 
-    const data = await response.json()
-    const rawTasks =
-      (Array.isArray(data?.tasks) && data.tasks) ||
-      (Array.isArray(data?.data?.tasks) && data.data.tasks) ||
-      (Array.isArray(data?.data) && data.data) ||
-      []
-
-    const needsListLookup = rawTasks.some((task: any) => {
-      const listName = resolveListNameFromTask(task)
-      const listId = resolveListIdFromTask(task)
-      return !listName && Boolean(listId)
-    })
-    const needsAssigneeLookup = rawTasks.some((task: any) => {
-      const assignees = resolveAssigneeNamesFromTask(task)
-      const ids = resolveAssigneeIdsFromTask(task)
-      return !assignees && ids.length > 0
-    })
-
-    const [listNameById, assigneeNameById] = await Promise.all([
-      needsListLookup ? fetchTasklistsMap(BASE_URL, API_KEY, projectId) : Promise.resolve({}),
-      needsAssigneeLookup ? fetchPeopleMap(BASE_URL, API_KEY) : Promise.resolve({}),
-    ])
-
-    const tasks = rawTasks
-      .filter((task: any) => !isCompletedTask(task))
-      .map((task: any) => normalizeTask(task, BASE_URL, listNameById, assigneeNameById))
-      .filter((task: TeamworkTask | null): task is TeamworkTask => Boolean(task))
+    const tasks = await fetchPromise
+    openTasksInFlight.delete(projectId)
 
     return new Response(JSON.stringify({ tasks }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
   } catch (error: any) {
-    console.error('Failed to fetch teamwork tasks:', error)
-    return new Response(JSON.stringify({ error: 'Failed to fetch tasks' }), { status: 500 })
+    openTasksInFlight.delete(projectId)
+
+    const cached = openTasksCache.get(projectId)
+    if (cached) {
+      return new Response(JSON.stringify({ tasks: cached.tasks, cached: true, stale: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    const status = error instanceof TeamworkApiError ? error.status : 500
+    const message = status === 429 ? 'Rate limited by Teamwork API' : 'Failed to fetch tasks'
+
+    if (status !== 429) {
+      console.error('Failed to fetch teamwork tasks:', error)
+    }
+
+    return new Response(JSON.stringify({ error: message }), { status })
   }
 }

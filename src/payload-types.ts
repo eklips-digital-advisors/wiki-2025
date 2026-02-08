@@ -527,6 +527,18 @@ export interface Project {
    */
   title?: string | null;
   comment?: string | null;
+  /**
+   * Project manager
+   */
+  pm?: (string | null) | User;
+  /**
+   * Frontend owner
+   */
+  frontend?: (string | null) | User;
+  /**
+   * Backend owner
+   */
+  backend?: (string | null) | User;
   priority?: ('none' | 'low' | 'medium' | 'high') | null;
   image?: string | null;
   showInProjectView?: boolean | null;
@@ -1376,6 +1388,9 @@ export interface ProjectsSelect<T extends boolean = true> {
   projectTeamwork?: T;
   title?: T;
   comment?: T;
+  pm?: T;
+  frontend?: T;
+  backend?: T;
   priority?: T;
   image?: T;
   showInProjectView?: T;

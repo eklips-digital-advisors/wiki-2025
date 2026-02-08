@@ -55,6 +55,48 @@ export const Projects: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'pm',
+      type: 'relationship',
+      relationTo: 'users',
+      hasMany: false,
+      admin: {
+        description: 'Project manager',
+      },
+      filterOptions: {
+        position: {
+          equals: 'pm',
+        },
+      },
+    },
+    {
+      name: 'frontend',
+      type: 'relationship',
+      relationTo: 'users',
+      hasMany: false,
+      admin: {
+        description: 'Frontend owner',
+      },
+      filterOptions: {
+        position: {
+          equals: 'frontend',
+        },
+      },
+    },
+    {
+      name: 'backend',
+      type: 'relationship',
+      relationTo: 'users',
+      hasMany: false,
+      admin: {
+        description: 'Backend owner',
+      },
+      filterOptions: {
+        position: {
+          equals: 'backend',
+        },
+      },
+    },
+    {
       name: 'priority',
       type: 'select',
       defaultValue: 'none',

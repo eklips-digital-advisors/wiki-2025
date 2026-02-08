@@ -30,6 +30,53 @@ const getUserProjectPriority = (
 }
 
 export const generateResources = (users: UserWithProjectPriorities[]) => {
+  const resolveMediaUrl = (media: unknown) => {
+    if (!media || typeof media !== 'object') return ''
+    return ((media as { url?: string | null }).url || '') as string
+  }
+
+  const usersById = new Map(users.map((user) => [user.id, user]))
+
+  const resolveAssignee = (value: unknown) => {
+    if (!value) {
+      return {
+        id: null,
+        name: '',
+        avatarUrl: '',
+      }
+    }
+
+    if (typeof value === 'string') {
+      const matchedUser = usersById.get(value)
+      return {
+        id: value,
+        name: matchedUser?.name || '',
+        avatarUrl: resolveMediaUrl(matchedUser?.media),
+      }
+    }
+
+    if (typeof value === 'object') {
+      const relation = value as {
+        id?: string | null
+        name?: string | null
+        media?: unknown
+      }
+      const relationId = relation.id || null
+      const matchedUser = relationId ? usersById.get(relationId) : null
+      return {
+        id: relationId,
+        name: relation.name || matchedUser?.name || '',
+        avatarUrl: resolveMediaUrl(relation.media) || resolveMediaUrl(matchedUser?.media),
+      }
+    }
+
+    return {
+      id: null,
+      name: '',
+      avatarUrl: '',
+    }
+  }
+
   return users.flatMap((user) => {
     const profileImage =
       user?.media && typeof user.media === 'object'
@@ -67,20 +114,35 @@ export const generateResources = (users: UserWithProjectPriorities[]) => {
 
           return (a?.title || '').localeCompare(b?.title || '')
         })
-        .map((project: any) => ({
-          id: `project-${project.id}-${user.id}`,
-          title: project?.title || '',
-          parentId: `${user.id}`,
-          projectId: project.id,
-          projects: user.projects || [],
-          projectImage: project.image || '',
-          projectType: project.type || '',
-          comment: project.comment || '',
-          priority: resolvePriority(project),
-          userId: user.id,
-          isProject: true,
-          showInProjectView: project.showInProjectView,
-        }))
+        .map((project: any) => {
+          const pmData = resolveAssignee(project?.pm)
+          const frontendData = resolveAssignee(project?.frontend)
+          const backendData = resolveAssignee(project?.backend)
+
+          return {
+            id: `project-${project.id}-${user.id}`,
+            title: project?.title || '',
+            parentId: `${user.id}`,
+            projectId: project.id,
+            projects: user.projects || [],
+            projectImage: project.image || '',
+            projectType: project.type || '',
+            comment: project.comment || '',
+            priority: resolvePriority(project),
+            userId: user.id,
+            isProject: true,
+            showInProjectView: project.showInProjectView,
+            pmId: pmData.id,
+            pmName: pmData.name,
+            pmAvatarUrl: pmData.avatarUrl,
+            frontendId: frontendData.id,
+            frontendName: frontendData.name,
+            frontendAvatarUrl: frontendData.avatarUrl,
+            backendId: backendData.id,
+            backendName: backendData.name,
+            backendAvatarUrl: backendData.avatarUrl,
+          }
+        })
       : []
 
     return [userResource, ...userProjects]

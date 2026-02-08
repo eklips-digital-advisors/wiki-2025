@@ -310,13 +310,13 @@ export const PlanningComponentClient: React.FC<{
       />
 
       <ProjectCommentModal
-        modalSlug={projectCommentModalSlug} selectedResource={selectedResource} setUsersState={setUsersState}
+        modalSlug={projectCommentModalSlug} selectedResource={selectedResource} usersState={usersState} setUsersState={setUsersState}
         router={router} setToast={setToast} toggleModal={toggleModal} loggedUser={loggedUser}
         setProjectsState={setProjectsState}
       />
 
       <InvertedProjectModal
-        modalSlug={invertedProjectSlug} projectsState={projectsState} selectedProjectId={selectedProjectId}
+        modalSlug={invertedProjectSlug} projectsState={projectsState} usersState={usersState} selectedProjectId={selectedProjectId}
         setSelectedProjectId={setSelectedProjectId} setProjectsState={setProjectsState}
         router={router} setToast={setToast} toggleModal={toggleModal} loggedUser={loggedUser}
       />

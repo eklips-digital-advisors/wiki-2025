@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { ProfileImage } from '@/blocks/PlanningBlock/ProfileImage'
 import { TeamworkTasksDropdown } from '@/blocks/PlanningBlock/TeamworkTasksDropdown'
-import { PackagePlus, CircleX, Info, Flag } from 'lucide-react'
+import { PackagePlus, CircleX, SlidersHorizontal, Flag } from 'lucide-react'
 import { getLabel } from '@/utilities/getLabel'
 import { positionOptions } from '@/collections/Users/positionOptions'
 import { handleRemoveProject } from '@/blocks/PlanningBlock/utils/regular/handleRemoveProject'
@@ -41,6 +41,27 @@ export const getResourceLabelContent = ({
   setToast,
   setProjectsState,
 }: Props) => {
+  const getProjectDetailsSelection = (resource: any) => {
+    const ext = resource?._resource?.extendedProps || resource?.extendedProps || {}
+    const projectId = ext?.projectId || resource?._resource?.id || resource?.id || null
+
+    return {
+      id: resource?.id,
+      title: resource?.title,
+      extendedProps: {
+        ...ext,
+        projectId,
+      },
+      _resource: {
+        id: projectId,
+        extendedProps: {
+          ...ext,
+          projectId,
+        },
+      },
+    }
+  }
+
   const ResourceLabelContent = (arg: any) => {
     const resource = arg.resource
     const type = resource._resource?.extendedProps?.type
@@ -49,12 +70,36 @@ export const getResourceLabelContent = ({
     const isProject = resource?._resource?.extendedProps?.isProject
     const showInProjectView = resource?._resource?.extendedProps?.showInProjectView
     const projectTeamworkId = resource?._resource?.extendedProps?.projectTeamwork
+    const pmId = resource?._resource?.extendedProps?.pmId
+    const pmName = resource?._resource?.extendedProps?.pmName
+    const pmAvatarUrl = resource?._resource?.extendedProps?.pmAvatarUrl
+    const frontendId = resource?._resource?.extendedProps?.frontendId
+    const frontendName = resource?._resource?.extendedProps?.frontendName
+    const frontendAvatarUrl = resource?._resource?.extendedProps?.frontendAvatarUrl
+    const backendId = resource?._resource?.extendedProps?.backendId
+    const backendName = resource?._resource?.extendedProps?.backendName
+    const backendAvatarUrl = resource?._resource?.extendedProps?.backendAvatarUrl
+    const projectComment = resource?._resource?.extendedProps?.comment || ''
+    const hasProjectComment = Boolean(projectComment?.trim())
     const isArchived = !showInProjectView && isProject
     const shouldShowTeamworkTasks = Boolean(isInverted && isProject && projectTeamworkId)
+    const shouldShowProjectAssignments = Boolean(isInverted && isProject)
+    const assignmentSlots = [
+      { key: 'pm', label: 'PM', id: pmId, name: pmName, avatarUrl: pmAvatarUrl },
+      { key: 'frontend', label: 'Frontend', id: frontendId, name: frontendName, avatarUrl: frontendAvatarUrl },
+      { key: 'backend', label: 'Backend', id: backendId, name: backendName, avatarUrl: backendAvatarUrl },
+    ]
+    const placeholderBorderClassByKey: Record<string, string> = {
+      pm: 'border-indigo-400',
+      frontend: 'border-emerald-400',
+      backend: 'border-blue-400',
+    }
 
     if (!resource._resource.parentId) {
       return (
-        <div className={`flex justify-between gap-2 items-center ${type ? type : ''} ${isArchived ? 'archived' : ''}`}>
+        <div
+          className={`flex justify-between gap-2 items-center ${type ? type : ''} ${isArchived ? 'archived' : ''}`}
+        >
           <div className="flex gap-2 items-center ml-2">
             <ProfileImage
               name={resource._resource?.title}
@@ -65,15 +110,46 @@ export const getResourceLabelContent = ({
               variant={isInverted ? 'square' : 'rounded'}
             />
             <span className="flex flex-col gap-1">
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-2">
                 <span
-                  className="max-w-[220px] truncate leading-4 font-medium"
+                  className="max-w-[170px] truncate leading-4 font-medium"
                   title={resource.title}
                 >
                   {resource.title}
                 </span>
-                {shouldShowTeamworkTasks && (
-                  <TeamworkTasksDropdown projectTeamworkId={projectTeamworkId} />
+                {shouldShowProjectAssignments && (
+                  <span className="inline-flex items-center gap-1">
+                    {shouldShowTeamworkTasks && (
+                      <TeamworkTasksDropdown projectTeamworkId={projectTeamworkId} />
+                    )}
+                    <span className="inline-flex items-center gap-1">
+                      {assignmentSlots.map((slot) => (
+                        <Tooltip key={slot.key}>
+                          <TooltipTrigger asChild>
+                            <span className="inline-flex h-[20px] w-[20px] items-center justify-center">
+                              {slot.id ? (
+                                <ProfileImage
+                                  name={slot.name || slot.label}
+                                  url={slot.avatarUrl || ''}
+                                  size={20}
+                                  variant="rounded"
+                                />
+                              ) : (
+                                <span
+                                  className={`inline-flex h-[20px] w-[20px] rounded-full border-[1.5px] border-dotted bg-white ${placeholderBorderClassByKey[slot.key] || 'border-zinc-300'}`}
+                                />
+                              )}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            {slot.id
+                              ? `${slot.label}: ${slot.name || 'Set'}`
+                              : `${slot.label}: Not set`}
+                          </TooltipContent>
+                        </Tooltip>
+                      ))}
+                    </span>
+                  </span>
                 )}
               </span>
               <span className="text-[12px] leading-3">
@@ -88,22 +164,30 @@ export const getResourceLabelContent = ({
                   <Button
                     className="p-0 cursor-pointer"
                     variant="link"
-                    title={resource._resource?.extendedProps?.comment || 'Add comment'}
+                    title="Edit project details"
                     onClick={() => {
                       if (!loggedUser) {
                         setToast({ message: 'Please log in', type: 'error' })
                         return
                       }
 
-                      setSelectedResource(resource)
+                      setSelectedResource(getProjectDetailsSelection(resource))
                       toggleModal('project-comment-modal')
                     }}
                   >
-                    <Info className={`w-[20px] h-[20px]  ${resource._resource?.extendedProps?.comment ? 'stroke-zinc-400 hover:stroke-zinc-300' : 'stroke-zinc-200 hover:stroke-zinc-100'}`} />
+                    <SlidersHorizontal
+                      className={`w-[20px] h-[20px] ${hasProjectComment ? 'stroke-zinc-700 hover:stroke-zinc-800' : 'stroke-zinc-400 hover:stroke-zinc-300'}`}
+                    />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="left">
-                  {resource._resource?.extendedProps?.comment || 'Add comment'}
+                <TooltipContent
+                  side="left"
+                  className="max-w-[340px] whitespace-pre-wrap break-words leading-5"
+                >
+                  <span className="block font-medium">Edit project details</span>
+                  {hasProjectComment && (
+                    <span className="mt-1 block text-[11px] opacity-90">{projectComment}</span>
+                  )}
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -113,7 +197,13 @@ export const getResourceLabelContent = ({
                     variant="link"
                     title="Remove project"
                     onClick={() =>
-                      handleRemoveProjectInverted(resource, setProjectsState, router, setToast, loggedUser)
+                      handleRemoveProjectInverted(
+                        resource,
+                        setProjectsState,
+                        router,
+                        setToast,
+                        loggedUser,
+                      )
                     }
                   >
                     <CircleX className="w-[20px] h-[20px] stroke-zinc-400 hover:stroke-zinc-300" />
@@ -169,7 +259,11 @@ export const getResourceLabelContent = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="link" size="clear" className="cursor-pointer focus-visible:hidden">
+                    <Button
+                      variant="link"
+                      size="clear"
+                      className="cursor-pointer focus-visible:hidden"
+                    >
                       <Flag className={`w-[18px] h-[18px] ${priorityColorMap[priority]}`} />
                     </Button>
                   </DropdownMenuTrigger>
@@ -203,22 +297,30 @@ export const getResourceLabelContent = ({
                 <Button
                   className="p-0 cursor-pointer"
                   variant="link"
-                  title={resource._resource?.extendedProps?.comment || 'Add comment'}
+                  title="Edit project details"
                   onClick={() => {
                     if (!loggedUser) {
                       setToast({ message: 'Please log in', type: 'error' })
                       return
                     }
 
-                    setSelectedResource(resource)
+                    setSelectedResource(getProjectDetailsSelection(resource))
                     toggleModal('project-comment-modal')
                   }}
                 >
-                  <Info className={`w-[20px] h-[20px]  ${resource._resource?.extendedProps?.comment ? 'stroke-zinc-400 hover:stroke-zinc-300' : 'stroke-zinc-200 hover:stroke-zinc-100'}`} />
+                  <SlidersHorizontal
+                    className={`w-[20px] h-[20px] ${hasProjectComment ? 'stroke-zinc-700 hover:stroke-zinc-800' : 'stroke-zinc-400 hover:stroke-zinc-300'}`}
+                  />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="top">
-                {resource._resource?.extendedProps?.comment || 'Add comment'}
+              <TooltipContent
+                side="top"
+                className="max-w-[340px] whitespace-pre-wrap break-words leading-5"
+              >
+                <span className="block font-medium">Edit project details</span>
+                {hasProjectComment && (
+                  <span className="mt-1 block text-[11px] opacity-90">{projectComment}</span>
+                )}
               </TooltipContent>
             </Tooltip>
             <Tooltip>

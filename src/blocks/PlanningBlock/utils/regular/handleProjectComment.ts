@@ -3,24 +3,30 @@ import { getClientSideURL } from '@/utilities/getURL'
 export const handleProjectComment = async (
   resource: any,
   setUsersState: React.Dispatch<React.SetStateAction<any[]>>,
-  router: any,
+  _router: any,
   setToast: (toast: any) => void,
   loggedUser: any,
   projectComment: string,
   toggleModal: (slug: string) => void,
-  setProjectsState: React.Dispatch<React.SetStateAction<any[]>>
+  setProjectsState: React.Dispatch<React.SetStateAction<any[]>>,
+  pm: string | null,
+  frontend: string | null,
+  backend: string | null,
 ) => {
   if (!loggedUser) {
     setToast({ message: 'Please log in', type: 'error' })
     return
   }
-  
-  const projectId = resource?.extendedProps?.projectId
+
+  const projectId =
+    resource?.extendedProps?.projectId ||
+    resource?._resource?.extendedProps?.projectId ||
+    resource?._resource?.id
 
   if (!projectId || !resource) return
 
   try {
-    const req = await fetch(`${getClientSideURL()}/api/projects/${projectId}`, {
+    const req = await fetch(`${getClientSideURL()}/api/projects/${projectId}?depth=2`, {
       method: 'PATCH',
       credentials: 'include',
       headers: {
@@ -28,19 +34,24 @@ export const handleProjectComment = async (
       },
       body: JSON.stringify({
         comment: projectComment || '',
+        pm: pm || null,
+        frontend: frontend || null,
+        backend: backend || null,
       }),
     })
 
+    if (!req.ok) {
+      throw new Error(`Failed to update comment: ${req.status}`)
+    }
+
     const data = await req.json()
-    console.log('comment updated', data?.doc)
-    setToast({ message: `Comment updated`, type: 'success' })
 
     if (data?.doc) {
-      const updated = data.doc;
+      const updated = data.doc
 
       setProjectsState(prev =>
         prev.map(p => (p.id === updated.id ? updated : p)),
-      );
+      )
 
       setUsersState(prev =>
         prev.map(u =>
@@ -51,23 +62,16 @@ export const handleProjectComment = async (
                   p.id === updated.id ? updated : p
                 ) }
         ),
-      );
+      )
 
-      setToast({ message: 'Comment updated', type: 'success' });
+      setToast({ message: 'Project details updated', type: 'success' })
+    } else {
+      setToast({ message: 'Could not update project details', type: 'error' })
     }
-
   } catch (err) {
     console.log(err)
+    setToast({ message: 'Could not update project details', type: 'error' })
   }
 
   toggleModal('project-comment-modal') // Close modal
-
-  await fetch('/next/revalidate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ path: '/planning' }), // Pass the path dynamically
-  })
-  router.refresh()
 }

@@ -14,7 +14,7 @@ export const ProfileImage = ({
   url,
   name,
   variant = 'rounded',
-  size = 32,
+  size = 24,
 }: ProfileImageProps) => {
   const isRounded = variant === 'rounded'
   const borderRadiusStyle = isRounded ? '50%' : '0'

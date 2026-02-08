@@ -9,7 +9,15 @@ export const handleAddProjectInverted = async ({
   modalSlug,
   setToast,
   loggedUser,
-  projectsState
+  projectsState,
+  comment,
+  pm,
+  frontend,
+  backend,
+  setComment,
+  setPm,
+  setFrontend,
+  setBackend,
 }: {
   selectedProjectId: string | null
   setSelectedProjectId: React.Dispatch<React.SetStateAction<string | null>>
@@ -20,6 +28,14 @@ export const handleAddProjectInverted = async ({
   setToast: (toast: any) => void
   loggedUser: any
   projectsState: any
+  comment: string
+  pm: string | null
+  frontend: string | null
+  backend: string | null
+  setComment: React.Dispatch<React.SetStateAction<string>>
+  setPm: React.Dispatch<React.SetStateAction<string | null>>
+  setFrontend: React.Dispatch<React.SetStateAction<string | null>>
+  setBackend: React.Dispatch<React.SetStateAction<string | null>>
 }) => {
   if (!loggedUser) {
     setToast({ message: 'Please log in', type: 'error' })
@@ -38,7 +54,7 @@ export const handleAddProjectInverted = async ({
   if (!selectedProjectId) return
 
   try {
-    const req = await fetch(`${getClientSideURL()}/api/projects/${selectedProjectId}`, {
+    const req = await fetch(`${getClientSideURL()}/api/projects/${selectedProjectId}?depth=2`, {
       method: 'PATCH',
       credentials: 'include',
       headers: {
@@ -46,23 +62,34 @@ export const handleAddProjectInverted = async ({
       },
       body: JSON.stringify({
         showInProjectView: true,
+        comment: comment || '',
+        pm: pm || null,
+        frontend: frontend || null,
+        backend: backend || null,
       }),
     })
     const data = await req.json()
     const newProjectState = data?.doc
     console.log('added', data?.doc)
-    setToast({ message: `Project added`, type: 'success' })
+
     if (data?.doc) {
       setProjectsState((prev) =>
         prev.map((project) => (project.id === newProjectState.id ? newProjectState : project)),
       )
+      setToast({ message: 'Project added', type: 'success' })
+    } else {
+      setToast({ message: 'Could not add project', type: 'error' })
     }
-    setToast({ message: 'Project added', type: 'success' })
   } catch (err) {
     console.log(err)
+    setToast({ message: 'Could not add project', type: 'error' })
   }
 
   setSelectedProjectId(null) // Reset selection
+  setComment('')
+  setPm(null)
+  setFrontend(null)
+  setBackend(null)
   toggleModal(modalSlug) // Close modal
 
   await fetch('/next/revalidate', {
