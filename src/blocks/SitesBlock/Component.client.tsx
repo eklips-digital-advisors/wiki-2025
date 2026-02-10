@@ -25,10 +25,15 @@ import Th from '@/components/Table/Th'
 import CloudFlare from '@/components/Icons/cloudFlare'
 import Pill from '@/components/Button/pill'
 import { Button } from '@/components/ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import SecondarySearch from '@/components/SearchSecondary'
 
 import { getWpVersionBackground } from '@/utilities/GetDynamicBackgrounds/getWpVersionBackground'
-import { getPhpBackground } from '@/utilities/GetDynamicBackgrounds/getPhpBackground'
+import { getPhpSupportInfo } from '@/utilities/GetDynamicBackgrounds/getPhpBackground'
 import { getBsScanBackground } from '@/utilities/GetDynamicBackgrounds/getBsScanBackground'
 import { exportToExcel } from '@/utilities/exportToExcel'
 import { parseDateUTC } from '@/utilities/parseDateUTC'
@@ -421,22 +426,33 @@ export const SitesBlockClient: React.FC<SitesBlockProps> = ({
             )}
           </td>
         )
-      case 'phpVersion':
+      case 'phpVersion': {
+        const phpSupport = getPhpSupportInfo(
+          phpApiData,
+          site?.phpVersion,
+        )
+
         return (
           <td
             key={colKey}
             className="whitespace-nowrap px-3 py-3 text-sm text-zinc-500"
           >
-            <span
-              className={`${getPhpBackground(
-                phpApiData,
-                site?.phpVersion,
-              )} px-1 py-[0.5] text-xs inline-block`}
-            >
-              {site?.phpVersion}
-            </span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  className={`${phpSupport.backgroundClass} px-1 py-[0.5] text-xs inline-block cursor-help`}
+                  aria-label={`PHP ${site?.phpVersion} status: ${phpSupport.label}`}
+                >
+                  {site?.phpVersion}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                {phpSupport.label}
+              </TooltipContent>
+            </Tooltip>
           </td>
         )
+      }
       case 'framework':
         return (
           <td

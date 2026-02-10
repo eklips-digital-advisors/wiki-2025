@@ -67,7 +67,7 @@ export const SitesBlock: React.FC = async () => {
     // Fetch external API data in parallel
     const [wpApiData, phpApiData] = await Promise.all([
       getDefault("https://api.wordpress.org/core/version-check/1.7/"),
-      getDefault("https://php.watch/api/v1/versions/supported")
+      getDefault("https://php.watch/api/v1/versions")
     ])
 
     const latestWp = wpApiData?.offers?.[0]?.current ?? 'Unknown'
@@ -243,7 +243,7 @@ export const SitesBlock: React.FC = async () => {
 
     const extraInfo = {
       latestWp,
-      phpApiData: phpApiData?.data,
+      phpApiData: phpApiData?.data ?? {},
       wpVersionLatestPercentage: Number(((wpSitesWithLatestSoftware / totalWpsites) * 100).toFixed(1)),
       buildTime
     }

@@ -51,7 +51,15 @@ export interface SiteItem {
 
 interface ExtraInfo {
   latestWp: string
-  phpApiData: { [key: string]: { name: string } }
+  phpApiData: {
+    [key: string]: {
+      name: string
+      activeSupportEndDate?: string | null
+      isSecureVersion?: boolean
+      isEOLVersion?: boolean
+      isFutureVersion?: boolean
+    }
+  }
   wpVersionLatestPercentage: number
   buildTime: string
 }
