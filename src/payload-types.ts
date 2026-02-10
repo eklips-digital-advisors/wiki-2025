@@ -197,6 +197,9 @@ export interface Site {
   wcagUpdated?: string | null;
   wcagLevel?: ('21aa' | '21aaa') | null;
   bsScan?: string | null;
+  /**
+   * If Azure DevOps is set, this is detected automatically from cwaas Dockerfile.
+   */
   phpVersion?: ('7.4' | '8.2' | '8.3' | '8.4') | null;
   framework?: ('cwaas' | 'eklips_v1' | 'eklips_v2') | null;
   pressReleases?: ('cision' | 'mfn' | 'bequoted')[] | null;

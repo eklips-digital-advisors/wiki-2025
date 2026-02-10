@@ -138,6 +138,10 @@ export const Sites: CollectionConfig<'sites'> = {
       type: 'select',
       label: 'PHP Version',
       options: phpVersionOptions,
+      admin: {
+        description: 'If Azure DevOps is set, this is detected automatically from cwaas Dockerfile.',
+        condition: (data) => !data?.integrations?.azureDevops,
+      },
     },
     {
       name: 'framework',

@@ -24,6 +24,21 @@ import { getDataBlocks } from '@/utilities/GetProviders/getDataBlocks'
 import { getCisionBlocks } from '@/utilities/GetProviders/getCisionBlocks'
 import getSingleAzureDevopsItem from '@/utilities/GetAzureDevopsRepos/getSingleAzureDevopsItem'
 import getAzureDevopsRepoCommits from '@/utilities/GetAzureDevopsRepos/getAzureDevopsRepoCommits'
+import getAzureDevopsFileContents from '@/utilities/GetAzureDevopsRepos/getAzureDevopsFileContents'
+
+type DockerfileVersions = {
+  wpVersion: string
+  phpVersion: string
+}
+
+const parseDockerfileVersions = (contents?: string | null): DockerfileVersions | null => {
+  if (!contents) return null
+  const match = contents.match(
+    /FROM\s+wordpress:([0-9.]+)-php([0-9.]+)-fpm(?:-[\w.-]+)?/i,
+  )
+  if (!match) return null
+  return { wpVersion: match[1], phpVersion: match[2] }
+}
 
 export const SitesBlock: React.FC = async () => {
   const buildTime: string = new Date().toLocaleString('et-ET', { timeZone: "Europe/Tallinn" })
@@ -41,6 +56,13 @@ export const SitesBlock: React.FC = async () => {
     const sites: Site[] = sitesResponse.docs as Site[]
     const cwaasZone = await getCwaasZone()
     const cwaasZonePlan = cwaasZone?.plan?.name || ''
+    const hasAzureSites = sites.some((site) => Boolean(site?.integrations?.azureDevops))
+    const cwaasDockerfileContents = hasAzureSites
+      ? await limit(() =>
+          getAzureDevopsFileContents('90981c39-baa3-4fcb-8a84-f5cc650d7b1e', '/Dockerfile.prod'),
+        )
+      : null
+    const cwaasDockerfileVersions = parseDockerfileVersions(cwaasDockerfileContents)
 
     // Fetch external API data in parallel
     const [wpApiData, phpApiData] = await Promise.all([
@@ -103,6 +125,7 @@ export const SitesBlock: React.FC = async () => {
           const azureCreatedAt = formatDateTime(singleAzureDevops?.project?.lastUpdateTime || '')
           const azureLastCommitAt = formatDateTime(azureOldestCommitDate || '')
           const hasAzureDevops = Boolean(siteIntegrationAzureDevops)
+          const azureVersions = hasAzureDevops ? cwaasDockerfileVersions : null
           const azureStaging = hasAzureDevops && singleAzureDevops?.name
             ? `https://${singleAzureDevops.name}.stage.cwaas.site`
             : ''
@@ -137,9 +160,18 @@ export const SitesBlock: React.FC = async () => {
                     singleRepoWpVersionParsed = match[1];
                 }
             }
+          }
 
-            if (singleRepoWpVersionParsed === latestWp) wpSitesWithLatestSoftware++
-            if (repoPath && singleRepoWpVersion) totalWpsites++
+          const resolvedWpVersion =
+            azureVersions?.wpVersion ||
+            singleRepoWpVersionParsed ||
+            (prodFetch ? `${prodFetch.get("x-powered-by") ?? ''}` : 'Unknown')
+          const resolvedPhpVersion = azureVersions?.phpVersion || site?.phpVersion || ''
+          const wpVersionForComparison = azureVersions?.wpVersion || singleRepoWpVersionParsed || ''
+
+          if (wpVersionForComparison) {
+            totalWpsites++
+            if (wpVersionForComparison === latestWp) wpSitesWithLatestSoftware++
           }
 
           const siteItem: SiteItem = {
@@ -152,10 +184,10 @@ export const SitesBlock: React.FC = async () => {
             wcagUpdated: site?.wcagUpdated || '',
             wcagLevel: site?.wcagLevel || '',
             bsScan: site?.bsScan ? formatDateTime(site?.bsScan) : '',
-            phpVersion: site?.phpVersion || '',
+            phpVersion: resolvedPhpVersion,
             siteService: site?.siteService ?? '',
             production: singlePingdom?.hostname ? `https://${singlePingdom?.hostname}` : '',
-            wpVersion: singleRepoWpVersionParsed || (prodFetch ? `${prodFetch.get("x-powered-by") ?? ''}` : 'Unknown'),
+            wpVersion: resolvedWpVersion,
             productionDate: singlePingdom?.hostname ? toLocaleDateString(singlePingdom?.created) : '',
             cloudflare: (prodFetch?.get('server') || '').toLowerCase(),
             cloudflarePlan: siteIntegrationsCloudflare ? cwaasZonePlan : '',
