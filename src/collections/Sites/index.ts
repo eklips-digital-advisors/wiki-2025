@@ -1,7 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import {
@@ -21,7 +20,7 @@ export const Sites: CollectionConfig<'sites'> = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: authenticated,
     update: authenticated,
   },
   // This config controls what's populated by default when a site is referenced
@@ -139,7 +138,8 @@ export const Sites: CollectionConfig<'sites'> = {
       label: 'PHP Version',
       options: phpVersionOptions,
       admin: {
-        description: 'If Azure DevOps is set, this is detected automatically from cwaas Dockerfile.',
+        description:
+          'If Azure DevOps is set, this is detected automatically from cwaas Dockerfile.',
         condition: (data) => !data?.integrations?.azureDevops,
       },
     },

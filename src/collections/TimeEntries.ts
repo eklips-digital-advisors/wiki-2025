@@ -1,6 +1,5 @@
 import type { CollectionConfig } from 'payload'
 
-import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
 import { isAdminLevel } from '@/access/isAdmin'
 
@@ -9,7 +8,7 @@ export const TimeEntries: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: anyone,
+    read: authenticated,
     update: authenticated,
   },
   admin: {

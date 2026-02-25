@@ -1,14 +1,13 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '@/access/authenticated'
-import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 
 export const SiteMaps: CollectionConfig = {
   slug: 'site-maps',
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticatedOrPublished,
+    read: authenticated,
     update: authenticated,
   },
   admin: {

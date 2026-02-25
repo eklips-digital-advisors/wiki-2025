@@ -1,6 +1,5 @@
 import type { CollectionConfig } from 'payload'
 
-import { anyone } from '@/access/anyone'
 import { statusOptions } from '@/collections/StatusTimeEntries/statusOptions'
 import { authenticated } from '@/access/authenticated'
 import { isAdminLevel } from '@/access/isAdmin'
@@ -10,7 +9,7 @@ export const StatusTimeEntries: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: anyone,
+    read: authenticated,
     update: authenticated,
   },
   admin: {
@@ -32,7 +31,7 @@ export const StatusTimeEntries: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      options: statusOptions
+      options: statusOptions,
     },
     {
       name: 'comment',

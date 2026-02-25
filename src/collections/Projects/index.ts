@@ -1,6 +1,5 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '@/access/authenticated'
-import { anyone } from '@/access/anyone'
 import { revalidatePlanning } from '@/blocks/PlanningBlock/hooks/revalidatePlanning'
 import { priorityOptions } from '@/collections/Projects/priorityOptions'
 
@@ -9,7 +8,7 @@ export const Projects: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: anyone,
+    read: authenticated,
     update: authenticated,
   },
   admin: {
@@ -29,8 +28,8 @@ export const Projects: CollectionConfig = {
         disableListColumn: true,
         components: {
           Field: '@/collections/Projects/AdminTitle#AdminTitle',
-        }
-      }
+        },
+      },
     },
     {
       name: 'projectTeamwork',
@@ -47,8 +46,8 @@ export const Projects: CollectionConfig = {
       type: 'text',
       admin: {
         condition: (_, siblingData) => !siblingData.projectTeamwork,
-        description: 'Set manually if no project in TW'
-      }
+        description: 'Set manually if no project in TW',
+      },
     },
     {
       name: 'comment',
@@ -118,7 +117,7 @@ export const Projects: CollectionConfig = {
           label: 'Vacation',
           value: 'vacation',
         },
-      ]
+      ],
     },
     {
       name: 'users',

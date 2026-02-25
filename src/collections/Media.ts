@@ -3,7 +3,6 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { FixedToolbarFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { authenticated } from '@/access/authenticated'
-import { anyone } from '@/access/anyone'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -14,7 +13,7 @@ export const Media: CollectionConfig = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: anyone,
+    read: authenticated,
     update: authenticated,
   },
   fields: [
