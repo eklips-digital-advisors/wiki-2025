@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import { draftMode } from 'next/headers'
+import { draftMode, headers as getHeaders } from 'next/headers'
 import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 import { generateMeta } from '@/utilities/generateMeta'
@@ -15,15 +15,19 @@ export async function generateStaticParams() {
     collection: 'posts',
     draft: false,
     limit: 1000,
-    overrideAccess: false,
+    overrideAccess: true,
     pagination: false,
     select: {
       slug: true,
     },
   })
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
+  const params = posts.docs.flatMap(({ slug }) => {
+    if (typeof slug !== 'string' || slug.length === 0) {
+      return []
+    }
+
+    return [{ slug }]
   })
 
   return params
@@ -56,7 +60,7 @@ export default async function Post({ params: paramsPromise }: Args) {
             {post?.populatedAuthors && post?.populatedAuthors.length > 0 && post?.populatedAuthors.map(author => (
               <div className="text-zinc-500 text-xs flex gap-1 items-center" key={author.id}>Author: {author?.name}</div>
             )) }
-            {post?.publishedAt && false && <div className="text-zinc-500 text-xs">Published: {formatDateTime(post.publishedAt || '')}</div>}
+            {post?.publishedAt && false && <div className="text-zinc-500 text-xs">Published: {formatDateTime(post?.publishedAt || '')}</div>}
           </div>
           {post.content && (
             <RichText className="max-w-[68rem] mx-auto mb-14" data={post.content} enableGutter={false} />
@@ -93,12 +97,20 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
+  const headers = await getHeaders()
+
+  const { user } = await payload.auth({ headers })
+
+  if (!user) {
+    return null
+  }
 
   const result = await payload.find({
     collection: 'posts',
     draft,
     limit: 1,
-    overrideAccess: draft,
+    overrideAccess: false,
+    user,
     pagination: false,
     where: {
       slug: {

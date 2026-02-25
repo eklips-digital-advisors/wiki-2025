@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import configPromise from '@payload-config'
 import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
-import { draftMode } from 'next/headers'
+import { draftMode, headers as getHeaders } from 'next/headers'
 import React, { cache } from 'react'
 
 import type { Page as PageType } from '@/payload-types'
@@ -18,20 +18,20 @@ export async function generateStaticParams() {
     collection: 'pages',
     draft: false,
     limit: 1000,
-    overrideAccess: false,
+    overrideAccess: true,
     pagination: false,
     select: {
       slug: true,
     },
   })
 
-  const params = pages.docs
-    ?.filter((doc) => {
-      return doc.slug !== 'home'
-    })
-    .map(({ slug }) => {
-      return { slug }
-    })
+  const params = pages.docs.flatMap(({ slug }) => {
+    if (typeof slug !== 'string' || slug.length === 0 || slug === 'home') {
+      return []
+    }
+
+    return [{ slug }]
+  })
 
   return params
 }
@@ -86,13 +86,21 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
+  const headers = await getHeaders()
+
+  const { user } = await payload.auth({ headers })
+
+  if (!user) {
+    return null
+  }
 
   const result = await payload.find({
     collection: 'pages',
     draft,
     limit: 1,
     pagination: false,
-    overrideAccess: draft,
+    overrideAccess: false,
+    user,
     where: {
       slug: {
         equals: slug,
